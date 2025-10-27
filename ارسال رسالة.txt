@@ -1,0 +1,6 @@
+أفضل طريقة هي استخدام خدمة مثل Twilio أو Nexmo/Vonage. سأعطيك مثال كامل باستخدام Twilio:
+
+1️⃣ تثبيت Twilio
+npm install twilio
+
+2️⃣ إعداد Twilio في ملف smsSender.js
