@@ -7,13 +7,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const { sendOTP: sendSMSOTP } = require('../smsSender');
-// 🔹 استدعاء Helpers
 const sendResponse = require('../helpers/response');
 const { generateRandomPassword, generateOTP, generateUUID } = require('../helpers/generate');
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
-
 
 // ==========================
 // 🔹 Helper: تحديد نوع SQL للحقل
@@ -75,7 +73,7 @@ router.get('/', async (req, res) => {
             .input('Search', sql.NVarChar(sql.MAX), `%${search}%`)
             .query(`
                 SELECT DriverID, FullName, Phone, Email, VehicleType, Status, Available, CreatedAt, Rating, CityID, AreaID, PhoneConfirmed
-                FROM Driver
+                FROM Drivers
                 WHERE FullName LIKE @Search OR Phone LIKE @Search
                 ORDER BY CreatedAt DESC
                 OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY;
@@ -101,7 +99,7 @@ router.get('/:id', async (req, res) => {
                 SELECT DriverID, FullName, Phone, Email, VehicleType, VehicleNumber, LicenseNumber,
                        NationalID, Address, Status, Available, Rating, PhotoURL, CityID, AreaID,
                        NationalCardURL, LicenseURL, CreatedAt, LastUpdated, PhoneConfirmed
-                FROM Driver WHERE DriverID=@DriverID
+                FROM Drivers WHERE DriverID=@DriverID
             `);
 
         if (!result.recordset.length) return sendResponse(res, false, 'Driver not found', null, 404);
@@ -131,8 +129,8 @@ router.post('/', async (req, res) => {
         const dupReq = pool.request().input('Phone', sql.NVarChar(50), Phone);
         if (Email) dupReq.input('Email', sql.NVarChar(sql.MAX), Email);
         const dupQuery = Email
-            ? 'SELECT DriverID FROM Driver WHERE Phone=@Phone OR Email=@Email'
-            : 'SELECT DriverID FROM Driver WHERE Phone=@Phone';
+            ? 'SELECT DriverID FROM Drivers WHERE Phone=@Phone OR Email=@Email'
+            : 'SELECT DriverID FROM Drivers WHERE Phone=@Phone';
         const dup = await dupReq.query(dupQuery);
         if (dup.recordset.length) return sendResponse(res, false, 'Phone or Email already registered', null, 409);
 
@@ -171,7 +169,7 @@ router.post('/', async (req, res) => {
             .input('OTPExpires', sql.DateTime, otpExpires)
             .input('PhoneConfirmed', sql.Bit, 0)
             .query(`
-                INSERT INTO Driver
+                INSERT INTO Drivers
                 (DriverID, FullName, Phone, Email, Password, VehicleType, VehicleNumber, LicenseNumber, NationalID,
                  Address, IsActive, CreatedAt, CityID, AreaID, Status, MaxLoad, Model, Notes, PhotoURL, Available,
                  Rating, FCMToken, NationalCardURL, LicenseURL, OTP, OTPExpires, PhoneConfirmed)
@@ -181,10 +179,7 @@ router.post('/', async (req, res) => {
                  @Rating, @FCMToken, @NationalCardURL, @LicenseURL, @OTP, @OTPExpires, @PhoneConfirmed)
             `);
 
-        // إرسال OTP عبر SMS
-        // await sendOTP(Phone, otp);
-
-        sendResponse(res, true, 'Driver added successfully', { DriverID: driverId, password: passwordPlain });
+        sendResponse(res, true, 'Driver added successfully', { DriverID: driverId, password: passwordPlain, otp });
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
@@ -201,108 +196,5 @@ router.put('/:id', async (req, res) => {
         const pool = await poolPromise;
         const check = await pool.request()
             .input('DriverID', sql.NVarChar(50), req.params.id)
-            .query('SELECT DriverID FROM Driver WHERE DriverID=@DriverID');
-        if (!check.recordset.length) return sendResponse(res, false, 'Driver not found', null, 404);
-
-        if (updates.Password) {
-            updates.Password = await bcrypt.hash(updates.Password, SALT_ROUNDS);
-        }
-
-        const request = pool.request().input('DriverID', sql.NVarChar(50), req.params.id);
-        keys.forEach(k => {
-            const t = sqlTypeForField(k, updates[k]);
-            request.input(k, t, updates[k]);
-        });
-
-        const setQuery = keys.map(k => `${k}=@${k}`).join(', ');
-        await request.query(`UPDATE Driver SET ${setQuery}, LastUpdated=GETDATE() WHERE DriverID=@DriverID`);
-
-        sendResponse(res, true, 'Driver updated successfully');
-    } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
-    }
-});
-
-// ==========================
-// 📍 حذف سائق
-router.delete('/:id', async (req, res) => {
-    try {
-        const pool = await poolPromise;
-        const check = await pool.request()
-            .input('DriverID', sql.NVarChar(50), req.params.id)
-            .query('SELECT DriverID FROM Driver WHERE DriverID=@DriverID');
-        if (!check.recordset.length) return sendResponse(res, false, 'Driver not found', null, 404);
-
-        await pool.request()
-            .input('DriverID', sql.NVarChar(50), req.params.id)
-            .query('DELETE FROM Driver WHERE DriverID=@DriverID');
-
-        sendResponse(res, true, 'Driver deleted successfully');
-    } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
-    }
-});
-
-// ==========================
-// 📍 تحديث FCMToken
-router.patch('/:id/fcmtoken', async (req, res) => {
-    try {
-        const { FCMToken } = req.body;
-        const pool = await poolPromise;
-        await pool.request()
-            .input('DriverID', sql.NVarChar(50), req.params.id)
-            .input('FCMToken', sql.NVarChar(sql.MAX), FCMToken)
-            .query('UPDATE Driver SET FCMToken=@FCMToken, LastUpdated=GETDATE() WHERE DriverID=@DriverID');
-        sendResponse(res, true, 'FCMToken updated successfully');
-    } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
-    }
-});
-
-// ==========================
-// 📍 تحديث حالة السائق
-router.patch('/:id/status', async (req, res) => {
-    try {
-        const { Status, Available } = req.body;
-        const pool = await poolPromise;
-        await pool.request()
-            .input('DriverID', sql.NVarChar(50), req.params.id)
-            .input('Status', sql.NVarChar(sql.MAX), Status)
-            .input('Available', sql.Bit, Available)
-            .query('UPDATE Driver SET Status=@Status, Available=@Available, LastUpdated=GETDATE() WHERE DriverID=@DriverID');
-        sendResponse(res, true, 'Driver status updated successfully');
-    } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
-    }
-});
-
-// ==========================
-// 📍 تأكيد رقم الهاتف باستخدام OTP
-router.post('/:id/confirm-phone', async (req, res) => {
-    try {
-        const { OTP } = req.body;
-        if (!OTP) return sendResponse(res, false, 'OTP is required', null, 400);
-
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('DriverID', sql.NVarChar(50), req.params.id)
-            .query('SELECT OTP, OTPExpires, PhoneConfirmed FROM Driver WHERE DriverID=@DriverID');
-
-        if (!result.recordset.length) return sendResponse(res, false, 'Driver not found', null, 404);
-
-        const driver = result.recordset[0];
-        if (driver.PhoneConfirmed) return sendResponse(res, true, 'Phone already confirmed');
-        if (driver.OTP !== OTP) return sendResponse(res, false, 'Invalid OTP', null, 401);
-        if (new Date() > driver.OTPExpires) return sendResponse(res, false, 'OTP expired', null, 401);
-
-        await pool.request()
-            .input('DriverID', sql.NVarChar(50), req.params.id)
-            .query('UPDATE Driver SET PhoneConfirmed=1, OTP=NULL, OTPExpires=NULL, LastUpdated=GETDATE() WHERE DriverID=@DriverID');
-
-        sendResponse(res, true, 'Phone confirmed successfully');
-    } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
-    }
-});
-
-module.exports = router;
+            .query('SELECT DriverID FROM Drivers WHERE DriverID=@DriverID');
+        if (!check.recordset.length) return sendResponse(res, false, 'Driver not found', null

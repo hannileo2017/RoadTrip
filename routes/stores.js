@@ -1,5 +1,4 @@
 // routes/stores.js
-const { sendOTP } = require('../helpers/mailer');
 const express = require('express');
 const router = express.Router();
 const { poolPromise, sql } = require('../db');
@@ -11,6 +10,17 @@ const verifyToken = require('../middleware/verifyToken');
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
+
+// ==========================
+// 📍 اختبار الاتصال عند التحميل
+(async () => {
+    try {
+        const pool = await poolPromise;
+        console.log('📡 Stores route connected to DB successfully');
+    } catch (err) {
+        console.error('❌ Stores route DB connection error:', err.message);
+    }
+})();
 
 // ==========================
 // 📍 جلب كل المتاجر مع Pagination + Search
@@ -38,6 +48,7 @@ router.get('/', async (req, res) => {
             stores: result.recordset
         });
     } catch (err) {
+        console.error('❌ Error fetching stores:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });
@@ -51,7 +62,8 @@ router.post('/', async (req, res) => {
             Description, IsActive, LogoURL, Rating, Username
         } = req.body;
 
-        if (!StoreName || !Phone) return sendResponse(res, false, 'StoreName and Phone are required', null, 400);
+        if (!StoreName || !Phone)
+            return sendResponse(res, false, 'StoreName and Phone are required', null, 400);
 
         const pool = await poolPromise;
 
@@ -62,7 +74,8 @@ router.post('/', async (req, res) => {
             ? 'SELECT StoreID FROM Stores WHERE Phone=@Phone OR Email=@Email'
             : 'SELECT StoreID FROM Stores WHERE Phone=@Phone';
         const dup = await dupReq.query(dupQuery);
-        if (dup.recordset.length) return sendResponse(res, false, 'Phone or Email already registered', null, 409);
+        if (dup.recordset.length)
+            return sendResponse(res, false, 'Phone or Email already registered', null, 409);
 
         // توليد Password و OTP
         const passwordPlain = generateRandomPassword(8);
@@ -93,15 +106,13 @@ router.post('/', async (req, res) => {
                 (@StoreName, @CategoryID, @CityID, @AreaID, @Address, @Phone, @Username, @Description, @IsActive, @CreatedAt, @LogoURL, @Rating, @Password, @OTP, @OTPExpires)
             `);
 
-        // إرسال OTP عبر SMS
-        // await sendOTP(Phone, otp);
-
         if (process.env.NODE_ENV !== 'production') {
-            return sendResponse(res, true, 'Store created successfully. OTP sent via SMS.', { password: passwordPlain, otp }, 201);
+            return sendResponse(res, true, 'Store created successfully. OTP sent.', { password: passwordPlain, otp }, 201);
         }
 
-        sendResponse(res, true, 'Store created successfully. OTP sent via SMS.', null, 201);
+        sendResponse(res, true, 'Store created successfully. OTP sent.', null, 201);
     } catch (err) {
+        console.error('❌ Error adding store:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });
@@ -131,10 +142,11 @@ router.put('/:StoreID', async (req, res) => {
         });
 
         const setQuery = fields.map(f => `${f}=@${f}`).join(',');
-        await request.query(`UPDATE Stores SET ${setQuery}, CreatedAt=GETDATE() WHERE StoreID=@StoreID`);
+        await request.query(`UPDATE Stores SET ${setQuery}, LastUpdated=GETDATE() WHERE StoreID=@StoreID`);
 
         sendResponse(res, true, 'Store updated successfully');
     } catch (err) {
+        console.error('❌ Error updating store:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });
@@ -150,6 +162,7 @@ router.delete('/:StoreID', async (req, res) => {
             .query('DELETE FROM Stores WHERE StoreID=@StoreID');
         sendResponse(res, true, 'Store deleted successfully');
     } catch (err) {
+        console.error('❌ Error deleting store:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });
@@ -180,6 +193,7 @@ router.post('/login-otp', async (req, res) => {
 
         sendResponse(res, true, 'Login successful', { token });
     } catch (err) {
+        console.error('❌ Error store login OTP:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });

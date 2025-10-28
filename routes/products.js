@@ -1,26 +1,41 @@
 const express = require('express');
 const router = express.Router();
 const { poolPromise, sql } = require('../db');
-
-// دالة مساعدة للرد
-function sendResponse(res, success, message, data = null, status = 200) {
+const sendResponse = (res, success, message, data = null, status = 200) => {
     res.status(status).json({ success, message, data });
-}
+};
 
 // ==========================
-// 📍 عرض كل المنتجات
+// 📍 جلب كل المنتجات مع Pagination + Search
 router.get('/', async (req, res) => {
     try {
+        let { page = 1, limit = 20, search = '' } = req.query;
+        page = parseInt(page) || 1;
+        limit = parseInt(limit) || 20;
+        const offset = (page - 1) * limit;
+
         const pool = await poolPromise;
-        const result = await pool.request().query('SELECT * FROM Products ORDER BY LastUpdated DESC');
-        sendResponse(res, true, 'Products fetched successfully', { count: result.recordset.length, products: result.recordset });
+        const result = await pool.request()
+            .input('Search', sql.NVarChar(sql.MAX), `%${search}%`)
+            .query(`
+                SELECT * FROM Products
+                WHERE ProductName LIKE @Search
+                ORDER BY LastUpdated DESC
+                OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY
+            `);
+
+        sendResponse(res, true, 'Products fetched successfully', {
+            count: result.recordset.length,
+            products: result.recordset
+        });
     } catch (err) {
+        console.error('❌ Error fetching products:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 عرض منتج محدد
+// 📍 جلب منتج محدد
 router.get('/:ProductID', async (req, res) => {
     try {
         const pool = await poolPromise;
@@ -30,6 +45,7 @@ router.get('/:ProductID', async (req, res) => {
         if (!result.recordset.length) return sendResponse(res, false, 'Product not found', null, 404);
         sendResponse(res, true, 'Product fetched successfully', result.recordset[0]);
     } catch (err) {
+        console.error('❌ Error fetching product:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });
@@ -39,7 +55,7 @@ router.get('/:ProductID', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const { StoreID, ProductName, Category, Price, Discount, ImageURL, UnitID, Description, IsAvailable, OriginalPrice, DiscountedPrice } = req.body;
-        if (!StoreID || !ProductName || !Price) 
+        if (!StoreID || !ProductName || !Price)
             return sendResponse(res, false, 'StoreID, ProductName, and Price are required', null, 400);
 
         const pool = await poolPromise;
@@ -61,14 +77,16 @@ router.post('/', async (req, res) => {
                     VALUES 
                     (@StoreID,@ProductName,@Category,@Price,@Discount,@ImageURL,@UnitID,@Description,@IsAvailable,@LastUpdated,@OriginalPrice,@DiscountedPrice);
                     SELECT SCOPE_IDENTITY() AS ProductID`);
+
         sendResponse(res, true, 'Product created successfully', { ProductID: result.recordset[0].ProductID });
     } catch (err) {
+        console.error('❌ Error creating product:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 تحديث منتج (تحديث جزئي)
+// 📍 تحديث منتج
 router.put('/:ProductID', async (req, res) => {
     try {
         const updateData = req.body;
@@ -96,6 +114,7 @@ router.put('/:ProductID', async (req, res) => {
         await request.query(`UPDATE Products SET ${setQuery} WHERE ProductID=@ProductID`);
         sendResponse(res, true, 'Product updated successfully');
     } catch (err) {
+        console.error('❌ Error updating product:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });
@@ -110,6 +129,7 @@ router.delete('/:ProductID', async (req, res) => {
             .query('DELETE FROM Products WHERE ProductID=@ProductID');
         sendResponse(res, true, 'Product deleted successfully');
     } catch (err) {
+        console.error('❌ Error deleting product:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });
