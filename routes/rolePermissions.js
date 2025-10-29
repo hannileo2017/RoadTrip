@@ -1,64 +1,76 @@
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
+const sql = require('../db'); // db.js يستخدم postgres
 
-// عرض كل الصلاحيات
+// ==========================
+// 📍 عرض كل الصلاحيات
 router.get('/', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request().query('SELECT * FROM RolePermissions');
-        res.json(result.recordset);
+        const result = await sql`SELECT * FROM "role_permission"`;
+        res.json(result);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
-// إضافة صلاحية جديدة
+// ==========================
+// 📍 إضافة صلاحية جديدة
 router.post('/', async (req, res) => {
     const { PermissionID, RoleID, PermissionKey, CanView, CanEdit, CanDelete, CanAdd } = req.body;
     try {
-        const pool = await poolPromise;
-        await pool.request()
-            .input('PermissionID', sql.Int, PermissionID)
-            .input('RoleID', sql.Int, RoleID)
-            .input('PermissionKey', sql.NVarChar(400), PermissionKey)
-            .input('CanView', sql.Bit, CanView)
-            .input('CanEdit', sql.Bit, CanEdit)
-            .input('CanDelete', sql.Bit, CanDelete)
-            .input('CanAdd', sql.Bit, CanAdd)
-            .query(`INSERT INTO RolePermissions (PermissionID, RoleID, PermissionKey, CanView, CanEdit, CanDelete, CanAdd)
-                    VALUES (@PermissionID,@RoleID,@PermissionKey,@CanView,@CanEdit,@CanDelete,@CanAdd)`);
-        res.status(201).json({ message: '✅ تم إضافة الصلاحية بنجاح' });
+        const result = await sql`
+            INSERT INTO "role_permission"
+            ("PermissionID", "RoleID", "PermissionKey", "CanView", "CanEdit", "CanDelete", "CanAdd")
+            VALUES (${PermissionID}, ${RoleID}, ${PermissionKey}, ${CanView}, ${CanEdit}, ${CanDelete}, ${CanAdd})
+            RETURNING *
+        `;
+        res.status(201).json({ message: '✅ تم إضافة الصلاحية بنجاح', permission: result[0] });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
-// تحديث صلاحية
+// ==========================
+// 📍 تحديث صلاحية
 router.put('/:PermissionID', async (req, res) => {
     const { PermissionID } = req.params;
     const updateData = req.body;
+    const keys = Object.keys(updateData);
+    if (!keys.length) return res.status(400).json({ message: 'لا يوجد بيانات لتحديثها' });
+
     try {
-        const pool = await poolPromise;
-        const request = pool.request().input('PermissionID', sql.Int, PermissionID);
-        const fields = Object.keys(updateData);
-        fields.forEach(f => request.input(f, sql.Bit, updateData[f]));
-        const setQuery = fields.map(f => `${f}=@${f}`).join(',');
-        await request.query(`UPDATE RolePermissions SET ${setQuery} WHERE PermissionID=@PermissionID`);
-        res.json({ message: '✅ تم تحديث الصلاحية بنجاح' });
+        const setClauses = keys.map((k, idx) => `"${k}"=$${idx + 1}`).join(', ');
+        const values = keys.map(k => updateData[k]);
+
+        const result = await sql`
+            UPDATE "role_permission"
+            SET ${sql.raw(setClauses)}
+            WHERE "PermissionID"=${PermissionID}
+            RETURNING *
+        `;
+
+        if (!result.length) return res.status(404).json({ message: 'الصلاحية غير موجودة' });
+        res.json({ message: '✅ تم تحديث الصلاحية بنجاح', permission: result[0] });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 });
 
-// حذف صلاحية
+// ==========================
+// 📍 حذف صلاحية
 router.delete('/:PermissionID', async (req, res) => {
     const { PermissionID } = req.params;
     try {
-        const pool = await poolPromise;
-        await pool.request().input('PermissionID', sql.Int, PermissionID)
-            .query('DELETE FROM RolePermissions WHERE PermissionID=@PermissionID');
-        res.json({ message: '✅ تم حذف الصلاحية بنجاح' });
+        const result = await sql`
+            DELETE FROM "role_permission"
+            WHERE "PermissionID"=${PermissionID}
+            RETURNING *
+        `;
+        if (!result.length) return res.status(404).json({ message: 'الصلاحية غير موجودة' });
+        res.json({ message: '✅ تم حذف الصلاحية بنجاح', permission: result[0] });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

@@ -1,6 +1,9 @@
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { poolPromise } = require('../db');
+const sql = require('../db'); // PostgreSQL client
 
 // 🧩 دالة موحدة للردود
 function sendResponse(res, success, message, data = null, status = 200) {
@@ -15,49 +18,54 @@ function sendResponse(res, success, message, data = null, status = 200) {
 // 📍 جلب جميع المناطق مع البحث والتقسيم (Pagination + Search)
 router.get('/', async (req, res) => {
     try {
-        const { page = 1, limit = 20, search = '' } = req.query;
+        let page = parseInt(req.query.page) || 1;
+        let limit = parseInt(req.query.limit) || 20;
+        const search = req.query.search || '';
         const offset = (page - 1) * limit;
 
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('Search', `%${search}%`)
-            .query(`
-                SELECT A.*, C.CityName
-                FROM Areas A
-                LEFT JOIN Cities C ON A.CityID = C.CityID
-                WHERE A.AreaName LIKE @Search OR C.CityName LIKE @Search
-                ORDER BY C.CityName, A.AreaName
-                OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY;
-            `);
+        const result = await sql`
+            SELECT A.*, C."CityName"
+            FROM "areas" A
+            LEFT JOIN "cities" C ON A."CityID" = C."CityID"
+            WHERE A."AreaName" ILIKE ${`%${search}%`} 
+               OR C."CityName" ILIKE ${`%${search}%`}
+            ORDER BY C."CityName", A."AreaName"
+            OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY
+        `;
 
         sendResponse(res, true, 'Areas retrieved successfully', {
-            count: result.recordset.length,
-            areas: result.recordset
+            page,
+            limit,
+            count: result.length,
+            areas: result
         });
     } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
+        console.error('Error GET /areas:', err);
+        sendResponse(res, false, 'Failed to retrieve areas', null, 500);
     }
 });
 
 // 📍 جلب منطقة حسب ID
 router.get('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('AreaID', req.params.id)
-            .query(`
-                SELECT A.*, C.CityName
-                FROM Areas A
-                LEFT JOIN Cities C ON A.CityID = C.CityID
-                WHERE A.AreaID = @AreaID
-            `);
+        const AreaID = parseInt(req.params.id);
+        if (isNaN(AreaID))
+            return sendResponse(res, false, 'Invalid AreaID', null, 400);
 
-        if (result.recordset.length === 0)
-            return sendResponse(res, false, 'Area not found', null, 404);
+        const result = await sql`
+            SELECT A.*, C."CityName"
+            FROM "areas" A
+            LEFT JOIN "cities" C ON A."CityID" = C."CityID"
+            WHERE A."AreaID" = ${AreaID}
+        `;
 
-        sendResponse(res, true, 'Area retrieved successfully', result.recordset[0]);
+        if (!result.length)
+            return sendResponse(res, false, `Area with ID ${AreaID} not found`, null, 404);
+
+        sendResponse(res, true, 'Area retrieved successfully', result[0]);
     } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
+        console.error('Error GET /areas/:id', err);
+        sendResponse(res, false, 'Failed to retrieve area', null, 500);
     }
 });
 
@@ -65,77 +73,75 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const { AreaName, CityID } = req.body;
+        const cityIdNum = parseInt(CityID);
 
-        if (!AreaName || !CityID)
-            return sendResponse(res, false, 'AreaName and CityID are required', null, 400);
+        if (!AreaName || isNaN(cityIdNum))
+            return sendResponse(res, false, 'AreaName and valid CityID are required', null, 400);
 
-        const pool = await poolPromise;
-        await pool.request()
-            .input('AreaName', AreaName)
-            .input('CityID', CityID)
-            .query(`
-                INSERT INTO Areas (AreaName, CityID, CreatedAt)
-                VALUES (@AreaName, @CityID, GETDATE());
-            `);
+        await sql`
+            INSERT INTO "Areas" ("AreaName","CityID","CreatedAt")
+            VALUES (${AreaName}, ${cityIdNum}, NOW())
+        `;
 
         sendResponse(res, true, 'Area added successfully');
     } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
+        console.error('Error POST /areas:', err);
+        sendResponse(res, false, 'Failed to add area', null, 500);
     }
 });
 
 // 📍 تعديل بيانات منطقة
 router.put('/:id', async (req, res) => {
     try {
+        const AreaID = parseInt(req.params.id);
         const { AreaName, CityID } = req.body;
+        const cityIdNum = parseInt(CityID);
 
-        if (!AreaName || !CityID)
-            return sendResponse(res, false, 'AreaName and CityID are required', null, 400);
+        if (isNaN(AreaID) || !AreaName || isNaN(cityIdNum))
+            return sendResponse(res, false, 'Valid AreaID, AreaName and CityID are required', null, 400);
 
-        const pool = await poolPromise;
+        const exists = await sql`
+            SELECT * FROM "areas" WHERE "AreaID" = ${AreaID}
+        `;
 
-        // تحقق من وجود المنطقة
-        const check = await pool.request()
-            .input('AreaID', req.params.id)
-            .query('SELECT AreaID FROM Areas WHERE AreaID=@AreaID');
-        if (check.recordset.length === 0)
-            return sendResponse(res, false, 'Area not found', null, 404);
+        if (!exists.length)
+            return sendResponse(res, false, `Area with ID ${AreaID} not found`, null, 404);
 
-        await pool.request()
-            .input('AreaID', req.params.id)
-            .input('AreaName', AreaName)
-            .input('CityID', CityID)
-            .query(`
-                UPDATE Areas
-                SET AreaName=@AreaName, CityID=@CityID, UpdatedAt=GETDATE()
-                WHERE AreaID=@AreaID;
-            `);
+        await sql`
+            UPDATE "Areas"
+            SET "AreaName" = ${AreaName}, "CityID" = ${cityIdNum}, "UpdatedAt" = NOW()
+            WHERE "AreaID" = ${AreaID}
+        `;
 
         sendResponse(res, true, 'Area updated successfully');
     } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
+        console.error('Error PUT /areas/:id:', err);
+        sendResponse(res, false, 'Failed to update area', null, 500);
     }
 });
 
 // 📍 حذف منطقة
 router.delete('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
+        const AreaID = parseInt(req.params.id);
+        if (isNaN(AreaID))
+            return sendResponse(res, false, 'Invalid AreaID', null, 400);
 
-        // تحقق من وجود المنطقة قبل الحذف
-        const check = await pool.request()
-            .input('AreaID', req.params.id)
-            .query('SELECT AreaID FROM Areas WHERE AreaID=@AreaID');
-        if (check.recordset.length === 0)
-            return sendResponse(res, false, 'Area not found', null, 404);
+        const exists = await sql`
+            SELECT * FROM "areas" WHERE "AreaID" = ${AreaID}
+        `;
 
-        await pool.request()
-            .input('AreaID', req.params.id)
-            .query('DELETE FROM Areas WHERE AreaID=@AreaID');
+        if (!exists.length)
+            return sendResponse(res, false, `Area with ID ${AreaID} not found`, null, 404);
+
+        await sql`
+            DELETE FROM "areas" WHERE "AreaID" = ${AreaID}
+        `;
 
         sendResponse(res, true, 'Area deleted successfully');
     } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
+        console.error('Error DELETE /areas/:id:', err);
+        sendResponse(res, false, 'Failed to delete area', null, 500);
     }
 });
 

@@ -1,19 +1,25 @@
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
+const sql = require('../db'); // db.js يستخدم postgres
 
 // دالة مساعدة للرد
 function sendResponse(res, success, message, data = null, status = 200) {
-    res.status(status).json({ success, message, data });
+    res.status(status).json({ success, message, data, timestamp: new Date() });
 }
 
 // ==========================
 // 📍 عرض كل الجلسات
 router.get('/', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request().query('SELECT * FROM Sessions ORDER BY LoginTime DESC');
-        sendResponse(res, true, 'Sessions fetched successfully', { count: result.recordset.length, sessions: result.recordset });
+        const result = await sql`
+            SELECT *
+            FROM "sessions"
+            ORDER BY "LoginTime" DESC
+        `;
+        sendResponse(res, true, 'Sessions fetched successfully', { count: result.length, sessions: result });
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
@@ -28,17 +34,12 @@ router.post('/', async (req, res) => {
             return sendResponse(res, false, 'UserID, LoginTime, and SessionToken are required', null, 400);
         }
 
-        const pool = await poolPromise;
-        await pool.request()
-            .input('UserID', sql.Int, UserID)
-            .input('LoginTime', sql.DateTime, LoginTime)
-            .input('LogoutTime', sql.DateTime, LogoutTime || null)
-            .input('DeviceInfo', sql.NVarChar(510), DeviceInfo || null)
-            .input('SessionToken', sql.NVarChar(510), SessionToken)
-            .query(`INSERT INTO Sessions (UserID, LoginTime, LogoutTime, DeviceInfo, SessionToken)
-                    VALUES (@UserID, @LoginTime, @LogoutTime, @DeviceInfo, @SessionToken)`);
-
-        sendResponse(res, true, 'Session created successfully');
+        const result = await sql`
+            INSERT INTO "Sessions" ("UserID", "LoginTime", "LogoutTime", "DeviceInfo", "SessionToken")
+            VALUES (${UserID}, ${LoginTime}, ${LogoutTime || null}, ${DeviceInfo || null}, ${SessionToken})
+            RETURNING *
+        `;
+        sendResponse(res, true, 'Session created successfully', result[0], 201);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
@@ -50,21 +51,21 @@ router.put('/:SessionID', async (req, res) => {
     try {
         const { SessionID } = req.params;
         const updateData = req.body;
-        if (Object.keys(updateData).length === 0) return sendResponse(res, false, 'No fields to update', null, 400);
+        const keys = Object.keys(updateData);
+        if (!keys.length) return sendResponse(res, false, 'No fields to update', null, 400);
 
-        const pool = await poolPromise;
-        const request = pool.request().input('SessionID', sql.Int, SessionID);
+        const setClauses = keys.map((k, idx) => `"${k}"=$${idx + 1}`).join(', ');
+        const values = keys.map(k => updateData[k]);
 
-        Object.keys(updateData).forEach(f => {
-            const value = updateData[f];
-            const type = typeof value === 'number' ? sql.Int : sql.NVarChar;
-            request.input(f, type, value);
-        });
+        const result = await sql`
+            UPDATE "Sessions"
+            SET ${sql.raw(setClauses)}
+            WHERE "SessionID" = ${SessionID}
+            RETURNING *
+        `(...values);
 
-        const setQuery = Object.keys(updateData).map(f => `${f}=@${f}`).join(',');
-        await request.query(`UPDATE Sessions SET ${setQuery} WHERE SessionID=@SessionID`);
-
-        sendResponse(res, true, 'Session updated successfully');
+        if (!result.length) return sendResponse(res, false, 'Session not found', null, 404);
+        sendResponse(res, true, 'Session updated successfully', result[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
@@ -75,10 +76,13 @@ router.put('/:SessionID', async (req, res) => {
 router.delete('/:SessionID', async (req, res) => {
     try {
         const { SessionID } = req.params;
-        const pool = await poolPromise;
-        await pool.request().input('SessionID', sql.Int, SessionID)
-            .query('DELETE FROM Sessions WHERE SessionID=@SessionID');
-        sendResponse(res, true, 'Session deleted successfully');
+        const result = await sql`
+            DELETE FROM "sessions"
+            WHERE "SessionID" = ${SessionID}
+            RETURNING *
+        `;
+        if (!result.length) return sendResponse(res, false, 'Session not found', null, 404);
+        sendResponse(res, true, 'Session deleted successfully', result[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }

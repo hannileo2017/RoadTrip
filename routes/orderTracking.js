@@ -1,85 +1,109 @@
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
+const sql = require('../db'); // db.js يستخدم postgres
 
-// دالة مساعدة للرد
+// دالة موحدة للردود
 function sendResponse(res, success, message, data = null, status = 200) {
-    res.status(status).json({ success, message, data });
+    res.status(status).json({ success, message, data, timestamp: new Date() });
 }
 
 // ==========================
-// 📍 جلب كل سجلات التتبع
+// 📍 جلب كل تتبع الطلبات مع Pagination + فلترة
 router.get('/', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request().query('SELECT * FROM OrderTracking ORDER BY UpdatedAt DESC');
-        sendResponse(res, true, 'Order tracking records fetched successfully', { count: result.recordset.length, records: result.recordset });
+        let { page = 1, limit = 50, orderId = '', driverId = '' } = req.query;
+        page = parseInt(page); limit = parseInt(limit);
+        const offset = (page - 1) * limit;
+
+        let where = [];
+        let params = [];
+
+        if (orderId) {
+            where.push(`"OrderID" ILIKE $${params.length + 1}`);
+            params.push(`%${orderId}%`);
+        }
+        if (driverId) {
+            where.push(`"DriverID" ILIKE $${params.length + 1}`);
+            params.push(`%${driverId}%`);
+        }
+
+        const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
+
+        const result = await sql`
+            SELECT "TrackingID", "OrderID", "DriverID", "Latitude", "Longitude", "Status", "UpdatedAt"
+            FROM "order_tracking"
+            ${sql.raw(whereClause)}
+            ORDER BY "UpdatedAt" DESC
+            OFFSET ${offset} LIMIT ${limit}
+        `;
+
+        sendResponse(res, true, 'Order tracking fetched successfully', {
+            page,
+            limit,
+            count: result.length,
+            tracking: result
+        });
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 جلب سجل تتبع محدد
+// 📍 جلب سجل واحد حسب TrackingID
 router.get('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('TrackingID', sql.Int, req.params.id)
-            .query('SELECT * FROM OrderTracking WHERE TrackingID=@TrackingID');
-        if (!result.recordset.length) return sendResponse(res, false, 'Tracking record not found', null, 404);
-        sendResponse(res, true, 'Tracking record fetched successfully', result.recordset[0]);
+        const result = await sql`
+            SELECT * FROM "order_tracking" WHERE "TrackingID"=${req.params.id}
+        `;
+        if (!result.length) return sendResponse(res, false, 'Tracking record not found', null, 404);
+        sendResponse(res, true, 'Tracking record fetched successfully', result[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 إضافة سجل تتبع جديد
+// 📍 إنشاء سجل تتبع جديد
 router.post('/', async (req, res) => {
     try {
         const { OrderID, DriverID, Latitude, Longitude, Status } = req.body;
-        if (!OrderID || !DriverID || !Latitude || !Longitude || !Status)
-            return sendResponse(res, false, 'OrderID, DriverID, Latitude, Longitude, and Status are required', null, 400);
+        if (!OrderID || !DriverID) return sendResponse(res, false, 'OrderID and DriverID are required', null, 400);
 
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('OrderID', sql.NVarChar(80), OrderID)
-            .input('DriverID', sql.NVarChar(80), DriverID)
-            .input('Latitude', sql.Decimal(9,6), Latitude)
-            .input('Longitude', sql.Decimal(9,6), Longitude)
-            .input('Status', sql.NVarChar(200), Status)
-            .input('UpdatedAt', sql.DateTime, new Date())
-            .query(`INSERT INTO OrderTracking
-                    (OrderID, DriverID, Latitude, Longitude, Status, UpdatedAt)
-                    VALUES (@OrderID, @DriverID, @Latitude, @Longitude, @Status, @UpdatedAt);
-                    SELECT SCOPE_IDENTITY() AS TrackingID`);
-        sendResponse(res, true, 'Tracking record created successfully', { TrackingID: result.recordset[0].TrackingID });
+        const result = await sql`
+            INSERT INTO "order_tracking" 
+            ("OrderID", "DriverID", "Latitude", "Longitude", "Status", "UpdatedAt")
+            VALUES (${OrderID}, ${DriverID}, ${Latitude || null}, ${Longitude || null}, ${Status || null}, NOW())
+            RETURNING *
+        `;
+        sendResponse(res, true, 'Tracking record created successfully', result[0], 201);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 تحديث سجل تتبع (تحديث جزئي)
+// 📍 تحديث سجل تتبع
 router.put('/:id', async (req, res) => {
     try {
-        const updateData = req.body;
-        const keys = Object.keys(updateData);
+        const updates = req.body;
+        const keys = Object.keys(updates);
         if (!keys.length) return sendResponse(res, false, 'Nothing to update', null, 400);
 
-        const pool = await poolPromise;
-        const request = pool.request().input('TrackingID', sql.Int, req.params.id);
+        // بناء SET dynamically
+        const setClauses = keys.map((k, idx) => `"${k}"=$${idx + 1}`).join(', ');
+        const values = keys.map(k => updates[k]);
 
-        keys.forEach(k => {
-            let type = sql.NVarChar;
-            if (['Latitude','Longitude'].includes(k)) type = sql.Decimal(9,6);
-            request.input(k, type, updateData[k]);
-        });
-
-        const setQuery = keys.map(k => `${k}=@${k}`).join(', ');
-        await request.query(`UPDATE OrderTracking SET ${setQuery}, UpdatedAt=GETDATE() WHERE TrackingID=@TrackingID`);
-        sendResponse(res, true, 'Tracking record updated successfully');
+        const result = await sql`
+            UPDATE "order_tracking"
+            SET ${sql.raw(setClauses)}, "UpdatedAt"=NOW()
+            WHERE "TrackingID"=${req.params.id}
+            RETURNING *
+        `;
+        if (!result.length) return sendResponse(res, false, 'Tracking record not found', null, 404);
+        sendResponse(res, true, 'Tracking record updated successfully', result[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
@@ -89,11 +113,13 @@ router.put('/:id', async (req, res) => {
 // 📍 حذف سجل تتبع
 router.delete('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        await pool.request()
-            .input('TrackingID', sql.Int, req.params.id)
-            .query('DELETE FROM OrderTracking WHERE TrackingID=@TrackingID');
-        sendResponse(res, true, 'Tracking record deleted successfully');
+        const result = await sql`
+            DELETE FROM "order_tracking"
+            WHERE "TrackingID"=${req.params.id}
+            RETURNING *
+        `;
+        if (!result.length) return sendResponse(res, false, 'Tracking record not found', null, 404);
+        sendResponse(res, true, 'Tracking record deleted successfully', result[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }

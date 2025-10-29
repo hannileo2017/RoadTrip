@@ -1,6 +1,9 @@
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { poolPromise } = require('../db');
+const sql = require('../db'); // هنا db.js تستخدم postgres
 
 // 🧩 دالة مساعدة لتوحيد الردود
 function sendResponse(res, success, message, data = null, status = 200) {
@@ -16,62 +19,65 @@ function sendResponse(res, success, message, data = null, status = 200) {
 router.get('/', async (req, res) => {
     try {
         const { search = '' } = req.query;
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('Search', `%${search}%`)
-            .query(`
-                SELECT * FROM AppSettings
-                WHERE SettingName LIKE @Search OR SettingValue LIKE @Search
-                ORDER BY UpdatedAt DESC;
-            `);
-        sendResponse(res, true, 'Settings retrieved successfully', result.recordset);
+        const result = await sql`
+            SELECT * FROM appsettings
+            WHERE SettingName ILIKE ${`%${search}%`} 
+               OR SettingValue ILIKE ${`%${search}%`}
+            ORDER BY "UpdatedAt" DESC
+        `;
+        sendResponse(res, true, 'Settings retrieved successfully', result);
     } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
+        console.error('Error GET /appSettings:', err);
+        sendResponse(res, false, 'Failed to retrieve settings', null, 500);
     }
 });
 
 // 📍 جلب إعداد واحد حسب الاسم
 router.get('/:name', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('SettingName', req.params.name)
-            .query('SELECT * FROM AppSettings WHERE SettingName=@SettingName');
+        const result = await sql`
+            SELECT * FROM appsettings
+            WHERE "SettingName" = ${req.params.name}
+        `;
+        if (!result.length)
+            return sendResponse(res, false, `Setting "${req.params.name}" not found`, null, 404);
 
-        if (result.recordset.length === 0)
-            return sendResponse(res, false, 'Setting not found', null, 404);
-
-        sendResponse(res, true, 'Setting retrieved successfully', result.recordset[0]);
+        sendResponse(res, true, 'Setting retrieved successfully', result[0]);
     } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
+        console.error('Error GET /appSettings/:name', err);
+        sendResponse(res, false, 'Failed to retrieve setting', null, 500);
     }
 });
 
-// 📍 إضافة أو تحديث إعداد (باستخدام MERGE)
+// 📍 إضافة أو تحديث إعداد
 router.post('/', async (req, res) => {
     try {
         const { SettingName, SettingValue } = req.body;
         if (!SettingName)
             return sendResponse(res, false, 'SettingName is required', null, 400);
 
-        const pool = await poolPromise;
-        await pool.request()
-            .input('SettingName', SettingName)
-            .input('SettingValue', SettingValue || '')
-            .query(`
-                MERGE AppSettings AS target
-                USING (SELECT @SettingName AS SettingName) AS source
-                ON target.SettingName = source.SettingName
-                WHEN MATCHED THEN 
-                    UPDATE SET SettingValue = @SettingValue, UpdatedAt = GETDATE()
-                WHEN NOT MATCHED THEN 
-                    INSERT (SettingName, SettingValue, UpdatedAt) 
-                    VALUES (@SettingName, @SettingValue, GETDATE());
-            `);
+        // تحقق إذا الإعداد موجود
+        const exists = await sql`
+            SELECT * FROM appsettings WHERE "SettingName" = ${SettingName}
+        `;
+
+        if (exists.length) {
+            await sql`
+                UPDATE AppSettings
+                SET "SettingValue" = ${SettingValue || ''}, "UpdatedAt" = NOW()
+                WHERE "SettingName" = ${SettingName}
+            `;
+        } else {
+            await sql`
+                INSERT INTO AppSettings("SettingName","SettingValue","UpdatedAt")
+                VALUES(${SettingName}, ${SettingValue || ''}, NOW())
+            `;
+        }
 
         sendResponse(res, true, 'Setting added or updated successfully');
     } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
+        console.error('Error POST /appSettings', err);
+        sendResponse(res, false, 'Failed to add/update setting', null, 500);
     }
 });
 
@@ -79,50 +85,51 @@ router.post('/', async (req, res) => {
 router.patch('/:name', async (req, res) => {
     try {
         const { SettingValue } = req.body;
-        const pool = await poolPromise;
+        if (SettingValue === undefined)
+            return sendResponse(res, false, 'SettingValue is required', null, 400);
 
-        const check = await pool.request()
-            .input('SettingName', req.params.name)
-            .query('SELECT SettingName FROM AppSettings WHERE SettingName=@SettingName');
-        if (check.recordset.length === 0)
-            return sendResponse(res, false, 'Setting not found', null, 404);
+        const exists = await sql`
+            SELECT * FROM appsettings WHERE "SettingName" = ${req.params.name}
+        `;
 
-        await pool.request()
-            .input('SettingName', req.params.name)
-            .input('SettingValue', SettingValue)
-            .query('UPDATE AppSettings SET SettingValue=@SettingValue, UpdatedAt=GETDATE() WHERE SettingName=@SettingName');
+        if (!exists.length)
+            return sendResponse(res, false, `Setting "${req.params.name}" not found`, null, 404);
+
+        await sql`
+            UPDATE AppSettings
+            SET "SettingValue" = ${SettingValue}, "UpdatedAt" = NOW()
+            WHERE "SettingName" = ${req.params.name}
+        `;
 
         sendResponse(res, true, 'Setting value updated successfully');
     } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
+        console.error('Error PATCH /appSettings/:name', err);
+        sendResponse(res, false, 'Failed to update setting', null, 500);
     }
 });
 
 // 📍 حذف إعداد حسب الاسم أو ID
 router.delete('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
+        const id = req.params.id;
 
-        // تحقق من وجود الإعداد
-        const check = await pool.request()
-            .input('id', req.params.id)
-            .query(`
-                SELECT * FROM AppSettings 
-                WHERE SettingID = @id OR SettingName = @id
-            `);
-        if (check.recordset.length === 0)
-            return sendResponse(res, false, 'Setting not found', null, 404);
+        const exists = await sql`
+            SELECT * FROM appsettings 
+            WHERE "SettingID"::text = ${id} OR "SettingName" = ${id}
+        `;
 
-        await pool.request()
-            .input('id', req.params.id)
-            .query(`
-                DELETE FROM AppSettings 
-                WHERE SettingID = @id OR SettingName = @id
-            `);
+        if (!exists.length)
+            return sendResponse(res, false, `Setting "${id}" not found`, null, 404);
+
+        await sql`
+            DELETE FROM appsettings 
+            WHERE "SettingID"::text = ${id} OR "SettingName" = ${id}
+        `;
 
         sendResponse(res, true, 'Setting deleted successfully');
     } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
+        console.error('Error DELETE /appSettings/:id', err);
+        sendResponse(res, false, 'Failed to delete setting', null, 500);
     }
 });
 

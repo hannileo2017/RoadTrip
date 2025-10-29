@@ -1,6 +1,11 @@
+// routes/deliveryZones.js
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
+const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config();
+
+// ✅ استخدم Service Role Key للخادم
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
 // دالة مساعدة للرد
 function sendResponse(res, success, message, data = null, status = 200) {
@@ -8,93 +13,119 @@ function sendResponse(res, success, message, data = null, status = 200) {
 }
 
 // ==========================
-// 📍 جلب كل مناطق التوصيل
+// جلب كل مناطق التوصيل مع بحث + Pagination
 router.get('/', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .query('SELECT dz.ZoneID, dz.ZoneName, dz.CityID, c.CityName FROM DeliveryZones dz LEFT JOIN Cities c ON dz.CityID=c.CityID');
-        sendResponse(res, true, 'Delivery zones fetched successfully', result.recordset);
+        let { page = 1, limit = 50, search = '' } = req.query;
+        page = parseInt(page) || 1;
+        limit = parseInt(limit) || 50;
+        const from = (page - 1) * limit;
+        const to = from + limit - 1;
+
+        let query = supabase
+            .from('deliveryzones')
+            .select('ZoneID, ZoneName, CityID, Cities!inner(CityName)')
+            .range(from, to)
+            .orders('ZoneName', { ascending: true });
+
+        if (search) {
+            query = query.ilike('ZoneName', `%${search}%`);
+        }
+
+        const { data, error } = await query;
+
+        if (error) throw error;
+
+        sendResponse(res, true, 'Delivery zones fetched successfully', {
+            page,
+            limit,
+            count: data.length,
+            zones: data
+        });
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 جلب منطقة توصيل حسب ID
+// جلب منطقة توصيل حسب ID
 router.get('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('ZoneID', sql.Int, req.params.id)
-            .query('SELECT * FROM DeliveryZones WHERE ZoneID=@ZoneID');
+        const { data, error } = await supabase
+            .from('deliveryzones')
+            .select('ZoneID, ZoneName, CityID, Cities!inner(CityName)')
+            .eq('ZoneID', req.params.id)
+            .single();
 
-        if (!result.recordset.length) return sendResponse(res, false, 'Delivery zone not found', null, 404);
+        if (error) return sendResponse(res, false, 'Delivery zone not found', null, 404);
 
-        sendResponse(res, true, 'Delivery zone fetched', result.recordset[0]);
+        sendResponse(res, true, 'Delivery zone fetched', data);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 إضافة منطقة توصيل جديدة
+// إضافة منطقة توصيل جديدة
 router.post('/', async (req, res) => {
     try {
         const { ZoneName, CityID } = req.body;
         if (!ZoneName || !CityID) return sendResponse(res, false, 'ZoneName and CityID are required', null, 400);
 
-        const pool = await poolPromise;
-        await pool.request()
-            .input('ZoneName', sql.NVarChar(200), ZoneName)
-            .input('CityID', sql.Int, CityID)
-            .query(`INSERT INTO DeliveryZones (ZoneName, CityID, CreatedAt) VALUES (@ZoneName, @CityID, GETDATE())`);
+        const { data, error } = await supabase
+            .from('deliveryzones')
+            .insert({ ZoneName, CityID, CreatedAt: new Date() })
+            .select()
+            .single();
 
-        sendResponse(res, true, 'Delivery zone added successfully');
+        if (error) throw error;
+
+        sendResponse(res, true, 'Delivery zone added successfully', data, 201);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 تحديث منطقة توصيل
+// تحديث منطقة توصيل
 router.put('/:id', async (req, res) => {
     try {
         const { ZoneName, CityID } = req.body;
-        const { id } = req.params;
-
         if (!ZoneName && !CityID) return sendResponse(res, false, 'Nothing to update', null, 400);
 
-        const pool = await poolPromise;
-        const request = pool.request().input('ZoneID', sql.Int, id);
+        const updates = { UpdatedAt: new Date() };
+        if (ZoneName) updates.ZoneName = ZoneName;
+        if (CityID) updates.CityID = CityID;
 
-        let setQuery = [];
-        if (ZoneName) {
-            request.input('ZoneName', sql.NVarChar(200), ZoneName);
-            setQuery.push('ZoneName=@ZoneName');
-        }
-        if (CityID) {
-            request.input('CityID', sql.Int, CityID);
-            setQuery.push('CityID=@CityID');
-        }
+        const { data, error } = await supabase
+            .from('deliveryzones')
+            .update(updates)
+            .eq('ZoneID', req.params.id)
+            .select()
+            .single();
 
-        await request.query(`UPDATE DeliveryZones SET ${setQuery.join(', ')}, UpdatedAt=GETDATE() WHERE ZoneID=@ZoneID`);
-        sendResponse(res, true, 'Delivery zone updated successfully');
+        if (error) return sendResponse(res, false, 'Delivery zone not found', null, 404);
+
+        sendResponse(res, true, 'Delivery zone updated successfully', data);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 حذف منطقة توصيل
+// حذف منطقة توصيل
 router.delete('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        await pool.request()
-            .input('ZoneID', sql.Int, req.params.id)
-            .query('DELETE FROM DeliveryZones WHERE ZoneID=@ZoneID');
+        const { data, error } = await supabase
+            .from('deliveryzones')
+            .delete()
+            .eq('ZoneID', req.params.id)
+            .select()
+            .single();
 
-        sendResponse(res, true, 'Delivery zone deleted successfully');
+        if (error) return sendResponse(res, false, 'Delivery zone not found', null, 404);
+
+        sendResponse(res, true, 'Delivery zone deleted successfully', data);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }

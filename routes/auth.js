@@ -1,6 +1,8 @@
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
+const sql = require('../db'); // PostgreSQL client
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -20,46 +22,56 @@ function sendResponse(res, success, message, data = null, status = 200) {
 // ==========================
 // تسجيل مستخدم جديد
 router.post('/register', async (req, res) => {
-    const { FullName, UserName, Email, Phone, Password, UserType } = req.body;
     try {
-        const pool = await poolPromise;
+        const { FullName, UserName, Email, Phone, Password, UserType } = req.body;
+        if (!FullName || !UserName || !Email || !Phone || !Password || !UserType)
+            return sendResponse(res, false, 'All fields are required', null, 400);
+
         const hashedPassword = await bcrypt.hash(Password, 10);
-        await pool.request()
-            .input('FullName', sql.NVarChar(100), FullName)
-            .input('UserName', sql.NVarChar(50), UserName)
-            .input('Email', sql.NVarChar(100), Email)
-            .input('Phone', sql.NVarChar(20), Phone)
-            .input('Password', sql.NVarChar(100), hashedPassword)
-            .input('UserType', sql.NVarChar(50), UserType)
-            .query(`INSERT INTO Users (FullName, UserName, Email, Phone, Password, UserType) 
-                    VALUES (@FullName, @UserName, @Email, @Phone, @Password, @UserType)`);
+
+        await sql`
+            INSERT INTO "Users" ("FullName","UserName","Email","Phone","Password","UserType")
+            VALUES (${FullName}, ${UserName}, ${Email}, ${Phone}, ${hashedPassword}, ${UserType})
+        `;
 
         sendResponse(res, true, 'User registered successfully');
     } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
+        console.error('Error POST /auth/register:', err);
+        sendResponse(res, false, 'Failed to register user', null, 500);
     }
 });
 
 // ==========================
 // تسجيل دخول
 router.post('/login', async (req, res) => {
-    const { UserName, Password } = req.body;
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('UserName', sql.NVarChar(50), UserName)
-            .query('SELECT * FROM Users WHERE UserName=@UserName');
-        
-        const user = result.recordset[0];
-        if (!user) return sendResponse(res, false, 'User not found', null, 400);
+        const { UserName, Password } = req.body;
+        if (!UserName || !Password)
+            return sendResponse(res, false, 'UserName and Password are required', null, 400);
+
+        const users = await sql`
+            SELECT * FROM "users" WHERE "UserName" = ${UserName}
+        `;
+
+        const user = users[0];
+        if (!user) return sendResponse(res, false, 'User not found', null, 404);
 
         const validPass = await bcrypt.compare(Password, user.Password);
-        if (!validPass) return sendResponse(res, false, 'Invalid password', null, 400);
+        if (!validPass) return sendResponse(res, false, 'Invalid password', null, 401);
 
-        const token = jwt.sign({ id: user.UserID, type: user.UserType }, JWT_SECRET, { expiresIn: '7d' });
-        sendResponse(res, true, 'Login successful', { token, user });
+        const token = jwt.sign(
+            { id: user.UserID, type: user.UserType },
+            JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+
+        // لا ترسل كلمة المرور مع البيانات
+        const { Password: _, ...userWithoutPassword } = user;
+
+        sendResponse(res, true, 'Login successful', { token, user: userWithoutPassword });
     } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
+        console.error('Error POST /auth/login:', err);
+        sendResponse(res, false, 'Failed to login', null, 500);
     }
 });
 

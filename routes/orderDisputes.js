@@ -1,104 +1,127 @@
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
+const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config();
 
-// دالة مساعدة للرد
+// استخدم Service Role Key لضمان عمل جميع العمليات CRUD
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+
+// دالة موحدة للرد مع طابع زمني
 function sendResponse(res, success, message, data = null, status = 200) {
-    res.status(status).json({ success, message, data });
+    return res.status(status).json({ success, message, timestamp: new Date(), data });
 }
 
 // ==========================
-// 📍 جلب كل شكاوى الطلبات
+// جلب كل الشكاوى مع Pagination + فلترة Status
 router.get('/', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .query('SELECT * FROM OrderDisputes ORDER BY CreatedAt DESC');
-        sendResponse(res, true, 'Order disputes fetched successfully', result.recordset);
+        let { page = 1, limit = 50, status = '' } = req.query;
+        page = parseInt(page);
+        limit = parseInt(limit);
+        const from = (page - 1) * limit;
+        const to = from + limit - 1;
+
+        let query = supabase
+            .from('orderdisputes')
+            .select('*')
+            .orders('CreatedAt', { ascending: false })
+            .range(from, to);
+
+        if (status) query = query.eq('Status', status);
+
+        const { data, error } = await query;
+        if (error) throw error;
+
+        sendResponse(res, true, 'Order disputes fetched successfully', {
+            page,
+            limit,
+            count: data.length,
+            disputes: data
+        });
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 جلب شكوى حسب ID
+// جلب شكوى حسب DisputeID
 router.get('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('DisputeID', sql.Int, req.params.id)
-            .query('SELECT * FROM OrderDisputes WHERE DisputeID=@DisputeID');
+        const { data, error } = await supabase
+            .from('orderdisputes')
+            .select('*')
+            .eq('DisputeID', parseInt(req.params.id))
+            .single();
 
-        if (!result.recordset.length) return sendResponse(res, false, 'Dispute not found', null, 404);
-
-        sendResponse(res, true, 'Dispute fetched', result.recordset[0]);
+        if (error) return sendResponse(res, false, 'Dispute not found', null, 404);
+        sendResponse(res, true, 'Dispute fetched successfully', data);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 إنشاء شكوى جديدة
+// إنشاء شكوى جديدة
 router.post('/', async (req, res) => {
+    const { OrderID, CustomerID, Description, Status } = req.body;
+    if (!OrderID || !CustomerID || !Description) 
+        return sendResponse(res, false, 'OrderID, CustomerID, and Description are required', null, 400);
+
     try {
-        const { OrderID, CustomerID, Description, Status } = req.body;
-        if (!OrderID || !CustomerID || !Description) 
-            return sendResponse(res, false, 'OrderID, CustomerID, and Description are required', null, 400);
+        const { data, error } = await supabase
+            .from('orderdisputes')
+            .insert({
+                OrderID,
+                CustomerID,
+                Description,
+                Status: Status || 'Pending',
+                CreatedAt: new Date(),
+                ResolvedAt: null
+            })
+            .select()
+            .single();
 
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('OrderID', sql.NVarChar(80), OrderID)
-            .input('CustomerID', sql.Int, CustomerID)
-            .input('Description', sql.NVarChar(sql.MAX), Description)
-            .input('Status', sql.NVarChar(100), Status || 'Pending')
-            .input('CreatedAt', sql.DateTime, new Date())
-            .input('ResolvedAt', sql.DateTime, null)
-            .query(`INSERT INTO OrderDisputes (OrderID, CustomerID, Description, Status, CreatedAt, ResolvedAt)
-                    VALUES (@OrderID, @CustomerID, @Description, @Status, @CreatedAt, @ResolvedAt);
-                    SELECT SCOPE_IDENTITY() AS DisputeID`);
-
-        sendResponse(res, true, 'Dispute created successfully', { DisputeID: result.recordset[0].DisputeID });
+        if (error) throw error;
+        sendResponse(res, true, 'Dispute created successfully', data, 201);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 تحديث شكوى
+// تحديث شكوى
 router.put('/:id', async (req, res) => {
+    const updates = { ...req.body };
+    if (!Object.keys(updates).length) return sendResponse(res, false, 'Nothing to update', null, 400);
+
     try {
-        const updateData = req.body;
-        const keys = Object.keys(updateData);
-        if (!keys.length) return sendResponse(res, false, 'Nothing to update', null, 400);
+        const { data, error } = await supabase
+            .from('orderdisputes')
+            .update({ ...updates, UpdatedAt: new Date() })
+            .eq('DisputeID', parseInt(req.params.id))
+            .select()
+            .single();
 
-        const pool = await poolPromise;
-        const request = pool.request().input('DisputeID', sql.Int, req.params.id);
-
-        keys.forEach(k => {
-            let type = sql.NVarChar;
-            if (['CustomerID'].includes(k)) type = sql.Int;
-            if (['ResolvedAt'].includes(k)) type = sql.DateTime;
-            request.input(k, type, updateData[k]);
-        });
-
-        const setQuery = keys.map(k => `${k}=@${k}`).join(', ');
-        await request.query(`UPDATE OrderDisputes SET ${setQuery}, UpdatedAt=GETDATE() WHERE DisputeID=@DisputeID`);
-
-        sendResponse(res, true, 'Dispute updated successfully');
+        if (error) return sendResponse(res, false, 'Dispute not found', null, 404);
+        sendResponse(res, true, 'Dispute updated successfully', data);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 حذف شكوى
+// حذف شكوى
 router.delete('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        await pool.request()
-            .input('DisputeID', sql.Int, req.params.id)
-            .query('DELETE FROM OrderDisputes WHERE DisputeID=@DisputeID');
-        sendResponse(res, true, 'Dispute deleted successfully');
+        const { data, error } = await supabase
+            .from('orderdisputes')
+            .delete()
+            .eq('DisputeID', parseInt(req.params.id))
+            .select()
+            .single();
+
+        if (error) return sendResponse(res, false, 'Dispute not found', null, 404);
+        sendResponse(res, true, 'Dispute deleted successfully', data);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }

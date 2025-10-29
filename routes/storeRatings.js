@@ -1,64 +1,86 @@
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
+const sql = require('../db'); // db.js يستخدم postgres
 
-// عرض كل تقييمات المتاجر
+// دالة مساعدة للرد
+function sendResponse(res, success, message, data = null, status = 200) {
+    res.status(status).json({ success, message, data, timestamp: new Date() });
+}
+
+// ==========================
+// 📍 عرض كل تقييمات المتاجر
 router.get('/', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request().query('SELECT * FROM StoreRatings');
-        res.json(result.recordset);
+        const result = await sql`SELECT * FROM "store_rating" ORDER BY "RatedAt" DESC`;
+        sendResponse(res, true, 'Store ratings fetched successfully', { count: result.length, ratings: result });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
-// إضافة تقييم جديد
+// ==========================
+// 📍 إضافة تقييم جديد
 router.post('/', async (req, res) => {
-    const { RatingID, StoreID, CustomerID, Rating, Comment } = req.body;
     try {
-        const pool = await poolPromise;
-        await pool.request()
-            .input('RatingID', sql.Int, RatingID)
-            .input('StoreID', sql.Int, StoreID)
-            .input('CustomerID', sql.Int, CustomerID)
-            .input('Rating', sql.Int, Rating)
-            .input('Comment', sql.NVarChar(510), Comment)
-            .query(`INSERT INTO StoreRatings (RatingID, StoreID, CustomerID, Rating, Comment, RatedAt)
-                    VALUES (@RatingID,@StoreID,@CustomerID,@Rating,@Comment,GETDATE())`);
-        res.status(201).json({ message: '✅ تم إضافة تقييم المتجر بنجاح' });
+        const { StoreID, CustomerID, Rating, Comment } = req.body;
+        if (!StoreID || !CustomerID || !Rating) {
+            return sendResponse(res, false, 'StoreID, CustomerID, and Rating are required', null, 400);
+        }
+
+        const result = await sql`
+            INSERT INTO "store_rating" ("StoreID", "CustomerID", "Rating", "Comment", "RatedAt")
+            VALUES (${StoreID}, ${CustomerID}, ${Rating}, ${Comment || null}, NOW())
+            RETURNING *
+        `;
+        sendResponse(res, true, 'Store rating created successfully', result[0], 201);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
-// تحديث تقييم
+// ==========================
+// 📍 تحديث تقييم
 router.put('/:RatingID', async (req, res) => {
-    const { RatingID } = req.params;
-    const updateData = req.body;
     try {
-        const pool = await poolPromise;
-        const request = pool.request().input('RatingID', sql.Int, RatingID);
-        const fields = Object.keys(updateData);
-        fields.forEach(f => request.input(f, sql.NVarChar, updateData[f]));
-        const setQuery = fields.map(f => `${f}=@${f}`).join(',');
-        await request.query(`UPDATE StoreRatings SET ${setQuery} WHERE RatingID=@RatingID`);
-        res.json({ message: '✅ تم تحديث تقييم المتجر بنجاح' });
+        const { RatingID } = req.params;
+        const updateData = req.body;
+        const keys = Object.keys(updateData);
+        if (!keys.length) return sendResponse(res, false, 'Nothing to update', null, 400);
+
+        const setClauses = keys.map((k, idx) => `"${k}"=$${idx + 1}`).join(', ');
+        const values = keys.map(k => updateData[k]);
+
+        const result = await sql`
+            UPDATE "store_rating"
+            SET ${sql.raw(setClauses)}
+            WHERE "RatingID" = ${RatingID}
+            RETURNING *
+        `(...values);
+
+        if (!result.length) return sendResponse(res, false, 'Rating not found', null, 404);
+        sendResponse(res, true, 'Store rating updated successfully', result[0]);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
-// حذف تقييم
+// ==========================
+// 📍 حذف تقييم
 router.delete('/:RatingID', async (req, res) => {
-    const { RatingID } = req.params;
     try {
-        const pool = await poolPromise;
-        await pool.request().input('RatingID', sql.Int, RatingID)
-            .query('DELETE FROM StoreRatings WHERE RatingID=@RatingID');
-        res.json({ message: '✅ تم حذف تقييم المتجر بنجاح' });
+        const { RatingID } = req.params;
+        const result = await sql`
+            DELETE FROM "store_rating"
+            WHERE "RatingID" = ${RatingID}
+            RETURNING *
+        `;
+        if (!result.length) return sendResponse(res, false, 'Rating not found', null, 404);
+        sendResponse(res, true, 'Store rating deleted successfully', result[0]);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 

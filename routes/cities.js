@@ -1,140 +1,109 @@
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { poolPromise } = require('../db');
+const sql = require('../db'); // PostgreSQL client
 
-// 🧩 دالة مساعدة موحدة للرد
+// دالة موحدة للرد
 function sendResponse(res, success, message, data = null, status = 200) {
-  return res.status(status).json({
-    success,
-    message,
-    timestamp: new Date(),
-    data
-  });
+    return res.status(status).json({
+        success,
+        message,
+        timestamp: new Date(),
+        data
+    });
 }
 
-// 📍 جلب جميع المدن (مع بحث + Pagination)
+// 📍 جلب جميع المدن مع البحث + Pagination
 router.get('/', async (req, res) => {
-  try {
-    const { page = 1, limit = 20, search = '' } = req.query;
-    const offset = (page - 1) * limit;
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+        const search = req.query.search ? req.query.search.trim() : '';
+        const offset = (page - 1) * limit;
 
-    const pool = await poolPromise;
-    const request = pool.request();
-    let whereClause = '';
+        let query = `SELECT "CityID", "CityName", "CreatedAt" FROM "cities"`;
+        if (search) query += ` WHERE "CityName" ILIKE ${'%' + search + '%'}`;
+        query += ` ORDER BY "CityName" ASC LIMIT ${limit} OFFSET ${offset}`;
 
-    if (search) {
-      request.input('Search', `%${search}%`);
-      whereClause = 'WHERE CityName LIKE @Search';
+        const cities = await sql(query);
+
+        sendResponse(res, true, 'Cities retrieved successfully', {
+            page,
+            limit,
+            count: cities.length,
+            cities
+        });
+    } catch (err) {
+        console.error('Error GET /cities:', err);
+        sendResponse(res, false, 'Failed to retrieve cities', null, 500);
     }
-
-    const query = `
-      SELECT CityID, CityName, CreatedAt
-      FROM Cities
-      ${whereClause}
-      ORDER BY CityName ASC
-      OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY;
-    `;
-
-    const result = await request.query(query);
-    sendResponse(res, true, 'Cities retrieved successfully', {
-      count: result.recordset.length,
-      cities: result.recordset
-    });
-  } catch (err) {
-    sendResponse(res, false, err.message, null, 500);
-  }
 });
 
 // 📍 إضافة مدينة جديدة
 router.post('/', async (req, res) => {
-  try {
-    const { CityName } = req.body;
+    try {
+        const cityName = req.body.CityName?.trim();
+        if (!cityName) return sendResponse(res, false, 'CityName is required', null, 400);
 
-    if (!CityName || CityName.trim() === '') {
-      return sendResponse(res, false, 'CityName is required', null, 400);
+        const check = await sql`SELECT "CityID" FROM "cities" WHERE "CityName" = ${cityName}`;
+        if (check.length > 0)
+            return sendResponse(res, false, 'City already exists', null, 409);
+
+        await sql`INSERT INTO "Cities" ("CityName", "CreatedAt") VALUES (${cityName}, NOW())`;
+
+        sendResponse(res, true, 'City added successfully');
+    } catch (err) {
+        console.error('Error POST /cities:', err);
+        sendResponse(res, false, 'Failed to add city', null, 500);
     }
-
-    const pool = await poolPromise;
-    const request = pool.request().input('CityName', CityName.trim());
-
-    // 🔍 تحقق من التكرار
-    const check = await request.query('SELECT CityID FROM Cities WHERE CityName=@CityName');
-    if (check.recordset.length > 0) {
-      return sendResponse(res, false, 'City already exists', null, 409);
-    }
-
-    await pool.request()
-      .input('CityName', CityName.trim())
-      .query('INSERT INTO Cities (CityName, CreatedAt) VALUES (@CityName, GETDATE())');
-
-    sendResponse(res, true, 'City added successfully');
-  } catch (err) {
-    sendResponse(res, false, err.message, null, 500);
-  }
 });
 
-// 📍 تعديل مدينة موجودة
+// 📍 تعديل مدينة
 router.put('/:id', async (req, res) => {
-  try {
-    const { CityName } = req.body;
-    const { id } = req.params;
+    try {
+        const cityID = parseInt(req.params.id);
+        const cityName = req.body.CityName?.trim();
 
-    if (!CityName || CityName.trim() === '') {
-      return sendResponse(res, false, 'CityName is required', null, 400);
+        if (isNaN(cityID)) return sendResponse(res, false, 'Invalid CityID', null, 400);
+        if (!cityName) return sendResponse(res, false, 'CityName is required', null, 400);
+
+        const check = await sql`SELECT "CityID" FROM "cities" WHERE "CityID" = ${cityID}`;
+        if (check.length === 0) return sendResponse(res, false, 'City not found', null, 404);
+
+        const dupCheck = await sql`SELECT "CityID" FROM "cities" WHERE "CityName" = ${cityName} AND "CityID" <> ${cityID}`;
+        if (dupCheck.length > 0) return sendResponse(res, false, 'Another city with this name already exists', null, 409);
+
+        await sql`UPDATE "Cities" SET "CityName" = ${cityName}, "UpdatedAt" = NOW() WHERE "CityID" = ${cityID}`;
+
+        sendResponse(res, true, 'City updated successfully');
+    } catch (err) {
+        console.error('Error PUT /cities/:id:', err);
+        sendResponse(res, false, 'Failed to update city', null, 500);
     }
-
-    const pool = await poolPromise;
-    const request = pool.request().input('CityID', id);
-
-    // تحقق من وجود المدينة
-    const check = await request.query('SELECT * FROM Cities WHERE CityID=@CityID');
-    if (check.recordset.length === 0) {
-      return sendResponse(res, false, 'City not found', null, 404);
-    }
-
-    // تحقق من وجود اسم مكرر
-    const dupCheck = await pool.request()
-      .input('CityName', CityName.trim())
-      .query('SELECT CityID FROM Cities WHERE CityName=@CityName AND CityID<>@CityID');
-
-    if (dupCheck.recordset.length > 0) {
-      return sendResponse(res, false, 'Another city with this name already exists', null, 409);
-    }
-
-    await pool.request()
-      .input('CityID', id)
-      .input('CityName', CityName.trim())
-      .query('UPDATE Cities SET CityName=@CityName, UpdatedAt=GETDATE() WHERE CityID=@CityID');
-
-    sendResponse(res, true, 'City updated successfully');
-  } catch (err) {
-    sendResponse(res, false, err.message, null, 500);
-  }
 });
 
 // 📍 حذف مدينة
 router.delete('/:id', async (req, res) => {
-  try {
-    const pool = await poolPromise;
-    const { id } = req.params;
+    try {
+        const cityID = parseInt(req.params.id);
+        if (isNaN(cityID)) return sendResponse(res, false, 'Invalid CityID', null, 400);
 
-    // تحقق من وجود المدينة
-    const check = await pool.request().input('CityID', id).query('SELECT * FROM Cities WHERE CityID=@CityID');
-    if (check.recordset.length === 0) {
-      return sendResponse(res, false, 'City not found', null, 404);
+        const check = await sql`SELECT "CityID" FROM "cities" WHERE "CityID" = ${cityID}`;
+        if (check.length === 0) return sendResponse(res, false, 'City not found', null, 404);
+
+        const areaCheck = await sql`SELECT COUNT(*) AS total FROM "areas" WHERE "CityID" = ${cityID}`;
+        if (parseInt(areaCheck[0].total) > 0)
+            return sendResponse(res, false, 'Cannot delete city with linked areas', null, 400);
+
+        await sql`DELETE FROM "cities" WHERE "CityID" = ${cityID}`;
+
+        sendResponse(res, true, 'City deleted successfully');
+    } catch (err) {
+        console.error('Error DELETE /cities/:id:', err);
+        sendResponse(res, false, 'Failed to delete city', null, 500);
     }
-
-    // تحقق من ارتباط المدينة بمناطق قبل الحذف
-    const areaCheck = await pool.request().input('CityID', id).query('SELECT COUNT(*) AS Total FROM Areas WHERE CityID=@CityID');
-    if (areaCheck.recordset[0].Total > 0) {
-      return sendResponse(res, false, 'Cannot delete city with linked areas', null, 400);
-    }
-
-    await pool.request().input('CityID', id).query('DELETE FROM Cities WHERE CityID=@CityID');
-    sendResponse(res, true, 'City deleted successfully');
-  } catch (err) {
-    sendResponse(res, false, err.message, null, 500);
-  }
 });
 
 module.exports = router;

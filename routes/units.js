@@ -1,61 +1,79 @@
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+require('dotenv').config();
+// routes/units.js
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
+const sql = require('../db'); // db.js يستخدم postgres
 
-// عرض كل الوحدات
+// دالة مساعدة للرد
+const sendResponse = (res, success, message, data = null, status = 200) => {
+    res.status(status).json({ success, message, data, timestamp: new Date() });
+};
+
+// ==========================
+// GET كل الوحدات
 router.get('/', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request().query('SELECT * FROM Units');
-        res.json(result.recordset);
+        const result = await sql`SELECT * FROM "units" ORDER BY "UnitName" ASC`;
+        sendResponse(res, true, 'Units fetched successfully', result);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
-// إضافة وحدة جديدة
+// POST إضافة وحدة جديدة
 router.post('/', async (req, res) => {
-    const { UnitID, UnitName, UnitCategory } = req.body;
     try {
-        const pool = await poolPromise;
-        await pool.request()
-            .input('UnitID', sql.Int, UnitID)
-            .input('UnitName', sql.NVarChar(200), UnitName)
-            .input('UnitCategory', sql.NVarChar(100), UnitCategory)
-            .query(`INSERT INTO Units (UnitID, UnitName, UnitCategory) VALUES (@UnitID,@UnitName,@UnitCategory)`);
-        res.status(201).json({ message: '✅ تم إضافة الوحدة بنجاح' });
+        const { UnitName, UnitCategory } = req.body;
+        if (!UnitName) return sendResponse(res, false, 'UnitName is required', null, 400);
+
+        const result = await sql`
+            INSERT INTO "Units" ("UnitName","UnitCategory")
+            VALUES (${UnitName}, ${UnitCategory || null})
+            RETURNING "UnitID"
+        `;
+        sendResponse(res, true, 'Unit created successfully', { UnitID: result[0].UnitID }, 201);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
-// تحديث وحدة
+// PUT تحديث وحدة
 router.put('/:UnitID', async (req, res) => {
-    const { UnitID } = req.params;
-    const updateData = req.body;
     try {
-        const pool = await poolPromise;
-        const request = pool.request().input('UnitID', sql.Int, UnitID);
+        const { UnitID } = req.params;
+        const updateData = req.body;
         const fields = Object.keys(updateData);
-        fields.forEach(f => request.input(f, sql.NVarChar, updateData[f]));
-        const setQuery = fields.map(f => `${f}=@${f}`).join(',');
-        await request.query(`UPDATE Units SET ${setQuery} WHERE UnitID=@UnitID`);
-        res.json({ message: '✅ تم تحديث الوحدة بنجاح' });
+        if (!fields.length) return sendResponse(res, false, 'No fields to update', null, 400);
+
+        const setQuery = fields.map(f => `"${f}" = ${updateData[f]}`).join(', ');
+        const result = await sql`
+            UPDATE "Units"
+            SET ${sql.raw(setQuery)}
+            WHERE "UnitID" = ${UnitID}
+            RETURNING *
+        `;
+        if (!result.length) return sendResponse(res, false, 'Unit not found', null, 404);
+        sendResponse(res, true, 'Unit updated successfully', result[0]);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
-// حذف وحدة
+// DELETE حذف وحدة
 router.delete('/:UnitID', async (req, res) => {
-    const { UnitID } = req.params;
     try {
-        const pool = await poolPromise;
-        await pool.request().input('UnitID', sql.Int, UnitID)
-            .query('DELETE FROM Units WHERE UnitID=@UnitID');
-        res.json({ message: '✅ تم حذف الوحدة بنجاح' });
+        const { UnitID } = req.params;
+        const result = await sql`
+            DELETE FROM "units"
+            WHERE "UnitID" = ${UnitID}
+            RETURNING *
+        `;
+        if (!result.length) return sendResponse(res, false, 'Unit not found', null, 404);
+        sendResponse(res, true, 'Unit deleted successfully', result[0]);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 

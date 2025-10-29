@@ -1,6 +1,11 @@
+// routes/deviceTokens.js
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
+const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config();
+
+// ✅ استخدم Service Role Key للخادم
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
 // دالة مساعدة للرد
 function sendResponse(res, success, message, data = null, status = 200) {
@@ -8,92 +13,114 @@ function sendResponse(res, success, message, data = null, status = 200) {
 }
 
 // ==========================
-// 📍 جلب كل Device Tokens
+// جلب كل Device Tokens مع فلترة اختيارية
 router.get('/', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .query('SELECT * FROM DeviceTokens ORDER BY TokenID DESC');
-        sendResponse(res, true, 'Device tokens fetched successfully', result.recordset);
+        const { UserType, UserID } = req.query;
+        let query = supabase.from('devicetokens').select('*').orders('TokenID', { ascending: false });
+
+        if (UserType) query = query.eq('UserType', UserType);
+        if (UserID) query = query.eq('UserID', parseInt(UserID));
+
+        const { data, error } = await query;
+        if (error) throw error;
+
+        sendResponse(res, true, 'Device tokens fetched successfully', data);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 جلب Device Token حسب ID
+// جلب Device Token حسب ID
 router.get('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('TokenID', sql.Int, req.params.id)
-            .query('SELECT * FROM DeviceTokens WHERE TokenID=@TokenID');
+        const { data, error } = await supabase
+            .from('devicetokens')
+            .select('*')
+            .eq('TokenID', parseInt(req.params.id))
+            .single();
 
-        if (!result.recordset.length) return sendResponse(res, false, 'Device token not found', null, 404);
+        if (error) return sendResponse(res, false, 'Device token not found', null, 404);
 
-        sendResponse(res, true, 'Device token fetched', result.recordset[0]);
+        sendResponse(res, true, 'Device token fetched', data);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 إنشاء Device Token جديد
+// إنشاء Device Token جديد
 router.post('/', async (req, res) => {
     try {
         const { UserID, DriverID, StoreID, Token, UserType } = req.body;
         if (!Token || !UserType) return sendResponse(res, false, 'Token and UserType are required', null, 400);
 
-        const pool = await poolPromise;
-        await pool.request()
-            .input('UserID', sql.Int, UserID || null)
-            .input('DriverID', sql.NVarChar(80), DriverID || null)
-            .input('StoreID', sql.Int, StoreID || null)
-            .input('Token', sql.NVarChar(1000), Token)
-            .input('UserType', sql.NVarChar(100), UserType)
-            .input('CreatedAt', sql.DateTime, new Date())
-            .query(`INSERT INTO DeviceTokens (UserID, DriverID, StoreID, Token, UserType, CreatedAt)
-                    VALUES (@UserID, @DriverID, @StoreID, @Token, @UserType, @CreatedAt)`);
+        const { data, error } = await supabase
+            .from('devicetokens')
+            .insert({
+                UserID: UserID || null,
+                DriverID: DriverID || null,
+                StoreID: StoreID || null,
+                Token,
+                UserType,
+                CreatedAt: new Date()
+            })
+            .select()
+            .single();
 
-        sendResponse(res, true, 'Device token created successfully');
+        if (error) throw error;
+
+        sendResponse(res, true, 'Device token created successfully', data, 201);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 تحديث Device Token
+// تحديث Device Token
 router.put('/:id', async (req, res) => {
     try {
         const { UserID, DriverID, StoreID, Token, UserType } = req.body;
-        const pool = await poolPromise;
-        const request = pool.request().input('TokenID', sql.Int, req.params.id);
+        const updates = {};
+        if (UserID !== undefined) updates.UserID = UserID;
+        if (DriverID !== undefined) updates.DriverID = DriverID;
+        if (StoreID !== undefined) updates.StoreID = StoreID;
+        if (Token !== undefined) updates.Token = Token;
+        if (UserType !== undefined) updates.UserType = UserType;
+        updates.UpdatedAt = new Date();
 
-        const setQuery = [];
-        if (UserID !== undefined) { request.input('UserID', sql.Int, UserID); setQuery.push('UserID=@UserID'); }
-        if (DriverID !== undefined) { request.input('DriverID', sql.NVarChar(80), DriverID); setQuery.push('DriverID=@DriverID'); }
-        if (StoreID !== undefined) { request.input('StoreID', sql.Int, StoreID); setQuery.push('StoreID=@StoreID'); }
-        if (Token !== undefined) { request.input('Token', sql.NVarChar(1000), Token); setQuery.push('Token=@Token'); }
-        if (UserType !== undefined) { request.input('UserType', sql.NVarChar(100), UserType); setQuery.push('UserType=@UserType'); }
+        if (!Object.keys(updates).length) return sendResponse(res, false, 'Nothing to update', null, 400);
 
-        if (!setQuery.length) return sendResponse(res, false, 'Nothing to update', null, 400);
+        const { data, error } = await supabase
+            .from('devicetokens')
+            .update(updates)
+            .eq('TokenID', parseInt(req.params.id))
+            .select()
+            .single();
 
-        await request.query(`UPDATE DeviceTokens SET ${setQuery.join(', ')}, UpdatedAt=GETDATE() WHERE TokenID=@TokenID`);
-        sendResponse(res, true, 'Device token updated successfully');
+        if (error) return sendResponse(res, false, 'Device token not found', null, 404);
+
+        sendResponse(res, true, 'Device token updated successfully', data);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 حذف Device Token
+// حذف Device Token
 router.delete('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        await pool.request()
-            .input('TokenID', sql.Int, req.params.id)
-            .query('DELETE FROM DeviceTokens WHERE TokenID=@TokenID');
-        sendResponse(res, true, 'Device token deleted successfully');
+        const { data, error } = await supabase
+            .from('devicetokens')
+            .delete()
+            .eq('TokenID', parseInt(req.params.id))
+            .select()
+            .single();
+
+        if (error) return sendResponse(res, false, 'Device token not found', null, 404);
+
+        sendResponse(res, true, 'Device token deleted successfully', data);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }

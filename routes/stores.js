@@ -1,201 +1,221 @@
 // routes/stores.js
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const sendResponse = require('../helpers/response');
-const { generateRandomPassword, generateOTP } = require('../helpers/generate');
-const verifyToken = require('../middleware/verifyToken');
+const sql = require('../db'); // postgres client
+const supabase = require('../supabaseClient'); // service role client
 
-const SALT_ROUNDS = 10;
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
+// اسم البكت المستخدم (غيّره هنا إن أردت)
+const BUCKET = 'RoadTrip';
 
-// ==========================
-// 📍 اختبار الاتصال عند التحميل
-(async () => {
-    try {
-        const pool = await poolPromise;
-        console.log('📡 Stores route connected to DB successfully');
-    } catch (err) {
-        console.error('❌ Stores route DB connection error:', err.message);
+// ----------------- helpers -----------------
+async function uploadStoreLogo(base64String, storeId) {
+  if (!base64String || typeof base64String !== 'string') throw new Error('Invalid image data');
+  const fileBuffer = Buffer.from(base64String, 'base64');
+  const objectPath = `${storeId}/${storeId}-${Date.now()}.jpg`;
+  const { data, error } = await supabase.storage.from(BUCKET).upload(objectPath, fileBuffer, { upsert: true });
+  if (error) throw error;
+  const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(objectPath);
+  return urlData.publicUrl;
+}
+
+async function removeObjectByUrl(publicUrl) {
+  if (!publicUrl) return;
+  try {
+    const url = new URL(publicUrl);
+    // path like: /storage/v1/object/public/<bucket>/<objectPath>
+    const prefix = `/storage/v1/object/public/${BUCKET}/`;
+    const pathname = url.pathname || '';
+    if (!pathname.includes(prefix)) {
+      // قد يكون رابط بصيغة مختلفة -> نتجاهل أو نرمي تحذير
+      console.warn('removeObjectByUrl: unexpected publicUrl format', publicUrl);
+      return;
     }
+    const objectPath = decodeURIComponent(pathname.replace(prefix, ''));
+    if (objectPath) {
+      const { error } = await supabase.storage.from(BUCKET).remove([objectPath]);
+      if (error) console.warn('removeObjectByUrl remove error:', error.message || error);
+    }
+  } catch (err) {
+    console.warn('removeObjectByUrl failed:', err.message);
+  }
+}
+
+// ----------------- connection test -----------------
+(async () => {
+  try {
+    await sql`SELECT NOW()`;
+    console.log('📡 Stores route connected to DB successfully');
+  } catch (err) {
+    console.error('❌ Stores route DB connection error:', err.message);
+  }
 })();
 
-// ==========================
-// 📍 جلب كل المتاجر مع Pagination + Search
+// ----------------- GET /api/stores -----------------
 router.get('/', async (req, res) => {
-    try {
-        let { page = 1, limit = 20, search = '' } = req.query;
-        page = parseInt(page) || 1;
-        limit = parseInt(limit) || 20;
-        const offset = (page - 1) * limit;
+  try {
+    let { page = 1, limit = 20, search = '' } = req.query;
+    page = Math.max(1, parseInt(page) || 1);
+    limit = Math.max(1, Math.min(100, parseInt(limit) || 20)); // cap limit to 100
+    const offset = (page - 1) * limit;
 
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('Search', sql.NVarChar(sql.MAX), `%${search}%`)
-            .query(`
-                SELECT StoreID, StoreName, CategoryID, CityID, AreaID, Address, Phone, Email, Description,
-                       IsActive, CreatedAt, LogoURL, Rating
-                FROM Stores
-                WHERE StoreName LIKE @Search OR Phone LIKE @Search OR Email LIKE @Search
-                ORDER BY CreatedAt DESC
-                OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY
-            `);
+    // total count (للـ pagination)
+    const countRow = await sql`
+      SELECT COUNT(*)::int AS total
+      FROM "Stores"
+      WHERE "StoreName" ILIKE ${`%${search}%`};
+    `;
+    const total = (countRow && countRow[0] && countRow[0].total) ? countRow[0].total : 0;
 
-        sendResponse(res, true, 'Stores retrieved successfully', {
-            count: result.recordset.length,
-            stores: result.recordset
-        });
-    } catch (err) {
-        console.error('❌ Error fetching stores:', err);
-        sendResponse(res, false, err.message, null, 500);
-    }
+    const stores = await sql`
+      SELECT *
+      FROM "Stores"
+      WHERE "StoreName" ILIKE ${`%${search}%`}
+      ORDER BY "CreatedAt" DESC
+      OFFSET ${offset} ROWS
+      FETCH NEXT ${limit} ROWS ONLY;
+    `;
+
+    res.json({
+      success: true,
+      page,
+      limit,
+      total,
+      count: stores.length,
+      stores
+    });
+  } catch (err) {
+    console.error('❌ Error fetching stores:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
-// ==========================
-// 📍 إضافة متجر جديد
+// ----------------- POST /api/stores -----------------
 router.post('/', async (req, res) => {
-    try {
-        const {
-            StoreName, CategoryID, CityID, AreaID, Address, Phone, Email,
-            Description, IsActive, LogoURL, Rating, Username
-        } = req.body;
+  try {
+    const {
+      StoreName, CategoryID, CityID, AreaID, Address, Phone,
+      Email, Description, IsActive, LogoBase64, Rating, OTP, OTPExpires,
+      PhoneConfirmed, FCMToken
+    } = req.body;
 
-        if (!StoreName || !Phone)
-            return sendResponse(res, false, 'StoreName and Phone are required', null, 400);
+    if (!StoreName || !Phone) return res.status(400).json({ success: false, error: 'StoreName and Phone are required' });
 
-        const pool = await poolPromise;
+    // أدخل السجل أولاً بدون LogoURL للحصول على StoreID (auto-generated)
+    const inserted = await sql`
+      INSERT INTO "Stores" 
+        ("StoreName","CategoryID","CityID","AreaID","Address","Phone","Email","Description",
+         "IsActive","CreatedAt","Rating","OTP","OTPExpires","PhoneConfirmed","FCMToken")
+      VALUES
+        (${StoreName}, ${CategoryID || null}, ${CityID || null}, ${AreaID || null},
+         ${Address || null}, ${Phone}, ${Email || null}, ${Description || null},
+         ${IsActive !== undefined ? IsActive : true}, NOW(),
+         ${Rating || null}, ${OTP || null}, ${OTPExpires || null},
+         ${PhoneConfirmed !== undefined ? PhoneConfirmed : false}, ${FCMToken || null})
+      RETURNING *;
+    `;
 
-        // تحقق من التكرار
-        const dupReq = pool.request().input('Phone', sql.NVarChar(sql.MAX), Phone);
-        if (Email) dupReq.input('Email', sql.NVarChar(sql.MAX), Email);
-        const dupQuery = Email
-            ? 'SELECT StoreID FROM Stores WHERE Phone=@Phone OR Email=@Email'
-            : 'SELECT StoreID FROM Stores WHERE Phone=@Phone';
-        const dup = await dupReq.query(dupQuery);
-        if (dup.recordset.length)
-            return sendResponse(res, false, 'Phone or Email already registered', null, 409);
+    let store = inserted[0];
 
-        // توليد Password و OTP
-        const passwordPlain = generateRandomPassword(8);
-        const passwordHashed = await bcrypt.hash(passwordPlain, SALT_ROUNDS);
-        const otp = generateOTP();
-        const otpExpires = new Date(Date.now() + 5 * 60 * 1000);
-
-        await pool.request()
-            .input('StoreName', sql.NVarChar(sql.MAX), StoreName)
-            .input('CategoryID', sql.Int, CategoryID || null)
-            .input('CityID', sql.Int, CityID || null)
-            .input('AreaID', sql.Int, AreaID || null)
-            .input('Address', sql.NVarChar(sql.MAX), Address || null)
-            .input('Phone', sql.NVarChar(sql.MAX), Phone)
-            .input('Username', sql.NVarChar(sql.MAX), Username || null)
-            .input('Description', sql.NVarChar(sql.MAX), Description || null)
-            .input('IsActive', sql.Bit, IsActive ?? true)
-            .input('CreatedAt', sql.DateTime, new Date())
-            .input('LogoURL', sql.NVarChar(sql.MAX), LogoURL || null)
-            .input('Rating', sql.Float, Rating || 0)
-            .input('Password', sql.NVarChar(sql.MAX), passwordHashed)
-            .input('OTP', sql.NVarChar(10), otp)
-            .input('OTPExpires', sql.DateTime, otpExpires)
-            .query(`
-                INSERT INTO Stores
-                (StoreName, CategoryID, CityID, AreaID, Address, Phone, UserName, Description, IsActive, CreatedAt, LogoURL, Rating, Password, OTP, OTPExpires)
-                VALUES
-                (@StoreName, @CategoryID, @CityID, @AreaID, @Address, @Phone, @Username, @Description, @IsActive, @CreatedAt, @LogoURL, @Rating, @Password, @OTP, @OTPExpires)
-            `);
-
-        if (process.env.NODE_ENV !== 'production') {
-            return sendResponse(res, true, 'Store created successfully. OTP sent.', { password: passwordPlain, otp }, 201);
-        }
-
-        sendResponse(res, true, 'Store created successfully. OTP sent.', null, 201);
-    } catch (err) {
-        console.error('❌ Error adding store:', err);
-        sendResponse(res, false, err.message, null, 500);
+    // رفع الشعار إن وُجد (ونحدّث السجل)
+    if (LogoBase64) {
+      try {
+        const logoUrl = await uploadStoreLogo(LogoBase64, store.StoreID);
+        const updated = await sql`
+          UPDATE "Stores" SET "LogoURL" = ${logoUrl}, "LastUpdated" = NOW() WHERE "StoreID" = ${store.StoreID} RETURNING *;
+        `;
+        store = updated[0];
+      } catch (logoErr) {
+        console.warn('⚠️ Logo upload failed (continuing without logo):', logoErr.message);
+      }
     }
+
+    // لا تُرجع الحقول الحساسة (مثل OTP) إن رغبت
+    if (store && store.OTP) delete store.OTP;
+
+    res.status(201).json({ success: true, message: 'Store created successfully', store });
+  } catch (err) {
+    console.error('❌ Error adding store:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
-// ==========================
-// 📍 تحديث بيانات متجر
-router.put('/:StoreID', async (req, res) => {
-    try {
-        const { StoreID } = req.params;
-        const updateData = req.body;
-        const fields = Object.keys(updateData);
-        if (!fields.length) return sendResponse(res, false, 'No fields to update', null, 400);
+// ----------------- PUT /api/stores/:id -----------------
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const body = req.body || {};
 
-        const pool = await poolPromise;
+    if (!Object.keys(body).length) return res.status(400).json({ success: false, error: 'No fields to update' });
 
-        if (updateData.Password) {
-            updateData.Password = await bcrypt.hash(updateData.Password, SALT_ROUNDS);
-        }
+    // allowed fields (تأكد أنها تطابق أسماء الأعمدة في DB)
+    const allowed = new Set([
+      'StoreName','CategoryID','CityID','AreaID','Address','Phone','Email','Description',
+      'IsActive','Rating','OTP','OTPExpires','PhoneConfirmed','FCMToken'
+    ]);
 
-        const request = pool.request().input('StoreID', sql.Int, StoreID);
-        fields.forEach(f => {
-            let type = sql.NVarChar;
-            if (typeof updateData[f] === 'number') type = sql.Float;
-            if (typeof updateData[f] === 'boolean') type = sql.Bit;
-            if (updateData[f] instanceof Date) type = sql.DateTime;
-            request.input(f, type, updateData[f]);
-        });
-
-        const setQuery = fields.map(f => `${f}=@${f}`).join(',');
-        await request.query(`UPDATE Stores SET ${setQuery}, LastUpdated=GETDATE() WHERE StoreID=@StoreID`);
-
-        sendResponse(res, true, 'Store updated successfully');
-    } catch (err) {
-        console.error('❌ Error updating store:', err);
-        sendResponse(res, false, err.message, null, 500);
+    const updateObj = {};
+    for (const key of Object.keys(body)) {
+      if (allowed.has(key)) updateObj[key] = body[key];
     }
+
+    // جلب السجل الحالي (لاحتياج حذف الشعار القديم إذا وُجد)
+    const existingRows = await sql`SELECT * FROM "Stores" WHERE "StoreID" = ${id} LIMIT 1;`;
+    if (!existingRows.length) return res.status(404).json({ success: false, error: 'Store not found' });
+    const existing = existingRows[0];
+
+    // معالجة LogoBase64: حذف القديم ثم رفع الجديد
+    if (body.LogoBase64) {
+      try {
+        if (existing.LogoURL) await removeObjectByUrl(existing.LogoURL);
+        const logoUrl = await uploadStoreLogo(body.LogoBase64, id);
+        updateObj.LogoURL = logoUrl;
+      } catch (logoErr) {
+        console.warn('⚠️ Logo upload failed on update:', logoErr.message);
+      }
+    }
+
+    if (!Object.keys(updateObj).length) return res.status(400).json({ success: false, error: 'No valid fields to update' });
+
+    // استخدم Supabase client للتحديث (أسهل مع identifiers)
+    const { data, error } = await supabase
+      .from('Stores')
+      .update(updateObj)
+      .eq('StoreID', id)
+      .select();
+
+    if (error) throw error;
+
+    const updated = (data && data[0]) ? data[0] : null;
+    if (updated && updated.OTP) delete updated.OTP;
+
+    res.json({ success: true, message: 'Store updated successfully', store: updated });
+  } catch (err) {
+    console.error('❌ Error updating store:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
-// ==========================
-// 📍 حذف متجر
-router.delete('/:StoreID', async (req, res) => {
+// ----------------- DELETE /api/stores/:id -----------------
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await sql`DELETE FROM "Stores" WHERE "StoreID" = ${id} RETURNING *;`;
+    if (!deleted.length) return res.status(404).json({ success: false, error: 'Store not found' });
+
+    // حذف الشعار من Storage إن وُجد
     try {
-        const { StoreID } = req.params;
-        const pool = await poolPromise;
-        await pool.request()
-            .input('StoreID', sql.Int, StoreID)
-            .query('DELETE FROM Stores WHERE StoreID=@StoreID');
-        sendResponse(res, true, 'Store deleted successfully');
-    } catch (err) {
-        console.error('❌ Error deleting store:', err);
-        sendResponse(res, false, err.message, null, 500);
+      const logoUrl = deleted[0].LogoURL || deleted[0].logourl;
+      if (logoUrl) await removeObjectByUrl(logoUrl);
+    } catch (remErr) {
+      console.warn('⚠️ Failed to remove logo from storage:', remErr.message);
     }
-});
 
-// ==========================
-// 📍 تسجيل دخول المتجر عبر OTP
-router.post('/login-otp', async (req, res) => {
-    try {
-        const { Phone, OTP } = req.body;
-        if (!Phone || !OTP) return sendResponse(res, false, 'Phone and OTP are required', null, 400);
-
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('Phone', sql.NVarChar(sql.MAX), Phone)
-            .query('SELECT StoreID, OTP, OTPExpires FROM Stores WHERE Phone=@Phone');
-
-        if (!result.recordset.length) return sendResponse(res, false, 'Store not found', null, 404);
-
-        const store = result.recordset[0];
-        if (store.OTP !== OTP) return sendResponse(res, false, 'Invalid OTP', null, 401);
-        if (new Date() > store.OTPExpires) return sendResponse(res, false, 'OTP expired', null, 401);
-
-        const token = jwt.sign({ storeId: store.StoreID }, JWT_SECRET, { expiresIn: '24h' });
-
-        await pool.request()
-            .input('StoreID', sql.Int, store.StoreID)
-            .query('UPDATE Stores SET OTP=NULL, OTPExpires=NULL WHERE StoreID=@StoreID');
-
-        sendResponse(res, true, 'Login successful', { token });
-    } catch (err) {
-        console.error('❌ Error store login OTP:', err);
-        sendResponse(res, false, err.message, null, 500);
-    }
+    res.json({ success: true, message: 'Store deleted successfully', store: deleted[0] });
+  } catch (err) {
+    console.error('❌ Error deleting store:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 module.exports = router;

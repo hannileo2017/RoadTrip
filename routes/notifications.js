@@ -1,111 +1,128 @@
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
+const { createClient } = require('@supabase/supabase-js');
+require('dotenv').config();
 
-// دالة مساعدة للرد
+// استخدم Service Role Key لضمان عمل جميع العمليات
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+
+// دالة موحدة للرد مع طابع زمني
 function sendResponse(res, success, message, data = null, status = 200) {
-    res.status(status).json({ success, message, data });
+    return res.status(status).json({ success, message, timestamp: new Date(), data });
 }
 
 // ==========================
-// 📍 جلب كل الإشعارات
+// جلب كل الإشعارات مع Pagination + فلترة UserType و UserID
 router.get('/', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .query('SELECT * FROM Notifications ORDER BY CreatedAt DESC');
-        sendResponse(res, true, 'Notifications fetched successfully', result.recordset);
+        let { page = 1, limit = 50, userType = '', userId = '' } = req.query;
+        page = parseInt(page);
+        limit = parseInt(limit);
+        const from = (page - 1) * limit;
+        const to = from + limit - 1;
+
+        let query = supabase
+            .from('notifications')
+            .select('*')
+            .orders('CreatedAt', { ascending: false })
+            .range(from, to);
+
+        if (userType) query = query.ilike('UserType', `%${userType}%`);
+        if (userId) query = query.eq('UserID', parseInt(userId));
+
+        const { data, error } = await query;
+        if (error) throw error;
+
+        sendResponse(res, true, 'Notifications fetched successfully', {
+            page,
+            limit,
+            count: data.length,
+            notifications: data
+        });
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 جلب إشعار حسب ID
+// جلب إشعار حسب NotificationID
 router.get('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('NotificationID', sql.Int, req.params.id)
-            .query('SELECT * FROM Notifications WHERE NotificationID=@NotificationID');
+        const { data, error } = await supabase
+            .from('notifications')
+            .select('*')
+            .eq('NotificationID', parseInt(req.params.id))
+            .single();
 
-        if (!result.recordset.length) return sendResponse(res, false, 'Notification not found', null, 404);
-
-        sendResponse(res, true, 'Notification fetched', result.recordset[0]);
+        if (error) return sendResponse(res, false, 'Notification not found', null, 404);
+        sendResponse(res, true, 'Notification fetched successfully', data);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 إنشاء إشعار جديد
+// إنشاء إشعار جديد
 router.post('/', async (req, res) => {
+    const { UserType, UserID, Message, Title, NotificationType } = req.body;
+    if (!UserType || !Message) return sendResponse(res, false, 'UserType and Message are required', null, 400);
+
     try {
-        const { UserType, UserID, Message, Title, NotificationType } = req.body;
-        if (!UserType || !Message) return sendResponse(res, false, 'UserType and Message are required', null, 400);
+        const { data, error } = await supabase
+            .from('notifications')
+            .insert({
+                UserType,
+                UserID: UserID || null,
+                Message,
+                IsRead: false,
+                Title: Title || null,
+                NotificationType: NotificationType || null,
+                CreatedAt: new Date()
+            })
+            .select()
+            .single();
 
-        const pool = await poolPromise;
-        await pool.request()
-            .input('UserType', sql.NVarChar(100), UserType)
-            .input('UserID', sql.Int, UserID || null)
-            .input('Message', sql.NVarChar(510), Message)
-            .input('IsRead', sql.Bit, 0)
-            .input('CreatedAt', sql.DateTime, new Date())
-            .input('Title', sql.NVarChar(400), Title || null)
-            .input('NotificationType', sql.NVarChar(200), NotificationType || null)
-            .query(`INSERT INTO Notifications (UserType, UserID, Message, IsRead, CreatedAt, Title, NotificationType)
-                    VALUES (@UserType, @UserID, @Message, @IsRead, @CreatedAt, @Title, @NotificationType)`);
-
-        sendResponse(res, true, 'Notification created successfully');
+        if (error) throw error;
+        sendResponse(res, true, 'Notification created successfully', data, 201);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 تحديث إشعار
+// تحديث إشعار
 router.put('/:id', async (req, res) => {
+    const updates = { ...req.body };
+    if (!Object.keys(updates).length) return sendResponse(res, false, 'Nothing to update', null, 400);
+
     try {
-        const { UserType, UserID, Message, IsRead, Title, NotificationType } = req.body;
-        const pool = await poolPromise;
-        const request = pool.request().input('NotificationID', sql.Int, req.params.id);
+        const { data, error } = await supabase
+            .from('notifications')
+            .update(updates)
+            .eq('NotificationID', parseInt(req.params.id))
+            .select()
+            .single();
 
-        const fields = {};
-        if (UserType !== undefined) fields.UserType = UserType;
-        if (UserID !== undefined) fields.UserID = UserID;
-        if (Message !== undefined) fields.Message = Message;
-        if (IsRead !== undefined) fields.IsRead = IsRead;
-        if (Title !== undefined) fields.Title = Title;
-        if (NotificationType !== undefined) fields.NotificationType = NotificationType;
-
-        const keys = Object.keys(fields);
-        if (!keys.length) return sendResponse(res, false, 'Nothing to update', null, 400);
-
-        keys.forEach(k => {
-            let type = sql.NVarChar;
-            if (['UserID'].includes(k)) type = sql.Int;
-            if (['IsRead'].includes(k)) type = sql.Bit;
-            request.input(k, type, fields[k]);
-        });
-
-        const setQuery = keys.map(k => `${k}=@${k}`).join(', ');
-        await request.query(`UPDATE Notifications SET ${setQuery}, UpdatedAt=GETDATE() WHERE NotificationID=@NotificationID`);
-
-        sendResponse(res, true, 'Notification updated successfully');
+        if (error) return sendResponse(res, false, 'Notification not found', null, 404);
+        sendResponse(res, true, 'Notification updated successfully', data);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 حذف إشعار
+// حذف إشعار
 router.delete('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        await pool.request()
-            .input('NotificationID', sql.Int, req.params.id)
-            .query('DELETE FROM Notifications WHERE NotificationID=@NotificationID');
-        sendResponse(res, true, 'Notification deleted successfully');
+        const { data, error } = await supabase
+            .from('notifications')
+            .delete()
+            .eq('NotificationID', parseInt(req.params.id))
+            .select()
+            .single();
+
+        if (error) return sendResponse(res, false, 'Notification not found', null, 404);
+        sendResponse(res, true, 'Notification deleted successfully', data);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }

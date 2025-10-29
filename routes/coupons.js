@@ -1,8 +1,11 @@
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
+const sql = require('../db'); // PostgreSQL client
 
-// 📦 دالة مساعدة موحدة للرد
+// دالة موحدة للرد
 function sendResponse(res, success, message, data = null, status = 200) {
   return res.status(status).json({
     success,
@@ -12,143 +15,121 @@ function sendResponse(res, success, message, data = null, status = 200) {
   });
 }
 
-// 🧾 جلب كل الكوبونات (مع بحث + Pagination + فلترة)
+// 🧾 جلب الكوبونات مع Pagination + بحث + فلترة
 router.get('/', async (req, res) => {
   try {
-    const { page = 1, limit = 20, search = '', active } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
     const offset = (page - 1) * limit;
+    const search = req.query.search?.trim() || '';
+    const active = req.query.active;
 
-    const pool = await poolPromise;
-    const request = pool.request();
+    let query = `SELECT "CouponID", "CouponCode", "Discount", "Description", "StartDate", "EndDate", "IsActive", "CreatedAt", "UpdatedAt" FROM "coupons" WHERE 1=1`;
+    if (search) query += ` AND ("CouponCode" ILIKE ${'%' + search + '%'} OR "Description" ILIKE ${'%' + search + '%'})`;
+    if (active !== undefined) query += ` AND "IsActive" = ${active === 'true' ? 'true' : 'false'}`;
+    query += ` ORDER BY "CreatedAt" DESC LIMIT ${limit} OFFSET ${offset}`;
 
-    let where = 'WHERE 1=1';
-    if (search) {
-      request.input('Search', `%${search}%`);
-      where += ' AND (CouponCode LIKE @Search OR Description LIKE @Search)';
-    }
-    if (active !== undefined) {
-      request.input('IsActive', active === 'true' ? 1 : 0);
-      where += ' AND IsActive = @IsActive';
-    }
+    const coupons = await sql(query);
 
-    const query = `
-      SELECT CouponID, CouponCode, Discount, Description, StartDate, EndDate, IsActive, CreatedAt, UpdatedAt
-      FROM Coupons
-      ${where}
-      ORDER BY CreatedAt DESC
-      OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY;
-    `;
-
-    const result = await request.query(query);
     sendResponse(res, true, 'Coupons retrieved successfully', {
-      count: result.recordset.length,
-      coupons: result.recordset
+      page,
+      limit,
+      count: coupons.length,
+      coupons
     });
   } catch (err) {
-    sendResponse(res, false, err.message, null, 500);
+    console.error('Error GET /coupons:', err);
+    sendResponse(res, false, 'Failed to retrieve coupons', null, 500);
   }
 });
 
 // 🎫 إضافة كوبون جديد
 router.post('/', async (req, res) => {
   try {
-    const { CouponCode, Discount, Description, StartDate, EndDate, IsActive = true } = req.body;
-
-    if (!CouponCode || !Discount || !StartDate || !EndDate) {
+    let { CouponCode, Discount, Description, StartDate, EndDate, IsActive = true } = req.body;
+    if (!CouponCode || !Discount || !StartDate || !EndDate)
       return sendResponse(res, false, 'Missing required fields', null, 400);
-    }
 
-    const pool = await poolPromise;
-    const request = pool.request().input('CouponCode', CouponCode.trim());
+    CouponCode = CouponCode.trim();
+    Discount = parseFloat(Discount);
+    if (isNaN(Discount)) return sendResponse(res, false, 'Discount must be a number', null, 400);
+    Description = Description?.trim() || null;
 
-    // 🔍 تحقق من التكرار
-    const exists = await request.query('SELECT CouponID FROM Coupons WHERE CouponCode=@CouponCode');
-    if (exists.recordset.length > 0) {
-      return sendResponse(res, false, 'Coupon code already exists', null, 409);
-    }
+    const exists = await sql`SELECT "CouponID" FROM "coupons" WHERE "CouponCode" = ${CouponCode}`;
+    if (exists.length > 0) return sendResponse(res, false, 'Coupon code already exists', null, 409);
 
-    await pool.request()
-      .input('CouponCode', sql.NVarChar(100), CouponCode.trim())
-      .input('Discount', sql.Decimal(5, 2), Discount)
-      .input('Description', sql.NVarChar(400), Description || null)
-      .input('StartDate', sql.DateTime, StartDate)
-      .input('EndDate', sql.DateTime, EndDate)
-      .input('IsActive', sql.Bit, IsActive)
-      .query(`
-        INSERT INTO Coupons (CouponCode, Discount, Description, StartDate, EndDate, IsActive, CreatedAt)
-        VALUES (@CouponCode, @Discount, @Description, @StartDate, @EndDate, @IsActive, GETDATE())
-      `);
+    await sql`
+      INSERT INTO "Coupons" ("CouponCode", "Discount", "Description", "StartDate", "EndDate", "IsActive", "CreatedAt")
+      VALUES (${CouponCode}, ${Discount}, ${Description}, ${StartDate}, ${EndDate}, ${IsActive}, NOW())
+    `;
 
     sendResponse(res, true, 'Coupon added successfully');
   } catch (err) {
-    sendResponse(res, false, err.message, null, 500);
+    console.error('Error POST /coupons:', err);
+    sendResponse(res, false, 'Failed to add coupon', null, 500);
   }
 });
 
-// ✏️ تحديث كوبون موجود
+// ✏️ تحديث كوبون
 router.put('/:CouponID', async (req, res) => {
   try {
-    const { CouponID } = req.params;
+    const CouponID = parseInt(req.params.CouponID);
+    if (isNaN(CouponID)) return sendResponse(res, false, 'Invalid CouponID', null, 400);
+
     const updates = req.body;
-    const keys = Object.keys(updates);
+    if (Object.keys(updates).length === 0) return sendResponse(res, false, 'No fields to update', null, 400);
 
-    if (keys.length === 0)
-      return sendResponse(res, false, 'No fields to update', null, 400);
+    const check = await sql`SELECT * FROM "coupons" WHERE "CouponID" = ${CouponID}`;
+    if (check.length === 0) return sendResponse(res, false, 'Coupon not found', null, 404);
 
-    const pool = await poolPromise;
-    const check = await pool.request().input('CouponID', sql.Int, CouponID)
-      .query('SELECT * FROM Coupons WHERE CouponID=@CouponID');
-
-    if (check.recordset.length === 0)
-      return sendResponse(res, false, 'Coupon not found', null, 404);
-
-    const request = pool.request().input('CouponID', sql.Int, CouponID);
     const setClauses = [];
-
-    keys.forEach(key => {
-      const val = updates[key];
+    const values = [];
+    for (const key of Object.keys(updates)) {
+      let val = updates[key];
       switch (key) {
-        case 'CouponCode': request.input(key, sql.NVarChar(100), val); break;
-        case 'Discount': request.input(key, sql.Decimal(5, 2), val); break;
-        case 'Description': request.input(key, sql.NVarChar(400), val); break;
-        case 'StartDate': request.input(key, sql.DateTime, val); break;
-        case 'EndDate': request.input(key, sql.DateTime, val); break;
-        case 'IsActive': request.input(key, sql.Bit, val); break;
-        default: return;
+        case 'CouponCode': val = val?.trim(); break;
+        case 'Discount': val = parseFloat(val); if (isNaN(val)) continue; break;
+        case 'Description': val = val?.trim() || null; break;
+        case 'StartDate':
+        case 'EndDate':
+        case 'IsActive': break;
+        default: continue;
       }
-      setClauses.push(`${key}=@${key}`);
-    });
+      setClauses.push(`"${key}" = ?`);
+      values.push(val);
+    }
 
-    const updateQuery = `
-      UPDATE Coupons
-      SET ${setClauses.join(', ')}, UpdatedAt=GETDATE()
-      WHERE CouponID=@CouponID;
+    if (setClauses.length === 0) return sendResponse(res, false, 'No valid fields to update', null, 400);
+
+    values.push(CouponID);
+    await sql`
+      UPDATE "Coupons"
+      SET ${sql(setClauses.join(', '))}, "UpdatedAt" = NOW()
+      WHERE "CouponID" = ${CouponID}
     `;
 
-    await request.query(updateQuery);
     sendResponse(res, true, 'Coupon updated successfully');
   } catch (err) {
-    sendResponse(res, false, err.message, null, 500);
+    console.error('Error PUT /coupons/:CouponID:', err);
+    sendResponse(res, false, 'Failed to update coupon', null, 500);
   }
 });
 
 // 🗑️ حذف كوبون
 router.delete('/:CouponID', async (req, res) => {
   try {
-    const { CouponID } = req.params;
-    const pool = await poolPromise;
+    const CouponID = parseInt(req.params.CouponID);
+    if (isNaN(CouponID)) return sendResponse(res, false, 'Invalid CouponID', null, 400);
 
-    const check = await pool.request().input('CouponID', sql.Int, CouponID)
-      .query('SELECT * FROM Coupons WHERE CouponID=@CouponID');
-    if (check.recordset.length === 0)
-      return sendResponse(res, false, 'Coupon not found', null, 404);
+    const check = await sql`SELECT * FROM "coupons" WHERE "CouponID" = ${CouponID}`;
+    if (check.length === 0) return sendResponse(res, false, 'Coupon not found', null, 404);
 
-    await pool.request().input('CouponID', sql.Int, CouponID)
-      .query('DELETE FROM Coupons WHERE CouponID=@CouponID');
+    await sql`DELETE FROM "coupons" WHERE "CouponID" = ${CouponID}`;
 
     sendResponse(res, true, 'Coupon deleted successfully');
   } catch (err) {
-    sendResponse(res, false, err.message, null, 500);
+    console.error('Error DELETE /coupons/:CouponID:', err);
+    sendResponse(res, false, 'Failed to delete coupon', null, 500);
   }
 });
 

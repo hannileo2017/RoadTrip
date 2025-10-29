@@ -1,22 +1,44 @@
 // checkRoutes.js
+const fs = require('fs');
 const path = require('path');
 
-const routes = [
-  'appSettings','areas','auditTrail','cities','coupons','couponsAdvanced','customers',
-  'deliveryZones','deviceTokens','driverLocations','driverRatings','driver','notifications',
-  'orderDisputes','orderHistory','orderHistoryDetailed','orderItems','orders','orderTracking',
-  'payments','products','rolePermissions','roles','sessions','storeCategories','storeRatings',
-  'stores','supportTickets','systemSettings','transactions','units','users'
-];
+const ROUTES_DIR = path.join(__dirname, 'routes');
 
-routes.forEach(r => {
-  const p = path.join(__dirname, 'routes', r);
-  try {
-    const mod = require(p);
-    const t = typeof mod;
-    const isRouterLike = (t === 'function') || (mod && typeof mod === 'object' && (typeof mod.use === 'function' || typeof mod.handle === 'function'));
-    console.log(`${r.padEnd(25)} -> typeof: ${t.padEnd(10)} | router-like: ${isRouterLike}`);
-  } catch (err) {
-    console.log(`${r.padEnd(25)} -> ERROR require: ${err.message}`);
+function checkRouteFile(filePath) {
+  const content = fs.readFileSync(filePath, 'utf8');
+
+  const report = {
+    file: path.basename(filePath),
+    usesSupabaseStorage: /supabase\.storage/.test(content),
+    hasImageUpload: /(photoBase64|LogoBase64)/.test(content),
+    deletesFromStorage: /\.remove\(/.test(content),
+    generatesIDManually: /generateDriverID/.test(content),
+    notes: []
+  };
+
+  if (!report.usesSupabaseStorage && report.hasImageUpload) {
+    report.notes.push('يوجد رفع صور ولكن لا يستخدم Supabase Storage.');
   }
+  if (report.usesSupabaseStorage && !report.deletesFromStorage) {
+    report.notes.push('يستخدم Supabase Storage ولكن لا يوجد حذف للصورة عند حذف السجل.');
+  }
+
+  return report;
+}
+
+fs.readdir(ROUTES_DIR, (err, files) => {
+  if (err) return console.error('❌ Failed to read routes directory:', err.message);
+
+  const jsFiles = files.filter(f => f.endsWith('.js'));
+  const reports = jsFiles.map(f => checkRouteFile(path.join(ROUTES_DIR, f)));
+
+  console.log('===== Routes Check Report =====');
+  reports.forEach(r => {
+    console.log(`\nFile: ${r.file}`);
+    console.log('Uses Supabase Storage:', r.usesSupabaseStorage);
+    console.log('Has Image Upload:', r.hasImageUpload);
+    console.log('Deletes Images from Storage:', r.deletesFromStorage);
+    console.log('Generates ID Manually:', r.generatesIDManually);
+    if (r.notes.length) console.log('Notes:', r.notes.join(' | '));
+  });
 });

@@ -1,67 +1,118 @@
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
+const sql = require('../db'); // db.js يستخدم postgres
 
-// عرض كل العناصر
+// دالة موحدة للرد
+function sendResponse(res, success, message, data = null, status = 200) {
+    res.status(status).json({ success, message, data, timestamp: new Date() });
+}
+
+// ==========================
+// 📍 جلب كل العناصر مع Pagination + فلترة
 router.get('/', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request().query('SELECT * FROM OrderItems');
-        res.json(result.recordset);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
+        let { page = 1, limit = 50, orderId = '', productId = '' } = req.query;
+        page = parseInt(page); limit = parseInt(limit);
+        const offset = (page - 1) * limit;
 
-// إضافة عنصر جديد للطلب
-router.post('/', async (req, res) => {
-    const { OrderItemID, OrderID, ProductID, Quantity, Price } = req.body;
-    try {
-        const pool = await poolPromise;
-        await pool.request()
-            .input('OrderItemID', sql.Int, OrderItemID)
-            .input('OrderID', sql.NVarChar(80), OrderID)
-            .input('ProductID', sql.Int, ProductID)
-            .input('Quantity', sql.Int, Quantity)
-            .input('Price', sql.Decimal(9,18), Price)
-            .query(`INSERT INTO OrderItems (OrderItemID, OrderID, ProductID, Quantity, Price)
-                    VALUES (@OrderItemID,@OrderID,@ProductID,@Quantity,@Price)`);
-        res.status(201).json({ message: '✅ تم إضافة العنصر للطلب بنجاح' });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
+        let where = [];
+        let params = [];
 
-// تحديث عنصر
-router.put('/:OrderItemID', async (req, res) => {
-    const { OrderItemID } = req.params;
-    const updateData = req.body;
-    try {
-        const pool = await poolPromise;
-        const request = pool.request().input('OrderItemID', sql.Int, OrderItemID);
-        const fields = Object.keys(updateData);
-        fields.forEach(f => {
-            const type = typeof updateData[f] === 'number' ? sql.Int : sql.NVarChar;
-            request.input(f, type, updateData[f]);
+        if (orderId) {
+            where.push(`"OrderID" ILIKE $${params.length + 1}`);
+            params.push(`%${orderId}%`);
+        }
+        if (productId) {
+            where.push(`"ProductID" = $${params.length + 1}`);
+            params.push(parseInt(productId));
+        }
+
+        const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
+
+        const result = await sql`
+            SELECT "OrderItemID", "OrderID", "ProductID", "Quantity", "Price"
+            FROM "order_items"
+            ${sql.raw(whereClause)}
+            ORDER BY "OrderItemID" ASC
+            OFFSET ${offset} LIMIT ${limit}
+        `;
+
+        sendResponse(res, true, 'Order items fetched successfully', {
+            page,
+            limit,
+            count: result.length,
+            items: result
         });
-        const setQuery = fields.map(f => `${f}=@${f}`).join(',');
-        await request.query(`UPDATE OrderItems SET ${setQuery} WHERE OrderItemID=@OrderItemID`);
-        res.json({ message: '✅ تم تحديث بيانات العنصر بنجاح' });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
-// حذف عنصر
-router.delete('/:OrderItemID', async (req, res) => {
-    const { OrderItemID } = req.params;
+// ==========================
+// 📍 إضافة عنصر جديد
+router.post('/', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        await pool.request().input('OrderItemID', sql.Int, OrderItemID)
-            .query('DELETE FROM OrderItems WHERE OrderItemID=@OrderItemID');
-        res.json({ message: '✅ تم حذف العنصر بنجاح' });
+        const { OrderID, ProductID, Quantity, Price } = req.body;
+        if (!OrderID || !ProductID || !Quantity || !Price) 
+            return sendResponse(res, false, 'All fields are required', null, 400);
+
+        const result = await sql`
+            INSERT INTO "OrderItems" ("OrderID","ProductID","Quantity","Price")
+            VALUES (${OrderID}, ${ProductID}, ${Quantity}, ${Price})
+            RETURNING *
+        `;
+
+        sendResponse(res, true, 'Order item created successfully', result[0], 201);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
+    }
+});
+
+// ==========================
+// 📍 تحديث عنصر
+router.put('/:OrderItemID', async (req, res) => {
+    try {
+        const { OrderItemID } = req.params;
+        const updates = req.body;
+        const keys = Object.keys(updates);
+        if (!keys.length) return sendResponse(res, false, 'Nothing to update', null, 400);
+
+        // بناء SET dynamically
+        const setClauses = keys.map((k, idx) => `"${k}"=$${idx + 1}`).join(', ');
+        const values = keys.map(k => updates[k]);
+
+        const result = await sql`
+            UPDATE "OrderItems"
+            SET ${sql.raw(setClauses)}
+            WHERE "OrderItemID"=${OrderItemID}
+            RETURNING *
+        `;
+
+        if (!result.length) return sendResponse(res, false, 'Order item not found', null, 404);
+        sendResponse(res, true, 'Order item updated successfully', result[0]);
+    } catch (err) {
+        sendResponse(res, false, err.message, null, 500);
+    }
+});
+
+// ==========================
+// 📍 حذف عنصر
+router.delete('/:OrderItemID', async (req, res) => {
+    try {
+        const { OrderItemID } = req.params;
+        const result = await sql`
+            DELETE FROM "order_items"
+            WHERE "OrderItemID"=${OrderItemID}
+            RETURNING *
+        `;
+
+        if (!result.length) return sendResponse(res, false, 'Order item not found', null, 404);
+        sendResponse(res, true, 'Order item deleted successfully', result[0]);
+    } catch (err) {
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 

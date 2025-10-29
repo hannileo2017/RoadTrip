@@ -1,63 +1,82 @@
 // server.js
-
-console.log('Server time is:', new Date().toISOString());
-
 require('dotenv').config();
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
-const { pool } = require('./db'); // استدعاء الـ pool الجديد من PostgreSQL
 const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
 
+// ✅ لاحظ أن هنا نستورد db.js بشكل صحيح
+const sql = require('./db');
 const app = express();
 app.use(express.json());
-app.use(cors());
 
-// =========================
-// 🔹 اختبار الاتصال بقاعدة Supabase عند بدء السيرفر
-// =========================
+// إعدادات CORS
+app.use(cors({
+  origin: '*',
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization']
+}));
+
+// اختبار الاتصال بالـ DB عند بدء السيرفر
 (async () => {
   try {
-    const client = await pool.connect();
-    const result = await client.query('SELECT NOW() AS currentTime');
+    const result = await sql`SELECT NOW() AS currenttime`;
     console.log('✅ Connected to Supabase PostgreSQL');
-    console.log('🕒 Server current date/time:', result.rows[0].currenttime);
-    client.release();
+    console.log('🕒 Server current date/time:', result[0]?.currenttime);
   } catch (err) {
-    console.error('❌ DB Connection Error at server start:', err);
-    process.exit(1); // إيقاف السيرفر إذا فشل الاتصال
+    console.error('❌ DB Connection Error at server start:', err.stack || err);
+    process.exit(1);
   }
 })();
 
-// =========================
-// 🔹 تحميل الروتات أوتوماتيكياً من مجلد routes
-// =========================
-const routesPath = path.join(__dirname, 'routes');
-
-fs.readdirSync(routesPath).forEach(file => {
-  if (file.endsWith('.js')) {
-    const routeModule = require(path.join(routesPath, file));
-    const routeName = '/' + file.replace('.js', '');
-
-    // تأكد أن الملف Router فعلاً
-    if (routeModule && typeof routeModule === 'function' && routeModule.stack) {
-      app.use(routeName, routeModule);
-      console.log(`📡 Route loaded: ${routeName}`);
-    } else {
-      console.log(`⚠️ Skipping ${file} (not a valid Express router)`);
-    }
-  }
-});
-
-// =========================
-// 🔹 نقطة اختبار رئيسية
-// =========================
+// نقطة النهاية الرئيسية
 app.get('/', (req, res) => {
   res.send('🚀 RoadTrip API connected to Supabase and running successfully!');
 });
 
-// =========================
-// 🔹 تشغيل السيرفر
-// =========================
+// --- routes auto-load ---
+const routesPath = path.join(__dirname, 'routes');
+if (fs.existsSync(routesPath)) {
+  fs.readdirSync(routesPath).forEach(file => {
+    if (file.endsWith('.js')) {
+      try {
+        const routerModule = require(path.join(routesPath, file));
+        // تحقق إذا كان Router من Express
+        if (routerModule && routerModule.stack && Array.isArray(routerModule.stack)) {
+          app.use('/' + file.replace('.js',''), routerModule);
+          console.log(`📡 Route loaded: /${file.replace('.js','')}`);
+        } else {
+          console.log(`⚠️ Skipped route file (not a router): ${file}`);
+        }
+      } catch (err) {
+        console.error(`❌ Error loading route ${file}:`, err.message);
+      }
+    }
+  });
+}
+
+// Start server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🌍 Server running on port ${PORT}`));
+const server = app.listen(PORT, () => console.log(`🌍 Server running on port ${PORT}`));
+
+// Graceful shutdown
+async function shutdown(signal) {
+  console.log(`\n⚠️ Received ${signal} — shutting down gracefully...`);
+  try {
+    if (sql && typeof sql.end === 'function') {
+      await sql.end({ timeout: 5000 });
+      console.log('✅ DB connections closed');
+    }
+  } catch (err) {
+    console.warn('⚠️ Error closing DB:', err);
+  }
+  server.close(() => {
+    console.log('✅ HTTP server closed');
+    process.exit(0);
+  });
+}
+
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('unhandledRejection', (reason) => console.error('Unhandled Rejection:', reason));
+process.on('uncaughtException', (err) => { console.error('Uncaught Exception:', err); process.exit(1); });

@@ -1,35 +1,42 @@
-// routes/orders.js
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db');
+const sql = require('../db'); // db.js يستخدم postgres
 
-// ✅ دالة موحدة لإرسال الردود
 function sendResponse(res, success, message, data = null, status = 200) {
-    res.status(status).json({ success, message, data });
+    return res.status(status).json({ success, message, timestamp: new Date(), data });
 }
 
-// ✅ فحص الاتصال عند تحميل الراوت (مفيد لتتبع الأخطاء في Render)
-(async () => {
-    try {
-        const pool = await poolPromise;
-        console.log('📡 Orders route connected to DB successfully');
-    } catch (err) {
-        console.error('❌ Orders route DB connection error:', err.message);
-    }
-})();
-
 // ==========================
-// 📍 جلب الطلبات (أحدث 10)
-// ==========================
+// 📍 جلب الطلبات مع Pagination وفلترة
 router.get('/', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .query(`SELECT TOP 10 * FROM [Order] ORDER BY CreatedAt DESC`);
+        let { page = 1, limit = 10, status = '' } = req.query;
+        page = parseInt(page); limit = parseInt(limit);
+        const offset = (page - 1) * limit;
+
+        let where = [];
+        let params = [];
+
+        if (status) {
+            where.push(`"Status" ILIKE $${params.length + 1}`);
+            params.push(`%${status}%`);
+        }
+
+        const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
+
+        const result = await sql`
+            SELECT * FROM "orders"
+            ${sql.raw(whereClause)}
+            ORDER BY "CreatedAt" DESC
+            OFFSET ${offset} LIMIT ${limit}
+        `;
 
         sendResponse(res, true, 'Orders fetched successfully', {
-            count: result.recordset.length,
-            orders: result.recordset
+            count: result.length,
+            orders: result
         });
     } catch (err) {
         console.error('❌ Error fetching orders:', err);
@@ -39,56 +46,41 @@ router.get('/', async (req, res) => {
 
 // ==========================
 // 📍 جلب طلب محدد حسب ID
-// ==========================
 router.get('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('id', sql.Int, req.params.id)
-            .query('SELECT * FROM [Order] WHERE ID=@id');
-
-        if (!result.recordset.length)
-            return sendResponse(res, false, 'Order not found', null, 404);
-
-        sendResponse(res, true, 'Order fetched successfully', result.recordset[0]);
+        const result = await sql`
+            SELECT * FROM "orders" WHERE "ID"=${req.params.id}
+        `;
+        if (!result.length) return sendResponse(res, false, 'Order not found', null, 404);
+        sendResponse(res, true, 'Order fetched successfully', result[0]);
     } catch (err) {
-        console.error('❌ Error fetching order by ID:', err);
+        console.error('❌ Error fetching orders by ID:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
 // 📍 إضافة طلب جديد
-// ==========================
 router.post('/', async (req, res) => {
     try {
         const { CustomerID, StoreID, DriverID, Status, TotalAmount } = req.body;
-
-        if (!CustomerID || !StoreID || !Status) {
+        if (!CustomerID || !StoreID || !Status)
             return sendResponse(res, false, 'CustomerID, StoreID, and Status are required', null, 400);
-        }
 
-        const pool = await poolPromise;
-        await pool.request()
-            .input('CustomerID', sql.Int, CustomerID)
-            .input('StoreID', sql.Int, StoreID)
-            .input('DriverID', sql.Int, DriverID || null)
-            .input('Status', sql.NVarChar(100), Status)
-            .input('TotalAmount', sql.Decimal(9, 2), TotalAmount || 0)
-            .input('CreatedAt', sql.DateTime, new Date())
-            .query(`INSERT INTO [Order] (CustomerID, StoreID, DriverID, Status, TotalAmount, CreatedAt)
-                    VALUES (@CustomerID, @StoreID, @DriverID, @Status, @TotalAmount, @CreatedAt)`);
-
-        sendResponse(res, true, 'Order added successfully');
+        const result = await sql`
+            INSERT INTO "Order" ("CustomerID","StoreID","DriverID","Status","TotalAmount","CreatedAt")
+            VALUES (${CustomerID}, ${StoreID}, ${DriverID || null}, ${Status}, ${TotalAmount || 0}, NOW())
+            RETURNING *
+        `;
+        sendResponse(res, true, 'Order added successfully', result[0], 201);
     } catch (err) {
-        console.error('❌ Error adding order:', err);
+        console.error('❌ Error adding orders:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
 // 📍 تحديث طلب
-// ==========================
 router.put('/:id', async (req, res) => {
     try {
         const updateData = req.body;
@@ -96,39 +88,40 @@ router.put('/:id', async (req, res) => {
         if (!keys.length)
             return sendResponse(res, false, 'Nothing to update', null, 400);
 
-        const pool = await poolPromise;
-        const request = pool.request().input('ID', sql.Int, req.params.id);
+        // إعداد SET dynamically مع قيم
+        const setClauses = keys.map((k, idx) => `"${k}"=$${idx + 1}`).join(', ');
+        const values = keys.map(k => updateData[k]);
 
-        keys.forEach(k => {
-            let type = sql.NVarChar;
-            if (['CustomerID', 'StoreID', 'DriverID'].includes(k)) type = sql.Int;
-            if (['TotalAmount'].includes(k)) type = sql.Decimal(9, 2);
-            request.input(k, type, updateData[k]);
-        });
+        // الربط مع postgres.js
+        const result = await sql`
+            UPDATE "Order"
+            SET ${sql.raw(setClauses)}, "LastUpdated"=NOW()
+            WHERE "ID"=${req.params.id}
+            RETURNING *
+        `(...values); // <-- هنا قمنا بتمرير القيم الفعلية
 
-        const setQuery = keys.map(k => `${k}=@${k}`).join(', ');
-        await request.query(`UPDATE [Order] SET ${setQuery}, LastUpdated=GETDATE() WHERE ID=@ID`);
+        if (!result.length)
+            return sendResponse(res, false, 'Order not found', null, 404);
 
-        sendResponse(res, true, 'Order updated successfully');
+        sendResponse(res, true, 'Order updated successfully', result[0]);
     } catch (err) {
-        console.error('❌ Error updating order:', err);
+        console.error('❌ Error updating orders:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
 // 📍 حذف طلب
-// ==========================
 router.delete('/:id', async (req, res) => {
     try {
-        const pool = await poolPromise;
-        await pool.request()
-            .input('ID', sql.Int, req.params.id)
-            .query('DELETE FROM [Order] WHERE ID=@ID');
-
-        sendResponse(res, true, 'Order deleted successfully');
+        const result = await sql`
+            DELETE FROM "orders" WHERE "ID"=${req.params.id} RETURNING *
+        `;
+        if (!result.length)
+            return sendResponse(res, false, 'Order not found', null, 404);
+        sendResponse(res, true, 'Order deleted successfully', result[0]);
     } catch (err) {
-        console.error('❌ Error deleting order:', err);
+        console.error('❌ Error deleting orders:', err);
         sendResponse(res, false, err.message, null, 500);
     }
 });

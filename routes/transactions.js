@@ -1,18 +1,23 @@
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+require('dotenv').config();
 // routes/transactions.js
-
 const express = require('express');
 const router = express.Router();
-const { poolPromise, sql } = require('../db'); // تأكد أن لديك db.js جاهز
+const sql = require('../db'); // db.js يستخدم postgres
+
+// دالة مساعدة للرد
+const sendResponse = (res, success, message, data = null, status = 200) => {
+    res.status(status).json({ success, message, data, timestamp: new Date() });
+};
 
 // ==========================
 // دوال التعامل مع قاعدة البيانات
 // ==========================
 async function getAllTransactions() {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .query('SELECT * FROM Transactions ORDER BY CreatedAt DESC');
-        return result.recordset;
+        const result = await sql`SELECT * FROM "transactions" ORDER BY "CreatedAt" DESC`;
+        return result;
     } catch (err) {
         throw new Error(err.message);
     }
@@ -20,11 +25,8 @@ async function getAllTransactions() {
 
 async function getTransactionById(id) {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('TransactionID', sql.Int, id)
-            .query('SELECT * FROM Transactions WHERE TransactionID=@TransactionID');
-        return result.recordset[0] || null;
+        const result = await sql`SELECT * FROM "transactions" WHERE "TransactionID" = ${id}`;
+        return result[0] || null;
     } catch (err) {
         throw new Error(err.message);
     }
@@ -32,18 +34,12 @@ async function getTransactionById(id) {
 
 async function createTransaction(data) {
     try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .input('CustomerID', sql.Int, data.CustomerID)
-            .input('Amount', sql.Float, data.Amount)
-            .input('PaymentMethod', sql.NVarChar(sql.MAX), data.PaymentMethod || null)
-            .input('Status', sql.NVarChar(sql.MAX), data.Status || 'Pending')
-            .query(`
-                INSERT INTO Transactions (CustomerID, Amount, PaymentMethod, Status, CreatedAt)
-                OUTPUT INSERTED.TransactionID
-                VALUES (@CustomerID, @Amount, @PaymentMethod, @Status, GETDATE())
-            `);
-        return result.recordset[0].TransactionID;
+        const result = await sql`
+            INSERT INTO "Transactions" ("CustomerID","Amount","paymentMethod","Status","CreatedAt")
+            VALUES (${data.CustomerID}, ${data.Amount}, ${data.paymentMethod || null}, ${data.Status || 'Pending'}, NOW())
+            RETURNING "TransactionID"
+        `;
+        return result[0].TransactionID;
     } catch (err) {
         throw new Error(err.message);
     }
@@ -51,21 +47,19 @@ async function createTransaction(data) {
 
 async function updateTransaction(id, data) {
     try {
-        const pool = await poolPromise;
-        const fields = [];
-        if (data.Amount !== undefined) fields.push('Amount=@Amount');
-        if (data.PaymentMethod !== undefined) fields.push('PaymentMethod=@PaymentMethod');
-        if (data.Status !== undefined) fields.push('Status=@Status');
+        const fields = Object.keys(data);
         if (!fields.length) throw new Error('No fields to update');
 
-        const query = `UPDATE Transactions SET ${fields.join(', ')}, UpdatedAt=GETDATE() WHERE TransactionID=@TransactionID`;
-        const request = pool.request().input('TransactionID', sql.Int, id);
-        if (data.Amount !== undefined) request.input('Amount', sql.Float, data.Amount);
-        if (data.PaymentMethod !== undefined) request.input('PaymentMethod', sql.NVarChar(sql.MAX), data.PaymentMethod);
-        if (data.Status !== undefined) request.input('Status', sql.NVarChar(sql.MAX), data.Status);
+        const setQuery = fields.map(f => `"${f}" = ${data[f]}`).join(', ');
 
-        await request.query(query);
-        return true;
+        const result = await sql`
+            UPDATE "Transactions"
+            SET ${sql.raw(setQuery)}, "UpdatedAt" = NOW()
+            WHERE "TransactionID" = ${id}
+            RETURNING *
+        `;
+        if (!result.length) throw new Error('Transaction not found');
+        return result[0];
     } catch (err) {
         throw new Error(err.message);
     }
@@ -73,11 +67,13 @@ async function updateTransaction(id, data) {
 
 async function deleteTransaction(id) {
     try {
-        const pool = await poolPromise;
-        await pool.request()
-            .input('TransactionID', sql.Int, id)
-            .query('DELETE FROM Transactions WHERE TransactionID=@TransactionID');
-        return true;
+        const result = await sql`
+            DELETE FROM "transactions"
+            WHERE "TransactionID" = ${id}
+            RETURNING *
+        `;
+        if (!result.length) throw new Error('Transaction not found');
+        return result[0];
     } catch (err) {
         throw new Error(err.message);
     }
@@ -91,9 +87,9 @@ async function deleteTransaction(id) {
 router.get('/', async (req, res) => {
     try {
         const transactions = await getAllTransactions();
-        res.json({ success: true, data: transactions });
+        sendResponse(res, true, 'Transactions fetched successfully', transactions);
     } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
@@ -101,10 +97,10 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const transaction = await getTransactionById(req.params.id);
-        if (!transaction) return res.status(404).json({ success: false, message: 'Transaction not found' });
-        res.json({ success: true, data: transaction });
+        if (!transaction) return sendResponse(res, false, 'Transaction not found', null, 404);
+        sendResponse(res, true, 'Transaction fetched successfully', transaction);
     } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
@@ -112,29 +108,29 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const transactionId = await createTransaction(req.body);
-        res.json({ success: true, message: 'Transaction created', transactionId });
+        sendResponse(res, true, 'Transaction created', { TransactionID: transactionId }, 201);
     } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // PUT لتحديث معاملة موجودة
 router.put('/:id', async (req, res) => {
     try {
-        await updateTransaction(req.params.id, req.body);
-        res.json({ success: true, message: 'Transaction updated' });
+        const updatedTransaction = await updateTransaction(req.params.id, req.body);
+        sendResponse(res, true, 'Transaction updated', updatedTransaction);
     } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // DELETE لحذف معاملة
 router.delete('/:id', async (req, res) => {
     try {
-        await deleteTransaction(req.params.id);
-        res.json({ success: true, message: 'Transaction deleted' });
+        const deletedTransaction = await deleteTransaction(req.params.id);
+        sendResponse(res, true, 'Transaction deleted', deletedTransaction);
     } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
