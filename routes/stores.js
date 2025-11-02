@@ -1,9 +1,10 @@
+const supabase = require('../supabase');
 // routes/stores.js
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const sql = require('../db'); // postgres client
-const supabase = require('../supabaseClient'); // service role client
+const { createClient } = require('../supabase'); // service role client
 
 // اسم البكت المستخدم (غيّره هنا إن أردت)
 const BUCKET = 'RoadTrip';

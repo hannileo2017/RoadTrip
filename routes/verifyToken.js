@@ -1,31 +1,12 @@
-const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
-require('dotenv').config();
-// routes/verifyToken.js
-const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
+const supabase = require('../supabase');
+const express = require('express');
+const router = express.Router();
+const verifyToken = require('../middleware/verifyToken');
 
-function verifyToken(req, res, next) {
-  // قراءة الهيدر بطريقة مرنة
-  const authHeader = req.headers && (req.headers.authorization || req.headers.Authorization || req.get && req.get('Authorization'));
-  if (!authHeader) {
-    return res.status(401).json({ success: false, message: 'No token provided' });
-  }
+// كل روت داخل هذا الملف يستخدم التحقق
+router.get('/', verifyToken, async (req, res) => {
+  // هنا كود جلب الطلبات
+  res.json({ message: 'Orders fetched successfully' });
+});
 
-  // نتوقع "Bearer <token>"
-  const parts = authHeader.split(' ');
-  if (parts.length !== 2 || parts[0].toLowerCase() !== 'bearer') {
-    return res.status(401).json({ success: false, message: 'Invalid token format' });
-  }
-
-  const token = parts[1];
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.customerId = decoded.customerId; // نضع الـ id لاستخدامه في الـ routes
-    return next();
-  } catch (err) {
-    return res.status(401).json({ success: false, message: 'Invalid or expired token' });
-  }
-}
-
-module.exports = { verifyToken }; // بدل module.exports = verifyToken;
+module.exports = router;

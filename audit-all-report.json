@@ -1,0 +1,144 @@
+{
+  "scannedFiles": 34,
+  "missingPackages": {},
+  "missingLocalModules": [],
+  "missingEnvVars": {},
+  "filesStatus": [
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\appSettings.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\areas.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\auditTrail.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\auth.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\cities.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\coupons.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\couponsAdvanced.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\customers.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\deliveryZones.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\deviceTokens.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\driver.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\driverLocations.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\driverRatings.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\notifications.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\orderDisputes.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\orderHistory.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\orderHistoryDetailed.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\orderItems.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\orders.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\orderTracking.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\payments.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\products.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\rolePermissions.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\roles.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\sessions.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\storeCategories.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\storeRatings.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\stores.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\supportTickets.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\systemSettings.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\transactions.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\units.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\users.js",
+      "issues": []
+    },
+    {
+      "file": "D:\\Road_trip.Server\\RoadTrip_API\\routes\\verifyToken.js",
+      "issues": []
+    }
+  ]
+}

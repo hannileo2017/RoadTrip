@@ -1,0 +1,1239 @@
+{
+  "generatedAt": "2025-11-02T08:28:03.487Z",
+  "files": [
+    {
+      "file": "routes\\appSettings.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\areas.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\auditTrail.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\auth.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "express",
+        "../db",
+        "bcrypt",
+        "jsonwebtoken",
+        "dotenv"
+      ],
+      "missingPackages": [],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY",
+        "JWT_SECRET"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\cities.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\coupons.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\couponsAdvanced.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\customers.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "dotenv",
+        "express",
+        "../db",
+        "bcrypt",
+        "jsonwebtoken",
+        "../middleware/verifyToken",
+        "../smsSender",
+        "../helpers/response",
+        "../helpers/generate"
+      ],
+      "missingPackages": [],
+      "envVars": [
+        "JWT_SECRET",
+        "NODE_ENV"
+      ],
+      "suspicious": []
+    },
+    {
+      "file": "routes\\deliveryZones.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "express",
+        "@supabase/supabase-js",
+        "dotenv"
+      ],
+      "missingPackages": [],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_SERVICE_KEY"
+      ],
+      "suspicious": [
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\deviceTokens.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "express",
+        "@supabase/supabase-js",
+        "dotenv"
+      ],
+      "missingPackages": [],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_SERVICE_KEY"
+      ],
+      "suspicious": [
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\driver.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "dotenv",
+        "express",
+        "../db",
+        "../supabase",
+        "crypto"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)"
+      ]
+    },
+    {
+      "file": "routes\\driverLocations.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "express",
+        "@supabase/supabase-js",
+        "dotenv"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_SERVICE_KEY"
+      ],
+      "suspicious": [
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\driverRatings.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "express",
+        "@supabase/supabase-js",
+        "dotenv"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_SERVICE_KEY"
+      ],
+      "suspicious": [
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\notifications.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "express",
+        "@supabase/supabase-js",
+        "dotenv"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_SERVICE_KEY"
+      ],
+      "suspicious": [
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\orderDisputes.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "express",
+        "@supabase/supabase-js",
+        "dotenv"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_SERVICE_KEY"
+      ],
+      "suspicious": [
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\orderHistory.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "express",
+        "@supabase/supabase-js",
+        "dotenv"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_SERVICE_KEY"
+      ],
+      "suspicious": [
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\orderHistoryDetailed.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\orderItems.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\orders.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\orderTracking.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\payments.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\products.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "dotenv",
+        "express",
+        "../db",
+        "../supabase",
+        "crypto"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)"
+      ]
+    },
+    {
+      "file": "routes\\rolePermissions.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\roles.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\sessions.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\storeCategories.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\storeRatings.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\stores.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "dotenv",
+        "express",
+        "../db",
+        "../supabase"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)"
+      ]
+    },
+    {
+      "file": "routes\\supportTickets.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\systemSettings.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\transactions.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\units.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\users.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "@supabase/supabase-js",
+        "dotenv",
+        "express",
+        "../db"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [
+        "SUPABASE_URL",
+        "SUPABASE_KEY"
+      ],
+      "suspicious": [
+        "uses sql`...` (postgres tagged template?)",
+        "uses createClient() (supabase client?)"
+      ]
+    },
+    {
+      "file": "routes\\verifyToken.js",
+      "checks": [
+        {
+          "type": "express",
+          "ok": true
+        },
+        {
+          "type": "router",
+          "ok": true
+        },
+        {
+          "type": "exports",
+          "ok": true
+        }
+      ],
+      "syntax": {
+        "ok": true
+      },
+      "modules": [
+        "express",
+        "../middleware/verifyToken"
+      ],
+      "missingPackages": [
+        "crypto"
+      ],
+      "envVars": [],
+      "suspicious": []
+    }
+  ],
+  "summary": {
+    "filesScanned": 34,
+    "totalExternalPackagesUsed": [
+      "@supabase/supabase-js",
+      "dotenv",
+      "express",
+      "bcrypt",
+      "jsonwebtoken",
+      "crypto"
+    ],
+    "missingPackages": [
+      "crypto"
+    ],
+    "envVarsUsed": [
+      "SUPABASE_URL",
+      "SUPABASE_KEY",
+      "JWT_SECRET",
+      "NODE_ENV",
+      "SUPABASE_SERVICE_KEY"
+    ],
+    "envVarsMissingInEnvFile": [],
+    "missingRelativeModules": []
+  }
+}

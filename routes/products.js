@@ -1,9 +1,10 @@
+const supabase = require('../supabase');
 // routes/products.js
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const sql = require('../db');                // اتصال PostgreSQL
-const supabase = require('../supabaseClient'); // module.exports = supabase
+const { createClient } = require('../supabase'); // module.exports = supabase
 const crypto = require('crypto');
 
 // اسم الـ bucket المستخدم (غيّره إذا لديك bucket مختلف)

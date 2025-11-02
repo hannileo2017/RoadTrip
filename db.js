@@ -1,26 +1,17 @@
-// db.js (recommended for `postgres` library)
+// db.js
 const postgres = require('postgres');
+require('dotenv').config(); // تحميل متغيرات البيئة
 
-const {
-  DB_HOST,
-  DB_PORT = 5432,
-  DB_NAME,
-  DB_USER,
-  DB_PASSWORD,
-} = process.env;
+const { DATABASE_URL } = process.env;
 
-if (!DB_HOST || !DB_NAME || !DB_USER || !DB_PASSWORD) {
-  throw new Error('⚠️ Missing DB env vars. Make sure DB_HOST, DB_NAME, DB_USER, DB_PASSWORD are set.');
+if (!DATABASE_URL) {
+  throw new Error('⚠️ Missing DATABASE_URL in .env');
 }
 
-const sql = postgres({
-  host: DB_HOST,
-  port: Number(DB_PORT),
-  database: DB_NAME,
-  username: DB_USER,
-  password: DB_PASSWORD,
-  ssl: { rejectUnauthorized: false }, // ضروري لـ Supabase على Render
-  max: 10, // pool size
+// الاتصال بقاعدة البيانات باستخدام DATABASE_URL
+const sql = postgres(DATABASE_URL, {
+  ssl: { rejectUnauthorized: false }, // ضروري لـ Supabase على Render أو محلي
+  max: 10,
   idle_timeout: 60000
 });
 
