@@ -1,0 +1,376 @@
+{
+  "tables": [
+    {
+      "name": "__MigrationHistory",
+      "pk": ["MigrationId","ContextKey"],
+      "columns": [
+        { "name": "MigrationId", "type": "nvarchar(150)", "isPrimaryKey": true, "isNullable": false },
+        { "name": "ContextKey", "type": "nvarchar(300)", "isPrimaryKey": true, "isNullable": false },
+        { "name": "Model", "type": "varbinary(max)", "isNullable": false },
+        { "name": "ProductVersion", "type": "nvarchar(32)", "isNullable": false }
+      ]
+    },
+    {
+      "name": "Coupon",
+      "pk": "CouponID",
+      "columns": [
+        { "name": "CouponID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "Code", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "DiscountPercent", "type": "decimal(18,2)", "isNullable": false },
+        { "name": "ExpiryDate", "type": "datetime", "isNullable": false },
+        { "name": "IsActive", "type": "bit", "isNullable": false }
+      ],
+      "searchable": ["Code"]
+    },
+    {
+      "name": "CouponAdvanced",
+      "pk": "AdvancedID",
+      "columns": [
+        { "name": "AdvancedID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "CouponID", "type": "int", "isNullable": false },
+        { "name": "MinimumAmount", "type": "decimal(18,2)", "isNullable": true },
+        { "name": "MaxDiscount", "type": "decimal(18,2)", "isNullable": true },
+        { "name": "AppliesToStoreID", "type": "int", "isNullable": true },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": false }
+      ]
+    },
+    {
+      "name": "Customers",
+      "pk": "CustomerID",
+      "columns": [
+        { "name": "CustomerID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "FullName", "type": "nvarchar(200)", "isNullable": false },
+        { "name": "Phone", "type": "nvarchar(40)", "isNullable": false },
+        { "name": "Email", "type": "nvarchar(200)", "isNullable": true },
+        { "name": "Address", "type": "nvarchar(400)", "isNullable": true },
+        { "name": "CityID", "type": "int", "isNullable": true },
+        { "name": "AreaID", "type": "int", "isNullable": true },
+        { "name": "Password", "type": "nvarchar(400)", "isNullable": true },
+        { "name": "OTP", "type": "nvarchar(40)", "isNullable": true },
+        { "name": "OTPExpires", "type": "datetime", "isNullable": true },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": true },
+        { "name": "UpdatedAt", "type": "datetime", "isNullable": true },
+        { "name": "FCMToken", "type": "nvarchar(max)", "isNullable": true }
+      ],
+      "searchable": ["FullName","Phone","Email"]
+    },
+    {
+      "name": "Driver",
+      "pk": "DriverID",
+      "columns": [
+        { "name": "DriverID", "type": "nvarchar(128)", "isPrimaryKey": true, "isNullable": false },
+        { "name": "FullName", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "UserName", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Phone", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Email", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Password", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "OTP", "type": "int", "isNullable": true },
+        { "name": "VehicleType", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "VehicleNumber", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "LicenseNumber", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "NationalID", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Address", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "IsActive", "type": "bit", "isNullable": false },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": false },
+        { "name": "LastLogin", "type": "datetime", "isNullable": true },
+        { "name": "CityID", "type": "int", "isNullable": true },
+        { "name": "AreaID", "type": "int", "isNullable": true },
+        { "name": "Status", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "MaxLoad", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Model", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "LastUpdated", "type": "datetime", "isNullable": true },
+        { "name": "Notes", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "PhotoURL", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Available", "type": "bit", "isNullable": false },
+        { "name": "Rating", "type": "float", "isNullable": true },
+        { "name": "FCMToken", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "NationalCardURL", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "LicenseURL", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "OTPExpires", "type": "datetime", "isNullable": true }
+      ],
+      "searchable": ["FullName","UserName","Phone"]
+    },
+    {
+      "name": "DriverLocation",
+      "pk": "LocationID",
+      "columns": [
+        { "name": "LocationID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "DriverID", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Latitude", "type": "decimal(18,2)", "isNullable": false },
+        { "name": "Longitude", "type": "decimal(18,2)", "isNullable": false },
+        { "name": "LastUpdated", "type": "datetime", "isNullable": false }
+      ]
+    },
+    {
+      "name": "DriverRating",
+      "pk": "RatingID",
+      "columns": [
+        { "name": "RatingID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "DriverID", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "CustomerID", "type": "int", "isNullable": false },
+        { "name": "Rating", "type": "float", "isNullable": false },
+        { "name": "Comment", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": false }
+      ]
+    },
+    {
+      "name": "Drivers",
+      "pk": "DriverID",
+      "columns": [
+        { "name": "DriverID", "type": "nvarchar(50)", "isPrimaryKey": true, "isNullable": false },
+        { "name": "FullName", "type": "nvarchar(200)", "isNullable": false },
+        { "name": "Phone", "type": "nvarchar(50)", "isNullable": false },
+        { "name": "Email", "type": "nvarchar(200)", "isNullable": true },
+        { "name": "Password", "type": "nvarchar(400)", "isNullable": true },
+        { "name": "VehicleType", "type": "nvarchar(100)", "isNullable": true },
+        { "name": "VehicleNumber", "type": "nvarchar(100)", "isNullable": true },
+        { "name": "LicenseNumber", "type": "nvarchar(100)", "isNullable": true },
+        { "name": "NationalID", "type": "nvarchar(100)", "isNullable": true },
+        { "name": "Address", "type": "nvarchar(400)", "isNullable": true },
+        { "name": "IsActive", "type": "bit", "isNullable": false },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": false },
+        { "name": "CityID", "type": "int", "isNullable": true },
+        { "name": "AreaID", "type": "int", "isNullable": true },
+        { "name": "Status", "type": "nvarchar(50)", "isNullable": true },
+        { "name": "MaxLoad", "type": "nvarchar(50)", "isNullable": true },
+        { "name": "Model", "type": "nvarchar(50)", "isNullable": true },
+        { "name": "LastUpdated", "type": "datetime", "isNullable": true },
+        { "name": "Notes", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "PhotoURL", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Available", "type": "bit", "isNullable": false },
+        { "name": "Rating", "type": "float", "isNullable": true },
+        { "name": "FCMToken", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "NationalCardURL", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "LicenseURL", "type": "nvarchar(max)", "isNullable": true }
+      ],
+      "searchable": ["FullName","Phone"]
+    },
+    {
+      "name": "Notification",
+      "pk": "NotificationID",
+      "columns": [
+        { "name": "NotificationID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "UserID", "type": "int", "isNullable": false },
+        { "name": "Title", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Message", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": false },
+        { "name": "IsRead", "type": "bit", "isNullable": false },
+        { "name": "UserType", "type": "nvarchar(50)", "isNullable": true }
+      ]
+    },
+    {
+      "name": "Order",
+      "pk": "OrderID",
+      "columns": [
+        { "name": "OrderID", "type": "nvarchar(128)", "isPrimaryKey": true, "isNullable": false },
+        { "name": "CustomerID", "type": "int", "isNullable": false },
+        { "name": "StoreID", "type": "int", "isNullable": false },
+        { "name": "DriverID", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "TotalAmount", "type": "decimal(18,2)", "isNullable": false },
+        { "name": "DeliveryFee", "type": "decimal(18,2)", "isNullable": false },
+        { "name": "PaymentMethod", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Status", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": false },
+        { "name": "UpdatedAt", "type": "datetime", "isNullable": true },
+        { "name": "DeliveryAddress", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Notes", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "EstimatedTime", "type": "int", "isNullable": true },
+        { "name": "CompletedAt", "type": "datetime", "isNullable": true }
+      ]
+    },
+    {
+      "name": "OrderItem",
+      "pk": "OrderItemID",
+      "columns": [
+        { "name": "OrderItemID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "OrderID", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "ProductID", "type": "int", "isNullable": false },
+        { "name": "Quantity", "type": "int", "isNullable": false },
+        { "name": "Price", "type": "decimal(18,2)", "isNullable": false }
+      ]
+    },
+    {
+      "name": "OrderTracking",
+      "pk": "TrackingID",
+      "columns": [
+        { "name": "TrackingID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "OrderID", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Status", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Timestamp", "type": "datetime", "isNullable": false },
+        { "name": "Location", "type": "nvarchar(max)", "isNullable": true }
+      ]
+    },
+    {
+      "name": "Payment",
+      "pk": "PaymentID",
+      "columns": [
+        { "name": "PaymentID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "OrderID", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "PaymentType", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Amount", "type": "decimal(18,2)", "isNullable": false },
+        { "name": "PaymentStatus", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "TransactionID", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": false }
+      ]
+    },
+    {
+      "name": "Product",
+      "pk": "ProductID",
+      "columns": [
+        { "name": "ProductID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "StoreID", "type": "int", "isNullable": false },
+        { "name": "ProductName", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Description", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Price", "type": "decimal(18,2)", "isNullable": false },
+        { "name": "Stock", "type": "int", "isNullable": false },
+        { "name": "ImageURL", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "IsAvailable", "type": "bit", "isNullable": false },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": false },
+        { "name": "UpdatedAt", "type": "datetime", "isNullable": true }
+      ],
+      "searchable": ["ProductName"]
+    },
+    {
+      "name": "Role",
+      "pk": "RoleID",
+      "columns": [
+        { "name": "RoleID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "RoleName", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Description", "type": "nvarchar(max)", "isNullable": true }
+      ]
+    },
+    {
+      "name": "RolePermission",
+      "pk": "PermissionID",
+      "columns": [
+        { "name": "PermissionID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "RoleID", "type": "int", "isNullable": false },
+        { "name": "PermissionKey", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "CanView", "type": "bit", "isNullable": false },
+        { "name": "CanEdit", "type": "bit", "isNullable": false },
+        { "name": "CanDelete", "type": "bit", "isNullable": false },
+        { "name": "CanAdd", "type": "bit", "isNullable": false }
+      ]
+    },
+    {
+      "name": "Sessions",
+      "pk": "SessionID",
+      "columns": [
+        { "name": "SessionID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "UserID", "type": "int", "isNullable": false },
+        { "name": "LoginTime", "type": "datetime", "isNullable": false },
+        { "name": "LogoutTime", "type": "datetime", "isNullable": true },
+        { "name": "DeviceInfo", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "SessionToken", "type": "nvarchar(max)", "isNullable": true }
+      ]
+    },
+    {
+      "name": "StoreCategory",
+      "pk": "CategoryID",
+      "columns": [
+        { "name": "CategoryID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "CategoryName", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Description", "type": "nvarchar(max)", "isNullable": true }
+      ]
+    },
+    {
+      "name": "StoreRating",
+      "pk": "RatingID",
+      "columns": [
+        { "name": "RatingID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "StoreID", "type": "int", "isNullable": false },
+        { "name": "CustomerID", "type": "int", "isNullable": false },
+        { "name": "Rating", "type": "float", "isNullable": false },
+        { "name": "Comment", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": false }
+      ]
+    },
+    {
+      "name": "Stores",
+      "pk": "StoreID",
+      "columns": [
+        { "name": "StoreID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "StoreName", "type": "nvarchar(max)", "isNullable": false },
+        { "name": "CategoryID", "type": "int", "isNullable": true },
+        { "name": "CityID", "type": "int", "isNullable": true },
+        { "name": "AreaID", "type": "int", "isNullable": true },
+        { "name": "Address", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Phone", "type": "nvarchar(max)", "isNullable": false },
+        { "name": "Email", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Description", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "IsActive", "type": "bit", "isNullable": true },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": true },
+        { "name": "LogoURL", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Rating", "type": "float", "isNullable": true },
+        { "name": "OTP", "type": "nvarchar(10)", "isNullable": true },
+        { "name": "OTPExpires", "type": "datetime", "isNullable": true },
+        { "name": "PhoneConfirmed", "type": "bit", "isNullable": false },
+        { "name": "FCMToken", "type": "nvarchar(max)", "isNullable": true }
+      ],
+      "searchable": ["StoreName","Phone"]
+    },
+    {
+      "name": "SupportTicket",
+      "pk": "TicketID",
+      "columns": [
+        { "name": "TicketID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "UserType", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "UserID", "type": "int", "isNullable": false },
+        { "name": "Subject", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Message", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Status", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": true },
+        { "name": "UpdatedAt", "type": "datetime", "isNullable": true },
+        { "name": "Priority", "type": "nvarchar(max)", "isNullable": true }
+      ]
+    },
+    {
+      "name": "SystemSetting",
+      "pk": "SettingID",
+      "columns": [
+        { "name": "SettingID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "SettingKey", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "SettingValue", "type": "nvarchar(max)", "isNullable": true }
+      ]
+    },
+    {
+      "name": "Transaction",
+      "pk": "TransactionID",
+      "columns": [
+        { "name": "TransactionID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "OrderID", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Amount", "type": "decimal(18,2)", "isNullable": false },
+        { "name": "PaymentMethod", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "TransactionDate", "type": "datetime", "isNullable": true }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "pk": "TransactionID",
+      "columns": [
+        { "name": "TransactionID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "CustomerID", "type": "int", "isNullable": false },
+        { "name": "Amount", "type": "float", "isNullable": false },
+        { "name": "PaymentMethod", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "Status", "type": "nvarchar(max)", "isNullable": true },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": true },
+        { "name": "UpdatedAt", "type": "datetime", "isNullable": true }
+      ]
+    },
+    {
+      "name": "Users",
+      "pk": "UserID",
+      "columns": [
+        { "name": "UserID", "type": "int", "isPrimaryKey": true, "isIdentity": true, "isNullable": false },
+        { "name": "UserName", "type": "nvarchar(100)", "isNullable": false },
+        { "name": "Password", "type": "nvarchar(200)", "isNullable": false },
+        { "name": "FullName", "type": "nvarchar(200)", "isNullable": false },
+        { "name": "Role", "type": "nvarchar(100)", "isNullable": true },
+        { "name": "CreatedAt", "type": "datetime", "isNullable": false },
+        { "name": "LastLogin", "type": "datetime", "isNullable": true },
+        { "name": "RoleID", "type": "int", "isNullable": true }
+      ],
+      "searchable": ["UserName","FullName"]
+    }
+  ]
+}

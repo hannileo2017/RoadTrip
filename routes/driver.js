@@ -1,45 +1,64 @@
-const supabase = require('../supabase');
 // routes/driver.js
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const sql = require('../db');                // اتصال PostgreSQL (postgres lib)
-const { createClient } = require('../supabase'); // module.exports = supabase
+const sql = require('../db'); 
+// auto-inserted dbQuery helper (returns rows if pg returns result object)
+const dbQuery = async (...args) => {
+  const r = await dbQuery(...args);
+  return (r && r.rows) ? r.rows : r;
+};
+// تأكد أن db.js يُرجع واجهة pg/pg-pool مع .query()
 const crypto = require('crypto');
 
-const BUCKET = 'RoadTrip'; // تأكد من اسم الـ bucket هنا
+let supabase = null;
+const BUCKET = 'RoadTrip';
+
+// حاول إنشاء عميل Supabase إن كانت المكتبة متوفرة وENV مضبوطة
+try {
+  const { createClient } = require('@supabase/supabase-js');
+  const SUPABASE_URL = process.env.SUPABASE_URL || null;
+  const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY || null;
+  if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+    supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  }
+} catch (e) {
+  // لو @supabase/supabase-js غير منصب محليًا، نكمل بدون supabase
+  supabase = null;
+}
 
 // ----------------- Helpers -----------------
-
 async function removeObjectByUrl(publicUrl) {
-  if (!publicUrl) return;
+  if (!publicUrl || !supabase) return;
   try {
     const url = new URL(publicUrl);
-    const objectPath = decodeURIComponent(url.pathname.replace(`/storage/v1/object/public/${BUCKET}/`, ''));
+    const prefix = `/storage/v1/object/public/${BUCKET}/`;
+    const pathname = url.pathname || '';
+    if (!pathname.includes(prefix)) return;
+    const objectPath = decodeURIComponent(pathname.replace(prefix, ''));
     if (objectPath) {
-      await supabase.storage.from(BUCKET).remove([objectPath]);
+      const { error } = await supabase.storage.from(BUCKET).remove([objectPath]);
+      if (error) console.warn('removeObjectByUrl error:', error.message || error);
     }
   } catch (err) {
     console.warn('⚠️ removeObjectByUrl failed:', err.message);
   }
 }
 
-// رفع صورة إلى Supabase Storage
 async function uploadDriverPhoto(base64String, objectPath) {
-  if (!base64String || typeof base64String !== 'string') throw new Error('Invalid image data');
+  if (!base64String || !supabase) throw new Error('No image data or supabase not configured');
+  // base64String expected to be the raw base64 (no data: prefix)
   const fileBuffer = Buffer.from(base64String, 'base64');
-
   const { data, error } = await supabase.storage.from(BUCKET).upload(objectPath, fileBuffer, { upsert: true });
   if (error) throw error;
-
   const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(objectPath);
   return urlData.publicUrl;
 }
 
-// توليد DriverID بنفس فكرة VB: RTD-0000001 ...
 async function generateDriverID() {
-  const row = await sql`SELECT COALESCE(MAX(CAST(SUBSTRING("DriverID", 5) AS INTEGER)), 0) AS maxnum FROM "Drivers";`;
-  const maxnum = row && row[0] ? Number(row[0].maxnum || 0) : 0;
+  // نأخذ أكبر رقم حالي من driverid إذا كان بالشكل RTD-0000001
+  const result = await dbQuery(`SELECT coalesce(max(CAST(substring(driverid, 5) AS INTEGER)), 0) AS maxnum FROM drivers;`);
+  const maxnum = result && result.rows && result.rows[0] ? Number(result.rows[0].maxnum || 0) : 0;
   const next = maxnum + 1;
   return 'RTD-' + String(next).padStart(7, '0');
 }
@@ -80,76 +99,72 @@ function generateOTP() {
 // GET /api/driver  -> أحدث 20 سائق
 router.get('/', async (req, res) => {
   try {
-    const rows = await sql`SELECT * FROM "Drivers" ORDER BY "CreatedAt" DESC LIMIT 20;`;
+    const result = await dbQuery(`SELECT * FROM drivers ORDER BY createdat DESC LIMIT 20;`);
+    const rows = result && result.rows ? result.rows : [];
     const safe = rows.map(r => {
       const obj = { ...r };
-      if (obj.Password) delete obj.Password;
       if (obj.password) delete obj.password;
+      if (obj.Password) delete obj.Password;
       return obj;
     });
-    res.json(safe);
+    res.json({ success: true, count: safe.length, drivers: safe });
   } catch (err) {
     console.error('❌ Error fetching drivers:', err);
-    res.status(500).json({ error: err.message || 'Server error' });
+    res.status(500).json({ success: false, error: err.message || 'Server error' });
   }
 });
 
-// POST /api/driver  -> إنشاء سائق جديد (توليد DriverID, password, otp, رفع صورة)
+// POST /api/driver  -> إنشاء سائق جديد
 router.post('/', async (req, res) => {
   try {
     const {
       fullname, phone, vehicletype, vehiclenumber,
       password: providedPassword,
-      photoBase64 // optional (without data:image/... prefix)
+      photoBase64
     } = req.body;
 
-    if (!fullname || !phone) return res.status(400).json({ error: 'fullname and phone are required' });
+    if (!fullname || !phone) return res.status(400).json({ success: false, error: 'fullname and phone are required' });
 
-    // 1) DriverID
     const driverid = await generateDriverID();
-
-    // 2) password
     const plainPassword = providedPassword && providedPassword.trim() ? providedPassword : generateRandomPassword(8);
     const passwordToSave = makeStoredPassword(plainPassword);
-
-    // 3) OTP
     const otp = generateOTP();
 
-    // 4) photo upload
+    // upload photo if provided and supabase available
     let photoUrl = null;
-    if (photoBase64) {
+    if (photoBase64 && supabase) {
       const objectPath = `${driverid}/${driverid}-${Date.now()}.jpg`;
       try {
         photoUrl = await uploadDriverPhoto(photoBase64, objectPath);
       } catch (uploadErr) {
-        console.warn('⚠️ Photo upload failed (continuing without photo):', uploadErr.message);
+        console.warn('⚠️ Photo upload failed (continuing without photo):', uploadErr.message || uploadErr);
       }
     }
 
-    // 5) Insert into DB
-    const inserted = await sql`
-      INSERT INTO "Drivers" (
-        "DriverID","FullName","Phone","VehicleType","VehicleNumber",
-        "Password","OTP","PhotoURL","CreatedAt","Available"
+    const inserted = await dbQuery(`
+      INSERT INTO drivers (
+        driverid, fullname, phone, vehicletype, vehiclenumber,
+        password, otp, photourl, createdat, available
       ) VALUES (
-        ${driverid}, ${fullname}, ${phone}, ${vehicletype || null}, ${vehiclenumber || null},
-        ${passwordToSave}, ${otp}, ${photoUrl}, NOW(), true
+        $1,$2,$3,$4,$5,$6,$7,$8,NOW(), true
       ) RETURNING *;
-    `;
+    `, [driverid, fullname, phone, vehicletype || null, vehiclenumber || null, passwordToSave, otp, photoUrl]);
 
-    const driver = inserted[0];
-    if (driver && driver.Password) delete driver.Password;
-    if (driver && driver.password) delete driver.password;
+    const driver = inserted && inserted.rows && inserted.rows[0] ? inserted.rows[0] : null;
+    if (driver) {
+      if (driver.password) delete driver.password;
+      if (driver.Password) delete driver.Password;
+    }
 
-    // NOTE: plainPassword is returned for testing convenience. In production, send via SMS/email then remove.
     res.status(201).json({
+      success: true,
       message: 'Driver created successfully',
       driver,
-      plainPassword
+      plainPassword // فقط للاختبار — تخلص منه في الإنتاج
     });
   } catch (err) {
     console.error('❌ Error adding driver:', err);
-    res.status(500).json({ error: err.message || 'Server error' });
+    res.status(500).json({ success: false, error: err.message || 'Server error' });
   }
 });
 
@@ -158,63 +173,72 @@ router.put('/:driverid', async (req, res) => {
   try {
     const { driverid } = req.params;
     const body = req.body || {};
-    if (!driverid) return res.status(400).json({ error: 'driverid required' });
+    if (!driverid) return res.status(400).json({ success: false, error: 'driverid required' });
 
-    // get existing row (needed to delete old photo if replaced)
-    const existingRows = await sql`SELECT * FROM "Drivers" WHERE "DriverID" = ${driverid} LIMIT 1;`;
-    if (!existingRows.length) return res.status(404).json({ error: 'Driver not found' });
+    const existingResult = await dbQuery(`SELECT * FROM drivers WHERE driverid = $1 LIMIT 1;`, [driverid]);
+    const existingRows = existingResult && existingResult.rows ? existingResult.rows : [];
+    if (!existingRows.length) return res.status(404).json({ success: false, error: 'Driver not found' });
     const existing = existingRows[0];
 
-    // whitelist للحقول المسموح تعديلها
+    // whitelist الحقول المسموح تعديلها (أسماء صغيرة لتوافق schema)
     const allowed = new Set([
-      'FullName','Phone','VehicleType','VehicleNumber','Available',
-      'Email','Notes','Model','MaxLoad','CityID','AreaID'
+      'fullname','phone','vehicletype','vehiclenumber','available',
+      'email','notes','model','maxload','cityid','areaid'
     ]);
 
     const updateObj = {};
     for (const key of Object.keys(body)) {
-      if (allowed.has(key)) updateObj[key] = body[key];
+      if (allowed.has(key.toLowerCase())) updateObj[key.toLowerCase()] = body[key];
     }
 
     // password
     if (body.password && String(body.password).trim() && body.password !== 'Hidden For Protection') {
-      updateObj.Password = makeStoredPassword(body.password);
+      updateObj.password = makeStoredPassword(body.password);
     }
 
-    // photoBase64: إزالة القديمة ثم رفع الجديدة
-    if (body.photoBase64) {
+    // photoBase64: إزالة القديمة ثم رفع الجديدة (إن وُجدت)
+    if (body.photoBase64 && supabase) {
       try {
-        if (existing.PhotoURL || existing.photourl) {
-          await removeObjectByUrl(existing.PhotoURL || existing.photourl);
-        }
+        const oldUrl = existing.photourl || existing.PhotoURL || null;
+        if (oldUrl) await removeObjectByUrl(oldUrl);
         const objectPath = `${driverid}/${driverid}-${Date.now()}.jpg`;
         const url = await uploadDriverPhoto(body.photoBase64, objectPath);
-        updateObj.PhotoURL = url;
+        updateObj.photourl = url;
       } catch (uploadErr) {
-        console.warn('⚠️ Photo upload failed on update:', uploadErr.message);
+        console.warn('⚠️ Photo upload failed on update:', uploadErr.message || uploadErr);
       }
     }
 
     if (Object.keys(updateObj).length === 0) {
-      return res.status(400).json({ error: 'No valid fields to update' });
+      return res.status(400).json({ success: false, error: 'No valid fields to update' });
     }
 
-    const { data, error } = await supabase
-      .from('Drivers')
-      .update(updateObj)
-      .eq('DriverID', driverid)
-      .select();
-
-    if (error) throw error;
-
-    const updated = (data && data[0]) ? data[0] : null;
-    if (updated && updated.Password) delete updated.Password;
-    if (updated && updated.password) delete updated.password;
-
-    res.json({ message: 'Driver updated successfully', driver: updated });
+    // إذا كان supabase مُفعل، نستخدمه لتحديث (اختياري) وإلا نستخدم SQL
+    if (supabase) {
+      const { data, error } = await supabase
+        .from('drivers')
+        .update(updateObj)
+        .eq('driverid', driverid)
+        .select();
+      if (error) throw error;
+      const updated = data && data[0] ? data[0] : null;
+      if (updated && updated.password) delete updated.password;
+      return res.json({ success: true, message: 'Driver updated successfully', driver: updated });
+    } else {
+      // بناء جملة UPDATE ديناميكي
+      const keys = Object.keys(updateObj);
+      const setParts = keys.map((k, idx) => `"${k}" = $${idx + 1}`);
+      const values = keys.map(k => updateObj[k]);
+      values.push(driverid);
+      const q = `UPDATE drivers SET ${setParts.join(', ')}, lastupdated = NOW() WHERE driverid = $${keys.length + 1} RETURNING *;`;
+      const updatedRes = await dbQuery(q, values);
+      const updated = updatedRes && updatedRes.rows && updatedRes.rows[0] ? updatedRes.rows[0] : null;
+      if (updated && updated.password) delete updated.password;
+      return res.json({ success: true, message: 'Driver updated successfully', driver: updated });
+    }
   } catch (err) {
     console.error('❌ Error updating driver:', err);
-    res.status(500).json({ error: err.message || 'Server error' });
+    res.status(500).json({ success: false, error: err.message || 'Server error' });
   }
 });
 
@@ -222,25 +246,43 @@ router.put('/:driverid', async (req, res) => {
 router.delete('/:driverid', async (req, res) => {
   try {
     const { driverid } = req.params;
-    if (!driverid) return res.status(400).json({ error: 'driverid required' });
+    if (!driverid) return res.status(400).json({ success: false, error: 'driverid required' });
 
-    const deleted = await sql`DELETE FROM "Drivers" WHERE "DriverID" = ${driverid} RETURNING *;`;
-    if (!deleted.length) return res.status(404).json({ error: 'Driver not found' });
+    const deletedRes = await dbQuery(`DELETE FROM drivers WHERE driverid = $1 RETURNING *;`, [driverid]);
+    const deleted = deletedRes && deletedRes.rows && deletedRes.rows[0] ? deletedRes.rows[0] : null;
+    if (!deleted) return res.status(404).json({ success: false, error: 'Driver not found' });
 
     // حذف الصورة من storage إن وُجدت
     try {
-      const photourl = deleted[0].PhotoURL || deleted[0].photourl;
-      if (photourl) await removeObjectByUrl(photourl);
+      const photourl = deleted.photourl || deleted.PhotoURL || null;
+      if (photourl && supabase) await removeObjectByUrl(photourl);
     } catch (remErr) {
-      console.warn('⚠️ Warning: failed to remove photo from storage:', remErr.message);
+      console.warn('⚠️ Warning: failed to remove photo from storage:', remErr.message || remErr);
     }
 
-    const { Password, password, ...driverSafe } = deleted[0];
-    res.json({ message: 'Driver deleted successfully', driver: driverSafe });
+    if (deleted.password) delete deleted.password;
+    res.json({ success: true, message: 'Driver deleted successfully', driver: deleted });
   } catch (err) {
     console.error('❌ Error deleting driver:', err);
-    res.status(500).json({ error: err.message || 'Server error' });
+    res.status(500).json({ success: false, error: err.message || 'Server error' });
   }
 });
+// AUTO-FIX-APPLIED: Modified by _fix_routes.js
+
 
 module.exports = router;
+
+// init shim (safe) — يسمح بتمرير مفاتيح supabase عند auto-init من server.js
+if (!module.exports.init) {
+  module.exports.init = function initRoute(opts = {}) {
+    try {
+      if (opts.supabaseKey && !supabase && process.env.SUPABASE_URL) {
+        try {
+          const { createClient } = require('@supabase/supabase-js');
+          supabase = createClient(process.env.SUPABASE_URL, opts.supabaseKey);
+        } catch (err) { /* ignore */ }
+      }
+    } catch (err) { /* ignore */ }
+    return module.exports;
+  };
+}

@@ -1,5 +1,7 @@
-const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+
+const { getSupabase } = require('../supabaseClient');
+let supabase = getSupabase();
+
 require('dotenv').config();
 // routes/systemSettings.js
 const express = require('express');
@@ -15,7 +17,7 @@ const sendResponse = (res, success, message, data = null, status = 200) => {
 // GET جميع الإعدادات
 router.get('/', async (req, res) => {
     try {
-        const result = await sql`SELECT * FROM "systemsettings" ORDER BY "SettingKey" ASC`;
+        const result = await sql.query(`SELECT * FROM "systemsettings" ORDER BY "SettingKey" ASC`, [/* add params here */]);
         sendResponse(res, true, 'System settings fetched successfully', { count: result.length, settings: result });
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
@@ -29,12 +31,12 @@ router.put('/:SettingID', async (req, res) => {
         const { SettingValue } = req.body;
         if (SettingValue === undefined) return sendResponse(res, false, 'SettingValue is required', null, 400);
 
-        const result = await sql`
+        const result = await sql.query(`
             UPDATE "SystemSettings"
-            SET "SettingValue" = ${SettingValue}
-            WHERE "SettingID" = ${SettingID}
+            SET "SettingValue" = $1
+            WHERE "SettingID" = $2
             RETURNING *
-        `;
+        `, [/* add params here */]);
         if (!result.length) return sendResponse(res, false, 'Setting not found', null, 404);
 
         sendResponse(res, true, 'System setting updated successfully', result[0]);
@@ -44,3 +46,22 @@ router.put('/:SettingID', async (req, res) => {
 });
 
 module.exports = router;
+
+// --- auto-added init shim (safe) ---
+try {
+  if (!module.exports) module.exports = router;
+} catch(e) {}
+
+if (!module.exports.init) {
+  module.exports.init = function initRoute(opts = {}) {
+    try {
+      if (opts.supabaseKey && !supabase && SUPABASE_URL) {
+        try {
+          
+          supabase = createClient(SUPABASE_URL, opts.supabaseKey);
+        } catch(err) { /* ignore */ }
+      }
+    } catch(err) { /* ignore */ }
+    return module.exports;
+  };
+}

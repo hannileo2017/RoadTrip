@@ -1,5 +1,7 @@
-const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+
+const { getSupabase } = require('../supabaseClient');
+let supabase = getSupabase();
+
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
@@ -32,13 +34,13 @@ router.get('/', async (req, res) => {
 
         const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
 
-        const result = await sql`
+        const result = await sql.query(`
             SELECT "OrderItemID", "OrderID", "ProductID", "Quantity", "Price"
             FROM "order_items"
-            ${sql.raw(whereClause)}
+            $1
             ORDER BY "OrderItemID" ASC
-            OFFSET ${offset} LIMIT ${limit}
-        `;
+            OFFSET $2 LIMIT $3
+        `, [/* add params here */]);
 
         sendResponse(res, true, 'Order items fetched successfully', {
             page,
@@ -59,11 +61,11 @@ router.post('/', async (req, res) => {
         if (!OrderID || !ProductID || !Quantity || !Price) 
             return sendResponse(res, false, 'All fields are required', null, 400);
 
-        const result = await sql`
+        const result = await sql.query(`
             INSERT INTO "OrderItems" ("OrderID","ProductID","Quantity","Price")
-            VALUES (${OrderID}, ${ProductID}, ${Quantity}, ${Price})
+            VALUES ($1, $2, $3, $4)
             RETURNING *
-        `;
+        `, [/* add params here */]);
 
         sendResponse(res, true, 'Order item created successfully', result[0], 201);
     } catch (err) {
@@ -84,12 +86,12 @@ router.put('/:OrderItemID', async (req, res) => {
         const setClauses = keys.map((k, idx) => `"${k}"=$${idx + 1}`).join(', ');
         const values = keys.map(k => updates[k]);
 
-        const result = await sql`
+        const result = await sql.query(`
             UPDATE "OrderItems"
-            SET ${sql.raw(setClauses)}
-            WHERE "OrderItemID"=${OrderItemID}
+            SET $1
+            WHERE "OrderItemID"=$2
             RETURNING *
-        `;
+        `, [/* add params here */]);
 
         if (!result.length) return sendResponse(res, false, 'Order item not found', null, 404);
         sendResponse(res, true, 'Order item updated successfully', result[0]);
@@ -103,11 +105,11 @@ router.put('/:OrderItemID', async (req, res) => {
 router.delete('/:OrderItemID', async (req, res) => {
     try {
         const { OrderItemID } = req.params;
-        const result = await sql`
+        const result = await sql.query(`
             DELETE FROM "order_items"
-            WHERE "OrderItemID"=${OrderItemID}
+            WHERE "OrderItemID"=$1
             RETURNING *
-        `;
+        `, [/* add params here */]);
 
         if (!result.length) return sendResponse(res, false, 'Order item not found', null, 404);
         sendResponse(res, true, 'Order item deleted successfully', result[0]);
@@ -117,3 +119,22 @@ router.delete('/:OrderItemID', async (req, res) => {
 });
 
 module.exports = router;
+
+// --- auto-added init shim (safe) ---
+try {
+  if (!module.exports) module.exports = router;
+} catch(e) {}
+
+if (!module.exports.init) {
+  module.exports.init = function initRoute(opts = {}) {
+    try {
+      if (opts.supabaseKey && !supabase && SUPABASE_URL) {
+        try {
+          
+          supabase = createClient(SUPABASE_URL, opts.supabaseKey);
+        } catch(err) { /* ignore */ }
+      }
+    } catch(err) { /* ignore */ }
+    return module.exports;
+  };
+}

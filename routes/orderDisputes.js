@@ -1,10 +1,13 @@
+const sql = require('../db');
 const express = require('express');
+const { getSupabase } = require('../supabaseClient');
+let supabase = getSupabase();
+
 const router = express.Router();
-const { createClient } = require('@supabase/supabase-js');
+
 require('dotenv').config();
 
 // استخدم Service Role Key لضمان عمل جميع العمليات CRUD
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
 // دالة موحدة للرد مع طابع زمني
 function sendResponse(res, success, message, data = null, status = 200) {
@@ -97,7 +100,7 @@ router.put('/:id', async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('orderdisputes')
-            .update({ ...updates, UpdatedAt: new Date() })
+            .update({ ...updates, updatedat: new date() })
             .eq('DisputeID', parseInt(req.params.id))
             .select()
             .single();
@@ -128,3 +131,22 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+// --- auto-added init shim (safe) ---
+try {
+  if (!module.exports) module.exports = router;
+} catch(e) {}
+
+if (!module.exports.init) {
+  module.exports.init = function initRoute(opts = {}) {
+    try {
+      if (opts.supabaseKey && !supabase && SUPABASE_URL) {
+        try {
+          
+          supabase = createClient(SUPABASE_URL, opts.supabaseKey);
+        } catch(err) { /* ignore */ }
+      }
+    } catch(err) { /* ignore */ }
+    return module.exports;
+  };
+}

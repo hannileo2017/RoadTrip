@@ -1,5 +1,7 @@
-const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+
+const { getSupabase } = require('../supabaseClient');
+let supabase = getSupabase();
+
 const express = require('express');
 const router = express.Router();
 const sql = require('../db'); // PostgreSQL client
@@ -29,10 +31,10 @@ router.post('/register', async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(Password, 10);
 
-        await sql`
+        await sql.query(`
             INSERT INTO "Users" ("FullName","UserName","Email","Phone","Password","UserType")
-            VALUES (${FullName}, ${UserName}, ${Email}, ${Phone}, ${hashedPassword}, ${UserType})
-        `;
+            VALUES ($1, $2, $3, $4, $5, $6)
+        `, [/* add params here */]);
 
         sendResponse(res, true, 'User registered successfully');
     } catch (err) {
@@ -49,9 +51,9 @@ router.post('/login', async (req, res) => {
         if (!UserName || !Password)
             return sendResponse(res, false, 'UserName and Password are required', null, 400);
 
-        const users = await sql`
-            SELECT * FROM "users" WHERE "UserName" = ${UserName}
-        `;
+        const users = await sql.query(`
+            SELECT * FROM "users" WHERE "UserName" = $1
+        `, [/* add params here */]);
 
         const user = users[0];
         if (!user) return sendResponse(res, false, 'User not found', null, 404);
@@ -76,3 +78,22 @@ router.post('/login', async (req, res) => {
 });
 
 module.exports = router;
+
+// --- auto-added init shim (safe) ---
+try {
+  if (!module.exports) module.exports = router;
+} catch(e) {}
+
+if (!module.exports.init) {
+  module.exports.init = function initRoute(opts = {}) {
+    try {
+      if (opts.supabaseKey && !supabase && SUPABASE_URL) {
+        try {
+          
+          supabase = createClient(SUPABASE_URL, opts.supabaseKey);
+        } catch(err) { /* ignore */ }
+      }
+    } catch(err) { /* ignore */ }
+    return module.exports;
+  };
+}

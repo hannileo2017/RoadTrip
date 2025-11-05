@@ -1,11 +1,14 @@
+const sql = require('../db');
+const { getSupabase } = require('../supabaseClient');
+let supabase = getSupabase();
+
 // routes/deviceTokens.js
 const express = require('express');
 const router = express.Router();
-const { createClient } = require('@supabase/supabase-js');
+
 require('dotenv').config();
 
 // ✅ استخدم Service Role Key للخادم
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
 // دالة مساعدة للرد
 function sendResponse(res, success, message, data = null, status = 200) {
@@ -127,3 +130,22 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+// --- auto-added init shim (safe) ---
+try {
+  if (!module.exports) module.exports = router;
+} catch(e) {}
+
+if (!module.exports.init) {
+  module.exports.init = function initRoute(opts = {}) {
+    try {
+      if (opts.supabaseKey && !supabase && SUPABASE_URL) {
+        try {
+          
+          supabase = createClient(SUPABASE_URL, opts.supabaseKey);
+        } catch(err) { /* ignore */ }
+      }
+    } catch(err) { /* ignore */ }
+    return module.exports;
+  };
+}

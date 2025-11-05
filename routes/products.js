@@ -1,23 +1,33 @@
-const supabase = require('../supabase');
-// routes/products.js
+const { getSupabase } = require('../supabaseClient');
+let supabase = getSupabase();
+
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY || null;
+const SUPABASE_URL = process.env.SUPABASE_URL || null;
+
+try {
+  if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+    const { createClient } = require('../supabase');
+    supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+  }
+} catch(e) { /* ignore */ }
+
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const sql = require('../db');                // اتصال PostgreSQL
-const { createClient } = require('../supabase'); // module.exports = supabase
+const sql = require('../db');  // PostgreSQL client
 const crypto = require('crypto');
 
-// اسم الـ bucket المستخدم (غيّره إذا لديك bucket مختلف)
+// اسم الـ bucket
 const BUCKET = 'RoadTrip';
 
 // ----------------- Helpers -----------------
 
 async function uploadProductImage(base64String, objectPath) {
   if (!base64String || typeof base64String !== 'string') throw new Error('Invalid image data');
-  const fileBuffer = Buffer.from(base64String, 'base64');
-  const { data, error } = await supabase.storage.from(BUCKET).upload(objectPath, fileBuffer, { upsert: true });
+  const fileBuffer = Buffer.from(base64string, 'base64');
+  const { data, error } = await supabase.storage.from(bucket).upload(objectPath, fileBuffer, { upsert: true });
   if (error) throw error;
-  const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(objectPath);
+  const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(objectPath);
   return urlData.publicUrl;
 }
 
@@ -25,11 +35,8 @@ async function removeObjectByUrl(publicUrl) {
   if (!publicUrl) return;
   try {
     const url = new URL(publicUrl);
-    // path like: /storage/v1/object/public/<bucket>/<objectPath>
     const objectPath = decodeURIComponent(url.pathname.replace(`/storage/v1/object/public/${BUCKET}/`, ''));
-    if (objectPath) {
-      await supabase.storage.from(BUCKET).remove([objectPath]);
-    }
+    if (objectPath) await supabase.storage.from(bucket).remove([objectPath]);
   } catch (err) {
     console.warn('⚠️ removeObjectByUrl failed:', err.message);
   }
@@ -37,7 +44,7 @@ async function removeObjectByUrl(publicUrl) {
 
 // ----------------- Routes -----------------
 
-// GET /api/products -> كل المنتجات مع Pagination + Search
+// GET /api/products
 router.get('/', async (req, res) => {
   try {
     let { page = 1, limit = 20, search = '' } = req.query;
@@ -45,13 +52,13 @@ router.get('/', async (req, res) => {
     limit = parseInt(limit) || 20;
     const offset = (page - 1) * limit;
 
-    const rows = await sql`
+    const rows = await sql.query(`
       SELECT *
-      FROM "Products"
-      WHERE "ProductName" ILIKE ${`%${search}%`}
+      FROM "products"
+      WHERE "productname" ILIKE $1
       ORDER BY "LastUpdated" DESC
-      OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY;
-    `;
+      OFFSET $2 ROWS FETCH NEXT $3 ROWS ONLY;
+    `, [`%${search}%`, offset, limit]);
 
     res.json({ success: true, page, limit, count: rows.length, products: rows });
   } catch (err) {
@@ -60,14 +67,11 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/products/:ProductID -> منتج محدد
+// GET /api/products/:ProductID
 router.get('/:ProductID', async (req, res) => {
   try {
-    const rows = await sql`
-      SELECT *
-      FROM "Products"
-      WHERE "ProductID" = ${req.params.ProductID};
-    `;
+    const productId = req.params.ProductID;
+    const rows = await sql.query(`SELECT * FROM "products" WHERE "ProductID" = $1;`, [productId]);
     if (!rows.length) return res.status(404).json({ success: false, error: 'Product not found' });
     res.json({ success: true, product: rows[0] });
   } catch (err) {
@@ -76,35 +80,31 @@ router.get('/:ProductID', async (req, res) => {
   }
 });
 
-// POST /api/products -> إضافة منتج جديد مع رفع صورة (إذا وُجدت)
+// POST /api/products
 router.post('/', async (req, res) => {
   try {
-    const { StoreID, ProductName, Price, Stock, Description, IsAvailable, ImageBase64 } = req.body;
-    if (!StoreID || !ProductName || Price === undefined) {
-      return res.status(400).json({ success: false, error: 'StoreID, ProductName, and Price are required' });
+    const { StoreID, productname, Price, Stock = 0, Description = '', IsAvailable = true, ImageBase64 } = req.body;
+    if (!StoreID || !productname || Price === undefined) {
+      return res.status(400).json({ success: false, error: 'StoreID, productname, and Price are required' });
     }
 
-    // 1) أدخل السجل أولاً (ProductID يولد أوتوماتيكيًا)
-    const inserted = await sql`
-      INSERT INTO "Products" 
-        ("StoreID","ProductName","Price","Stock","Description","IsAvailable","ImageURL","CreatedAt","LastUpdated")
-      VALUES
-        (${StoreID}, ${ProductName}, ${Price}, ${Stock || 0}, ${Description || null}, ${IsAvailable !== undefined ? IsAvailable : true}, ${null}, NOW(), NOW())
+    const inserted = await sql.query(`
+      INSERT INTO "products" 
+        ("StoreID","productname","Price","Stock","Description","IsAvailable","ImageURL","CreatedAt","LastUpdated")
+      VALUES ($1,$2,$3,$4,$5,$6,NULL,NOW(),NOW())
       RETURNING *;
-    `;
+    `, [StoreID, productname, Price, Stock, Description, IsAvailable]);
+
     let product = inserted[0];
 
-    // 2) إذا وُجدت صورة: ارفعها داخل مجلد باسم ProductID ثم حدّث السجل
     if (ImageBase64) {
       try {
         const objectPath = `products/${product.ProductID}/${product.ProductID}-${Date.now()}.jpg`;
         const imageUrl = await uploadProductImage(ImageBase64, objectPath);
-        const updated = await sql`
-          UPDATE "Products" SET "ImageURL" = ${imageUrl}, "LastUpdated" = NOW() WHERE "ProductID" = ${product.ProductID} RETURNING *;
-        `;
+        const updated = await sql.query(`UPDATE "products" SET "ImageURL" = $1, "LastUpdated" = NOW() WHERE "ProductID" = $2 RETURNING *;`, [imageUrl, product.ProductID]);
         product = updated[0];
       } catch (uploadErr) {
-        console.warn('⚠️ Image upload failed (continuing without image):', uploadErr.message);
+        console.warn('⚠️ Image upload failed:', uploadErr.message);
       }
     }
 
@@ -115,15 +115,14 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT /api/products/:ProductID -> تحديث منتج + رفع صورة جديدة (يحذف القديمة)
+// PUT /api/products/:ProductID
 router.put('/:ProductID', async (req, res) => {
   try {
     const productId = req.params.ProductID;
     const body = req.body || {};
-    const allowed = new Set(['ProductName','Price','Stock','Description','IsAvailable']);
+    const allowed = new Set(['productname','Price','Stock','Description','IsAvailable']);
 
-    // جلب المنتج الحالي (لاحتياج حذف الصورة القديمة إن وُجدت)
-    const existingRows = await sql`SELECT * FROM "Products" WHERE "ProductID" = ${productId} LIMIT 1;`;
+    const existingRows = await sql.query(`SELECT * FROM "products" WHERE "ProductID" = $1 LIMIT 1;`, [productId]);
     if (!existingRows.length) return res.status(404).json({ success: false, error: 'Product not found' });
     const existing = existingRows[0];
 
@@ -132,13 +131,9 @@ router.put('/:ProductID', async (req, res) => {
       if (allowed.has(key)) updateObj[key] = body[key];
     }
 
-    // إذا هناك صورة جديدة: احذف القديمة ثم ارفع الجديدة
     if (body.ImageBase64) {
       try {
-        // حذف الصورة القديمة أولًا (إن وُجدت)
-        if (existing.ImageURL) {
-          await removeObjectByUrl(existing.ImageURL);
-        }
+        if (existing.ImageURL) await removeObjectByUrl(existing.ImageURL);
         const objectPath = `products/${productId}/${productId}-${Date.now()}.jpg`;
         const url = await uploadProductImage(body.ImageBase64, objectPath);
         updateObj.ImageURL = url;
@@ -147,14 +142,11 @@ router.put('/:ProductID', async (req, res) => {
       }
     }
 
-    if (!Object.keys(updateObj).length) {
-      return res.status(400).json({ success: false, error: 'No valid fields to update' });
-    }
+    if (!Object.keys(updateObj).length) return res.status(400).json({ success: false, error: 'No valid fields to update' });
 
-    // نفّذ التحديث عبر supabase (سهولة التعامل مع identifiers) أو عبر SQL
     const { data, error } = await supabase
-      .from('Products')
-      .update(updateObj)
+      .from('products')
+      .update(updateobj)
       .eq('ProductID', productId)
       .select();
 
@@ -168,19 +160,17 @@ router.put('/:ProductID', async (req, res) => {
   }
 });
 
-// DELETE /api/products/:ProductID -> حذف منتج + حذف الصورة
-router.delete('/:ProductID', async (req, res) => {
+// DELETE /api/products/:productID
+router.delete('/:productID', async (req, res) => {
   try {
     const productId = req.params.ProductID;
-    const deleted = await sql`DELETE FROM "Products" WHERE "ProductID" = ${productId} RETURNING *;`;
+    const deleted = await sql.query(`DELETE FROM "products" WHERE "ProductID" = $1 RETURNING *;`, [productId]);
     if (!deleted.length) return res.status(404).json({ success: false, error: 'Product not found' });
 
-    // حذف الصورة من Storage إذا موجودة
     try {
-      const imageUrl = deleted[0].ImageURL || deleted[0].imageurl;
-      if (imageUrl) await removeObjectByUrl(imageUrl);
+      if (deleted[0].ImageURL) await removeObjectByUrl(deleted[0].ImageURL);
     } catch (remErr) {
-      console.warn('⚠️ Warning: failed to remove image from storage:', remErr.message);
+      console.warn('⚠️ Failed to remove image from storage:', remErr.message);
     }
 
     res.json({ success: true, message: 'Product deleted successfully', product: deleted[0] });

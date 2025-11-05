@@ -1,0 +1,43 @@
+{
+  "timestamp": "2025-11-02T11:03:33.016Z",
+  "summary": {
+    "patched": [
+      "appSettings.js",
+      "areas.js",
+      "auditTrail.js",
+      "auth.js",
+      "cities.js",
+      "coupons.js",
+      "couponsAdvanced.js",
+      "customers.js",
+      "deliveryZones.js",
+      "deviceTokens.js",
+      "driver.js",
+      "driverLocations.js",
+      "driverRatings.js",
+      "notifications.js",
+      "orderDisputes.js",
+      "orderHistory.js",
+      "orderHistoryDetailed.js",
+      "orderItems.js",
+      "orders.js",
+      "orderTracking.js",
+      "payments.js",
+      "products.js",
+      "rolePermissions.js",
+      "roles.js",
+      "sessions.js",
+      "storeCategories.js",
+      "storeRatings.js",
+      "stores.js",
+      "supportTickets.js",
+      "systemSettings.js",
+      "transactions.js",
+      "units.js",
+      "users.js",
+      "verifyToken.js"
+    ],
+    "skipped": [],
+    "errors": []
+  }
+}

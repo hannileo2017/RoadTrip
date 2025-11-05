@@ -1,5 +1,4 @@
-const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+// routes/areas.js
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
@@ -23,15 +22,15 @@ router.get('/', async (req, res) => {
         const search = req.query.search || '';
         const offset = (page - 1) * limit;
 
-        const result = await sql`
-            SELECT A.*, C."CityName"
+        // Parameterized query
+        const result = await sql.query(`
+            SELECT a.*, c."CityName"
             FROM "areas" A
-            LEFT JOIN "cities" C ON A."CityID" = C."CityID"
-            WHERE A."AreaName" ILIKE ${`%${search}%`} 
-               OR C."CityName" ILIKE ${`%${search}%`}
+            LEFT JOIN "cities" C ON a."CityID" = C."CityID"
+            WHERE a."AreaName" ILIKE $1 OR C."CityName" ILIKE $1
             ORDER BY C."CityName", A."AreaName"
-            OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY
-        `;
+            OFFSET $2 ROWS FETCH NEXT $3 ROWS ONLY
+        `, [`%${search}%`, offset, limit]);
 
         sendResponse(res, true, 'Areas retrieved successfully', {
             page,
@@ -52,12 +51,12 @@ router.get('/:id', async (req, res) => {
         if (isNaN(AreaID))
             return sendResponse(res, false, 'Invalid AreaID', null, 400);
 
-        const result = await sql`
-            SELECT A.*, C."CityName"
+        const result = await sql.query(`
+            SELECT a.*, c."CityName"
             FROM "areas" A
-            LEFT JOIN "cities" C ON A."CityID" = C."CityID"
-            WHERE A."AreaID" = ${AreaID}
-        `;
+            LEFT JOIN "cities" C ON a."CityID" = C."CityID"
+            WHERE a."AreaID" = $1
+        `, [AreaID]);
 
         if (!result.length)
             return sendResponse(res, false, `Area with ID ${AreaID} not found`, null, 404);
@@ -78,12 +77,13 @@ router.post('/', async (req, res) => {
         if (!AreaName || isNaN(cityIdNum))
             return sendResponse(res, false, 'AreaName and valid CityID are required', null, 400);
 
-        await sql`
-            INSERT INTO "Areas" ("AreaName","CityID","CreatedAt")
-            VALUES (${AreaName}, ${cityIdNum}, NOW())
-        `;
+        const inserted = await sql.query(`
+            INSERT INTO "areas" ("AreaName","CityID","CreatedAt")
+            VALUES ($1, $2, NOW())
+            RETURNING *
+        `, [AreaName, cityIdNum]);
 
-        sendResponse(res, true, 'Area added successfully');
+        sendResponse(res, true, 'Area added successfully', inserted[0]);
     } catch (err) {
         console.error('Error POST /areas:', err);
         sendResponse(res, false, 'Failed to add area', null, 500);
@@ -100,20 +100,18 @@ router.put('/:id', async (req, res) => {
         if (isNaN(AreaID) || !AreaName || isNaN(cityIdNum))
             return sendResponse(res, false, 'Valid AreaID, AreaName and CityID are required', null, 400);
 
-        const exists = await sql`
-            SELECT * FROM "areas" WHERE "AreaID" = ${AreaID}
-        `;
-
+        const exists = await sql.query(`SELECT * FROM "areas" WHERE "AreaID" = $1`, [AreaID]);
         if (!exists.length)
             return sendResponse(res, false, `Area with ID ${AreaID} not found`, null, 404);
 
-        await sql`
-            UPDATE "Areas"
-            SET "AreaName" = ${AreaName}, "CityID" = ${cityIdNum}, "UpdatedAt" = NOW()
-            WHERE "AreaID" = ${AreaID}
-        `;
+        const updated = await sql.query(`
+            UPDATE "areas"
+            SET "AreaName" = $1, "CityID" = $2, "UpdatedAt" = NOW()
+            WHERE "AreaID" = $3
+            RETURNING *
+        `, [AreaName, cityIdNum, AreaID]);
 
-        sendResponse(res, true, 'Area updated successfully');
+        sendResponse(res, true, 'Area updated successfully', updated[0]);
     } catch (err) {
         console.error('Error PUT /areas/:id:', err);
         sendResponse(res, false, 'Failed to update area', null, 500);
@@ -127,18 +125,13 @@ router.delete('/:id', async (req, res) => {
         if (isNaN(AreaID))
             return sendResponse(res, false, 'Invalid AreaID', null, 400);
 
-        const exists = await sql`
-            SELECT * FROM "areas" WHERE "AreaID" = ${AreaID}
-        `;
-
+        const exists = await sql.query(`SELECT * FROM "areas" WHERE "AreaID" = $1`, [AreaID]);
         if (!exists.length)
             return sendResponse(res, false, `Area with ID ${AreaID} not found`, null, 404);
 
-        await sql`
-            DELETE FROM "areas" WHERE "AreaID" = ${AreaID}
-        `;
+        const deleted = await sql.query(`DELETE FROM "areas" WHERE "AreaID" = $1 RETURNING *`, [AreaID]);
 
-        sendResponse(res, true, 'Area deleted successfully');
+        sendResponse(res, true, 'Area deleted successfully', deleted[0]);
     } catch (err) {
         console.error('Error DELETE /areas/:id:', err);
         sendResponse(res, false, 'Failed to delete area', null, 500);

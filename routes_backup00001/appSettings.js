@@ -1,13 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const sql = require('../db'); // تأكد أن db.js يحتوي على Pool من pg أو client جاهز للاتصال
-
-// ✅ dbQuery helper صحيح
-const dbQuery = async (...args) => {
-  const r = await sql.query(...args);
-  return (r && r.rows) ? r.rows : r;
-};
+const sql = require('../db'); // PostgreSQL client
+const { getSupabase } = require('../supabaseClient');
+let supabase = getSupabase();
 
 // 🧩 دالة مساعدة لتوحيد الردود
 function sendResponse(res, success, message, data = null, status = 200) {
@@ -23,13 +19,13 @@ function sendResponse(res, success, message, data = null, status = 200) {
 router.get('/', async (req, res) => {
   try {
     const { search = '' } = req.query;
-    const result = await dbQuery(
+    const result = await sql.query(
       `SELECT * FROM appsettings
-       WHERE settingname ILIKE $1 OR settingvalue ILIKE $1
-       ORDER BY updatedat DESC`,
+       WHERE "SettingName" ILIKE $1 OR "SettingValue" ILIKE $1
+       ORDER BY "UpdatedAt" DESC`,
       [`%${search}%`]
     );
-    sendResponse(res, true, 'Settings retrieved successfully', result);
+    sendResponse(res, true, 'Settings retrieved successfully', result.rows);
   } catch (err) {
     console.error('Error GET /appSettings:', err);
     sendResponse(res, false, 'Failed to retrieve settings', null, 500);
@@ -40,14 +36,14 @@ router.get('/', async (req, res) => {
 router.get('/:name', async (req, res) => {
   try {
     const { name } = req.params;
-    const result = await dbQuery(
-      `SELECT * FROM appsettings WHERE settingname = $1`,
+    const result = await sql.query(
+      `SELECT * FROM appsettings WHERE "SettingName" = $1`,
       [name]
     );
-    if (!result.length)
-      return sendResponse(res, false, `Setting ${name} not found`, null, 404);
+    if (!result.rows.length)
+      return sendResponse(res, false, `Setting "${name}" not found`, null, 404);
 
-    sendResponse(res, true, 'Setting retrieved successfully', result[0]);
+    sendResponse(res, true, 'Setting retrieved successfully', result.rows[0]);
   } catch (err) {
     console.error('Error GET /appSettings/:name', err);
     sendResponse(res, false, 'Failed to retrieve setting', null, 500);
@@ -61,21 +57,21 @@ router.post('/', async (req, res) => {
     if (!SettingName)
       return sendResponse(res, false, 'SettingName is required', null, 400);
 
-    const exists = await dbQuery(
-      `SELECT * FROM appsettings WHERE settingname = $1`,
+    const exists = await sql.query(
+      `SELECT * FROM appsettings WHERE "SettingName" = $1`,
       [SettingName]
     );
 
-    if (exists.length) {
-      await dbQuery(
+    if (exists.rows.length) {
+      await sql.query(
         `UPDATE appsettings
-         SET settingvalue = $1, updatedat = NOW()
-         WHERE settingname = $2`,
+         SET "SettingValue" = $1, "UpdatedAt" = NOW()
+         WHERE "SettingName" = $2`,
         [SettingValue || '', SettingName]
       );
     } else {
-      await dbQuery(
-        `INSERT INTO appsettings(settingname,settingvalue,updatedat)
+      await sql.query(
+        `INSERT INTO appsettings("SettingName","SettingValue","UpdatedAt")
          VALUES($1, $2, NOW())`,
         [SettingName, SettingValue || '']
       );
@@ -96,18 +92,18 @@ router.patch('/:name', async (req, res) => {
       return sendResponse(res, false, 'SettingValue is required', null, 400);
 
     const { name } = req.params;
-    const exists = await dbQuery(
-      `SELECT * FROM appsettings WHERE settingname = $1`,
+    const exists = await sql.query(
+      `SELECT * FROM appsettings WHERE "SettingName" = $1`,
       [name]
     );
 
-    if (!exists.length)
-      return sendResponse(res, false, `Setting ${name} not found`, null, 404);
+    if (!exists.rows.length)
+      return sendResponse(res, false, `Setting "${name}" not found`, null, 404);
 
-    await dbQuery(
+    await sql.query(
       `UPDATE appsettings
-       SET settingvalue = $1, updatedat = NOW()
-       WHERE settingname = $2`,
+       SET "SettingValue" = $1, "UpdatedAt" = NOW()
+       WHERE "SettingName" = $2`,
       [SettingValue, name]
     );
 
@@ -123,18 +119,18 @@ router.delete('/:id', async (req, res) => {
   try {
     const id = req.params.id;
 
-    const exists = await dbQuery(
+    const exists = await sql.query(
       `SELECT * FROM appsettings 
-       WHERE settingid::text = $1 OR settingname = $1`,
+       WHERE "SettingID"::text = $1 OR "SettingName" = $1`,
       [id]
     );
 
-    if (!exists.length)
-      return sendResponse(res, false, `Setting ${id} not found`, null, 404);
+    if (!exists.rows.length)
+      return sendResponse(res, false, `Setting "${id}" not found`, null, 404);
 
-    await dbQuery(
+    await sql.query(
       `DELETE FROM appsettings 
-       WHERE settingid::text = $1 OR settingname = $1`,
+       WHERE "SettingID"::text = $1 OR "SettingName" = $1`,
       [id]
     );
 

@@ -3,7 +3,7 @@ const router = express.Router();
 
 // --- AUTO-GENERATED ROUTE ---
 router.get('/', async (req, res) => {
-    res.json({ message: 'GET all users' });
+    res.json({ message: 'GET all __migrationhistory' });
 });
 
 router.post('/', async (req, res) => {
@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
 
 
 
-    res.json({ message: 'Created new users',  });
+    res.json({ message: 'Created new __migrationhistory',  });
 });
 
 module.exports = router;

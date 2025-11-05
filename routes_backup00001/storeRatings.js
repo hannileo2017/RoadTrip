@@ -13,78 +13,74 @@ function sendResponse(res, success, message, data = null, status = 200) {
 }
 
 // ==========================
-// 📍 عرض كل الجلسات
+// 📍 عرض كل تقييمات المتاجر
 router.get('/', async (req, res) => {
     try {
-        const result = await sql.query(`
-            SELECT *
-            FROM "sessions"
-            ORDER BY "LoginTime" DESC
-        `, [/* add params here */]);
-        sendResponse(res, true, 'Sessions fetched successfully', { count: result.length, sessions: result });
+        const result = await sql.query(`SELECT * FROM "store_rating" ORDER BY "RatedAt" DESC`, [/* add params here */]);
+        sendResponse(res, true, 'Store ratings fetched successfully', { count: result.length, ratings: result });
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 إضافة جلسة جديدة
+// 📍 إضافة تقييم جديد
 router.post('/', async (req, res) => {
     try {
-        const { UserID, LoginTime, LogoutTime, DeviceInfo, SessionToken } = req.body;
-        if (!UserID || !LoginTime || !SessionToken) {
-            return sendResponse(res, false, 'UserID, LoginTime, and SessionToken are required', null, 400);
+        const { StoreID, CustomerID, Rating, Comment } = req.body;
+        if (!StoreID || !CustomerID || !Rating) {
+            return sendResponse(res, false, 'StoreID, CustomerID, and Rating are required', null, 400);
         }
 
         const result = await sql.query(`
-            INSERT INTO "Sessions" ("UserID", "LoginTime", "LogoutTime", "DeviceInfo", "SessionToken")
-            VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO "store_rating" ("StoreID", "CustomerID", "Rating", "Comment", "RatedAt")
+            VALUES ($1, $2, $3, $4, NOW())
             RETURNING *
         `, [/* add params here */]);
-        sendResponse(res, true, 'Session created successfully', result[0], 201);
+        sendResponse(res, true, 'Store rating created successfully', result[0], 201);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 تحديث جلسة
-router.put('/:SessionID', async (req, res) => {
+// 📍 تحديث تقييم
+router.put('/:RatingID', async (req, res) => {
     try {
-        const { SessionID } = req.params;
+        const { RatingID } = req.params;
         const updateData = req.body;
         const keys = Object.keys(updateData);
-        if (!keys.length) return sendResponse(res, false, 'No fields to update', null, 400);
+        if (!keys.length) return sendResponse(res, false, 'Nothing to update', null, 400);
 
         const setClauses = keys.map((k, idx) => `"${k}"=$${idx + 1}`).join(', ');
         const values = keys.map(k => updateData[k]);
 
         const result = await sql.query(`
-            UPDATE "Sessions"
+            UPDATE "store_rating"
             SET $1
-            WHERE "SessionID" = $2
+            WHERE "RatingID" = $2
             RETURNING *
         `, [/* add params here */])(...values);
 
-        if (!result.length) return sendResponse(res, false, 'Session not found', null, 404);
-        sendResponse(res, true, 'Session updated successfully', result[0]);
+        if (!result.length) return sendResponse(res, false, 'Rating not found', null, 404);
+        sendResponse(res, true, 'Store rating updated successfully', result[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 حذف جلسة
-router.delete('/:SessionID', async (req, res) => {
+// 📍 حذف تقييم
+router.delete('/:RatingID', async (req, res) => {
     try {
-        const { SessionID } = req.params;
+        const { RatingID } = req.params;
         const result = await sql.query(`
-            DELETE FROM "sessions"
-            WHERE "SessionID" = $1
+            DELETE FROM "store_rating"
+            WHERE "RatingID" = $1
             RETURNING *
         `, [/* add params here */]);
-        if (!result.length) return sendResponse(res, false, 'Session not found', null, 404);
-        sendResponse(res, true, 'Session deleted successfully', result[0]);
+        if (!result.length) return sendResponse(res, false, 'Rating not found', null, 404);
+        sendResponse(res, true, 'Store rating deleted successfully', result[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }

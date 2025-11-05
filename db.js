@@ -1,18 +1,18 @@
 // db.js
-const postgres = require('postgres');
-require('dotenv').config(); // تحميل متغيرات البيئة
+require('dotenv').config();
+const { Pool } = require('pg');
 
-const { DATABASE_URL } = process.env;
-
-if (!DATABASE_URL) {
-  throw new Error('⚠️ Missing DATABASE_URL in .env');
+if (!process.env.DATABASE_URL) {
+  console.error('❌ DATABASE_URL not defined in .env');
+  process.exit(1);
 }
 
-// الاتصال بقاعدة البيانات باستخدام DATABASE_URL
-const sql = postgres(DATABASE_URL, {
-  ssl: { rejectUnauthorized: false }, // ضروري لـ Supabase على Render أو محلي
-  max: 10,
-  idle_timeout: 60000
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // للـ Supabase
 });
 
-module.exports = sql;
+module.exports = {
+  query: (text, params) => pool.query(text, params),
+  pool
+};

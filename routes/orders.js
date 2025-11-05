@@ -1,5 +1,7 @@
-const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+
+const { getSupabase } = require('../supabaseClient');
+let supabase = getSupabase();
+
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
@@ -27,12 +29,12 @@ router.get('/', async (req, res) => {
 
         const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
 
-        const result = await sql`
+        const result = await sql.query(`
             SELECT * FROM "orders"
-            ${sql.raw(whereClause)}
+            $1
             ORDER BY "CreatedAt" DESC
-            OFFSET ${offset} LIMIT ${limit}
-        `;
+            OFFSET $2 LIMIT $3
+        `, [/* add params here */]);
 
         sendResponse(res, true, 'Orders fetched successfully', {
             count: result.length,
@@ -48,9 +50,9 @@ router.get('/', async (req, res) => {
 // 📍 جلب طلب محدد حسب ID
 router.get('/:id', async (req, res) => {
     try {
-        const result = await sql`
-            SELECT * FROM "orders" WHERE "ID"=${req.params.id}
-        `;
+        const result = await sql.query(`
+            SELECT * FROM "orders" WHERE "ID"= $1
+        `, [/* add params here */]);
         if (!result.length) return sendResponse(res, false, 'Order not found', null, 404);
         sendResponse(res, true, 'Order fetched successfully', result[0]);
     } catch (err) {
@@ -67,11 +69,11 @@ router.post('/', async (req, res) => {
         if (!CustomerID || !StoreID || !Status)
             return sendResponse(res, false, 'CustomerID, StoreID, and Status are required', null, 400);
 
-        const result = await sql`
+        const result = await sql.query(`
             INSERT INTO "Order" ("CustomerID","StoreID","DriverID","Status","TotalAmount","CreatedAt")
-            VALUES (${CustomerID}, ${StoreID}, ${DriverID || null}, ${Status}, ${TotalAmount || 0}, NOW())
+            VALUES ($1, $2, $3, $4, $5, NOW())
             RETURNING *
-        `;
+        `, [/* add params here */]);
         sendResponse(res, true, 'Order added successfully', result[0], 201);
     } catch (err) {
         console.error('❌ Error adding orders:', err);
@@ -93,12 +95,12 @@ router.put('/:id', async (req, res) => {
         const values = keys.map(k => updateData[k]);
 
         // الربط مع postgres.js
-        const result = await sql`
+        const result = await sql.query(`
             UPDATE "Order"
-            SET ${sql.raw(setClauses)}, "LastUpdated"=NOW()
-            WHERE "ID"=${req.params.id}
+            SET $1, "LastUpdated"=NOW()
+            WHERE "ID"= $1
             RETURNING *
-        `(...values); // <-- هنا قمنا بتمرير القيم الفعلية
+        `, [/* add params here */])(...values); // <-- هنا قمنا بتمرير القيم الفعلية
 
         if (!result.length)
             return sendResponse(res, false, 'Order not found', null, 404);
@@ -114,9 +116,9 @@ router.put('/:id', async (req, res) => {
 // 📍 حذف طلب
 router.delete('/:id', async (req, res) => {
     try {
-        const result = await sql`
-            DELETE FROM "orders" WHERE "ID"=${req.params.id} RETURNING *
-        `;
+        const result = await sql.query(`
+            DELETE FROM "orders" WHERE "ID"= $1 RETURNING *
+        `, [/* add params here */]);
         if (!result.length)
             return sendResponse(res, false, 'Order not found', null, 404);
         sendResponse(res, true, 'Order deleted successfully', result[0]);
@@ -127,3 +129,22 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+// --- auto-added init shim (safe) ---
+try {
+  if (!module.exports) module.exports = router;
+} catch(e) {}
+
+if (!module.exports.init) {
+  module.exports.init = function initRoute(opts = {}) {
+    try {
+      if (opts.supabaseKey && !supabase && SUPABASE_URL) {
+        try {
+          
+          supabase = createClient(SUPABASE_URL, opts.supabaseKey);
+        } catch(err) { /* ignore */ }
+      }
+    } catch(err) { /* ignore */ }
+    return module.exports;
+  };
+}

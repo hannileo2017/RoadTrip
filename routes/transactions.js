@@ -1,5 +1,7 @@
-const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+
+const { getSupabase } = require('../supabaseClient');
+let supabase = getSupabase();
+
 require('dotenv').config();
 // routes/transactions.js
 const express = require('express');
@@ -16,7 +18,7 @@ const sendResponse = (res, success, message, data = null, status = 200) => {
 // ==========================
 async function getAllTransactions() {
     try {
-        const result = await sql`SELECT * FROM "transactions" ORDER BY "CreatedAt" DESC`;
+        const result = await sql.query(`SELECT * FROM "transactions" ORDER BY "CreatedAt" DESC`, [/* add params here */]);
         return result;
     } catch (err) {
         throw new Error(err.message);
@@ -25,7 +27,7 @@ async function getAllTransactions() {
 
 async function getTransactionById(id) {
     try {
-        const result = await sql`SELECT * FROM "transactions" WHERE "TransactionID" = ${id}`;
+        const result = await sql.query(`SELECT * FROM "transactions" WHERE "TransactionID" = $1`, [/* add params here */]);
         return result[0] || null;
     } catch (err) {
         throw new Error(err.message);
@@ -34,11 +36,11 @@ async function getTransactionById(id) {
 
 async function createTransaction(data) {
     try {
-        const result = await sql`
+        const result = await sql.query(`
             INSERT INTO "Transactions" ("CustomerID","Amount","paymentMethod","Status","CreatedAt")
-            VALUES (${data.CustomerID}, ${data.Amount}, ${data.paymentMethod || null}, ${data.Status || 'Pending'}, NOW())
+            VALUES ($1, $2, $3, $4, NOW())
             RETURNING "TransactionID"
-        `;
+        `, [/* add params here */]);
         return result[0].TransactionID;
     } catch (err) {
         throw new Error(err.message);
@@ -52,12 +54,12 @@ async function updateTransaction(id, data) {
 
         const setQuery = fields.map(f => `"${f}" = ${data[f]}`).join(', ');
 
-        const result = await sql`
+        const result = await sql.query(`
             UPDATE "Transactions"
-            SET ${sql.raw(setQuery)}, "UpdatedAt" = NOW()
-            WHERE "TransactionID" = ${id}
+            SET $1, "UpdatedAt" = NOW()
+            WHERE "TransactionID" = $2
             RETURNING *
-        `;
+        `, [/* add params here */]);
         if (!result.length) throw new Error('Transaction not found');
         return result[0];
     } catch (err) {
@@ -67,11 +69,11 @@ async function updateTransaction(id, data) {
 
 async function deleteTransaction(id) {
     try {
-        const result = await sql`
+        const result = await sql.query(`
             DELETE FROM "transactions"
-            WHERE "TransactionID" = ${id}
+            WHERE "TransactionID" = $1
             RETURNING *
-        `;
+        `, [/* add params here */]);
         if (!result.length) throw new Error('Transaction not found');
         return result[0];
     } catch (err) {
@@ -135,3 +137,22 @@ router.delete('/:id', async (req, res) => {
 });
 
 module.exports = router;
+
+// --- auto-added init shim (safe) ---
+try {
+  if (!module.exports) module.exports = router;
+} catch(e) {}
+
+if (!module.exports.init) {
+  module.exports.init = function initRoute(opts = {}) {
+    try {
+      if (opts.supabaseKey && !supabase && SUPABASE_URL) {
+        try {
+          
+          supabase = createClient(SUPABASE_URL, opts.supabaseKey);
+        } catch(err) { /* ignore */ }
+      }
+    } catch(err) { /* ignore */ }
+    return module.exports;
+  };
+}
