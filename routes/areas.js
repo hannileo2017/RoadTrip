@@ -1,36 +1,52 @@
 // routes/areas.js
-require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const sql = require('../db'); // PostgreSQL client
+const { dbQuery, requireSession, requireRole } = require('../middleware/auth');
 
-// 🧩 دالة موحدة للردود
+// =====================
+// Helper للردود
+// =====================
 function sendResponse(res, success, message, data = null, status = 200) {
-    return res.status(status).json({
-        success,
-        message,
-        timestamp: new Date(),
-        data
-    });
+    return res.status(status).json({ success, message, timestamp: new Date(), data });
 }
 
-// 📍 جلب جميع المناطق مع البحث والتقسيم (Pagination + Search)
-router.get('/', async (req, res) => {
+// =====================
+// 📍 جلب جميع المناطق مع البحث + Pagination + فلترة حسب المدينة
+// =====================
+router.get('/', requireSession, async (req, res) => {
     try {
-        let page = parseInt(req.query.page) || 1;
-        let limit = parseInt(req.query.limit) || 20;
-        const search = req.query.search || '';
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+        const search = req.query.search ? req.query.search.trim() : '';
+        const cityID = req.query.cityid ? parseInt(req.query.cityid) : null;
         const offset = (page - 1) * limit;
 
-        // Parameterized query
-        const result = await sql.query(`
-            SELECT a.*, c."CityName"
-            FROM "areas" A
-            LEFT JOIN "cities" C ON a."CityID" = C."CityID"
-            WHERE a."AreaName" ILIKE $1 OR C."CityName" ILIKE $1
-            ORDER BY C."CityName", A."AreaName"
-            OFFSET $2 ROWS FETCH NEXT $3 ROWS ONLY
-        `, [`%${search}%`, offset, limit]);
+        let whereClauses = [];
+        let values = [];
+        let idx = 1;
+
+        if (search) {
+            whereClauses.push(`a.areaname ILIKE $${idx}`);
+            values.push(`%${search}%`);
+            idx++;
+        }
+        if (cityID) {
+            whereClauses.push(`a.cityid = $${idx}`);
+            values.push(cityID);
+            idx++;
+        }
+
+        const whereClause = whereClauses.length ? 'WHERE ' + whereClauses.join(' AND ') : '';
+        values.push(limit, offset);
+
+        const result = await dbQuery(`
+            SELECT a.*, c.cityname
+            FROM areas a
+            LEFT JOIN cities c ON a.cityid = c.cityid
+            ${whereClause}
+            ORDER BY c.cityname, a.areaname
+            LIMIT $${idx} OFFSET $${idx + 1}
+        `, values);
 
         sendResponse(res, true, 'Areas retrieved successfully', {
             page,
@@ -44,22 +60,22 @@ router.get('/', async (req, res) => {
     }
 });
 
+// =====================
 // 📍 جلب منطقة حسب ID
-router.get('/:id', async (req, res) => {
+// =====================
+router.get('/:id', requireSession, async (req, res) => {
     try {
-        const AreaID = parseInt(req.params.id);
-        if (isNaN(AreaID))
-            return sendResponse(res, false, 'Invalid AreaID', null, 400);
+        const areaID = parseInt(req.params.id);
+        if (isNaN(areaID)) return sendResponse(res, false, 'Invalid AreaID', null, 400);
 
-        const result = await sql.query(`
-            SELECT a.*, c."CityName"
-            FROM "areas" A
-            LEFT JOIN "cities" C ON a."CityID" = C."CityID"
-            WHERE a."AreaID" = $1
-        `, [AreaID]);
+        const result = await dbQuery(`
+            SELECT a.*, c.cityname
+            FROM areas a
+            LEFT JOIN cities c ON a.cityid = c.cityid
+            WHERE a.areaid = $1
+        `, [areaID]);
 
-        if (!result.length)
-            return sendResponse(res, false, `Area with ID ${AreaID} not found`, null, 404);
+        if (!result.length) return sendResponse(res, false, `Area with ID ${areaID} not found`, null, 404);
 
         sendResponse(res, true, 'Area retrieved successfully', result[0]);
     } catch (err) {
@@ -68,20 +84,24 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// 📍 إضافة منطقة جديدة
-router.post('/', async (req, res) => {
+// =====================
+// 📍 إضافة منطقة جديدة (Admin/Manager فقط)
+// =====================
+router.post('/', requireSession, requireRole(['Admin', 'Manager']), async (req, res) => {
     try {
-        const { AreaName, CityID } = req.body;
-        const cityIdNum = parseInt(CityID);
+        const { areaname, cityid } = req.body;
+        const cityIdNum = parseInt(cityid);
 
-        if (!AreaName || isNaN(cityIdNum))
-            return sendResponse(res, false, 'AreaName and valid CityID are required', null, 400);
+        if (!areaname || isNaN(cityIdNum)) return sendResponse(res, false, 'areaname and valid cityid are required', null, 400);
 
-        const inserted = await sql.query(`
-            INSERT INTO "areas" ("AreaName","CityID","CreatedAt")
+        const cityCheck = await dbQuery(`SELECT * FROM cities WHERE cityid = $1`, [cityIdNum]);
+        if (!cityCheck.length) return sendResponse(res, false, 'City not found', null, 404);
+
+        const inserted = await dbQuery(`
+            INSERT INTO areas (areaname, cityid, createdat)
             VALUES ($1, $2, NOW())
             RETURNING *
-        `, [AreaName, cityIdNum]);
+        `, [areaname, cityIdNum]);
 
         sendResponse(res, true, 'Area added successfully', inserted[0]);
     } catch (err) {
@@ -90,26 +110,30 @@ router.post('/', async (req, res) => {
     }
 });
 
-// 📍 تعديل بيانات منطقة
-router.put('/:id', async (req, res) => {
+// =====================
+// 📍 تعديل بيانات منطقة (Admin/Manager فقط)
+// =====================
+router.put('/:id', requireSession, requireRole(['Admin', 'Manager']), async (req, res) => {
     try {
-        const AreaID = parseInt(req.params.id);
-        const { AreaName, CityID } = req.body;
-        const cityIdNum = parseInt(CityID);
+        const areaID = parseInt(req.params.id);
+        const { areaname, cityid } = req.body;
+        const cityIdNum = parseInt(cityid);
 
-        if (isNaN(AreaID) || !AreaName || isNaN(cityIdNum))
-            return sendResponse(res, false, 'Valid AreaID, AreaName and CityID are required', null, 400);
+        if (isNaN(areaID) || !areaname || isNaN(cityIdNum))
+            return sendResponse(res, false, 'Valid areaID, areaname and cityid are required', null, 400);
 
-        const exists = await sql.query(`SELECT * FROM "areas" WHERE "AreaID" = $1`, [AreaID]);
-        if (!exists.length)
-            return sendResponse(res, false, `Area with ID ${AreaID} not found`, null, 404);
+        const exists = await dbQuery(`SELECT * FROM areas WHERE areaid = $1`, [areaID]);
+        if (!exists.length) return sendResponse(res, false, `Area with ID ${areaID} not found`, null, 404);
 
-        const updated = await sql.query(`
-            UPDATE "areas"
-            SET "AreaName" = $1, "CityID" = $2, "UpdatedAt" = NOW()
-            WHERE "AreaID" = $3
+        const cityCheck = await dbQuery(`SELECT * FROM cities WHERE cityid = $1`, [cityIdNum]);
+        if (!cityCheck.length) return sendResponse(res, false, 'City not found', null, 404);
+
+        const updated = await dbQuery(`
+            UPDATE areas
+            SET areaname = $1, cityid = $2, updatedat = NOW()
+            WHERE areaid = $3
             RETURNING *
-        `, [AreaName, cityIdNum, AreaID]);
+        `, [areaname, cityIdNum, areaID]);
 
         sendResponse(res, true, 'Area updated successfully', updated[0]);
     } catch (err) {
@@ -118,19 +142,18 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// 📍 حذف منطقة
-router.delete('/:id', async (req, res) => {
+// =====================
+// 📍 حذف منطقة (Admin/Manager فقط)
+// =====================
+router.delete('/:id', requireSession, requireRole(['Admin', 'Manager']), async (req, res) => {
     try {
-        const AreaID = parseInt(req.params.id);
-        if (isNaN(AreaID))
-            return sendResponse(res, false, 'Invalid AreaID', null, 400);
+        const areaID = parseInt(req.params.id);
+        if (isNaN(areaID)) return sendResponse(res, false, 'Invalid AreaID', null, 400);
 
-        const exists = await sql.query(`SELECT * FROM "areas" WHERE "AreaID" = $1`, [AreaID]);
-        if (!exists.length)
-            return sendResponse(res, false, `Area with ID ${AreaID} not found`, null, 404);
+        const exists = await dbQuery(`SELECT * FROM areas WHERE areaid = $1`, [areaID]);
+        if (!exists.length) return sendResponse(res, false, `Area with ID ${areaID} not found`, null, 404);
 
-        const deleted = await sql.query(`DELETE FROM "areas" WHERE "AreaID" = $1 RETURNING *`, [AreaID]);
-
+        const deleted = await dbQuery(`DELETE FROM areas WHERE areaid = $1 RETURNING *`, [areaID]);
         sendResponse(res, true, 'Area deleted successfully', deleted[0]);
     } catch (err) {
         console.error('Error DELETE /areas/:id:', err);

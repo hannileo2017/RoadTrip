@@ -1,0 +1,968 @@
+{
+  "startedAt": "2025-11-10T06:57:49.663Z",
+  "results": [
+    {
+      "route": "/api/appSettings",
+      "testedAt": "2025-11-10T06:57:52.548Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /appSettings</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /appSettings</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/apply-coupon",
+      "testedAt": "2025-11-10T06:57:52.672Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /apply-coupon</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "couponcode": "TEST10",
+            "orderamount": 100
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /apply-coupon</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/areas",
+      "testedAt": "2025-11-10T06:57:52.783Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /areas</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /areas</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/auditTrail",
+      "testedAt": "2025-11-10T06:57:52.888Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /auditTrail</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /auditTrail</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/auth",
+      "testedAt": "2025-11-10T06:57:52.999Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /auth</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "username": "admin1",
+            "password": "123456"
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /auth</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/cities",
+      "testedAt": "2025-11-10T06:57:53.109Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /cities</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /cities</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/coupon",
+      "testedAt": "2025-11-10T06:57:53.218Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /coupon</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /coupon</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/couponadvanced",
+      "testedAt": "2025-11-10T06:57:53.312Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /couponadvanced</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /couponadvanced</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/customers",
+      "testedAt": "2025-11-10T06:57:53.412Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /customers</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "fullname": "AutoCustomer",
+            "phone": "0594324793"
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /customers</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/deviceTokens",
+      "testedAt": "2025-11-10T06:57:53.506Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /deviceTokens</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /deviceTokens</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/driverLocations",
+      "testedAt": "2025-11-10T06:57:53.608Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /driverLocations</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "fullname": "AutoDriver",
+            "phone": "0597385133"
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /driverLocations</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/driverRatings",
+      "testedAt": "2025-11-10T06:57:53.707Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /driverRatings</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "fullname": "AutoDriver",
+            "phone": "0592352585"
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /driverRatings</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/drivers",
+      "testedAt": "2025-11-10T06:57:53.809Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /drivers</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "fullname": "AutoDriver",
+            "phone": "0595967025"
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /drivers</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/graphhopper",
+      "testedAt": "2025-11-10T06:57:53.915Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /graphhopper</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /graphhopper</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/notifications",
+      "testedAt": "2025-11-10T06:57:54.018Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /notifications</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /notifications</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/orderDisputes",
+      "testedAt": "2025-11-10T06:57:54.146Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /orderDisputes</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "customerid": 1,
+            "storeid": 1,
+            "status": "Pending",
+            "totalamount": 10,
+            "deliveryfee": 2,
+            "items": [
+              {
+                "productid": 1,
+                "quantity": 1,
+                "price": 10
+              }
+            ]
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /orderDisputes</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/orderHistoryDetailed",
+      "testedAt": "2025-11-10T06:57:54.256Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /orderHistoryDetailed</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "customerid": 1,
+            "storeid": 1,
+            "status": "Pending",
+            "totalamount": 10,
+            "deliveryfee": 2,
+            "items": [
+              {
+                "productid": 1,
+                "quantity": 1,
+                "price": 10
+              }
+            ]
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /orderHistoryDetailed</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/orderItems",
+      "testedAt": "2025-11-10T06:57:54.366Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /orderItems</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "customerid": 1,
+            "storeid": 1,
+            "status": "Pending",
+            "totalamount": 10,
+            "deliveryfee": 2,
+            "items": [
+              {
+                "productid": 1,
+                "quantity": 1,
+                "price": 10
+              }
+            ]
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /orderItems</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/orderTracking",
+      "testedAt": "2025-11-10T06:57:54.468Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /orderTracking</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "customerid": 1,
+            "storeid": 1,
+            "status": "Pending",
+            "totalamount": 10,
+            "deliveryfee": 2,
+            "items": [
+              {
+                "productid": 1,
+                "quantity": 1,
+                "price": 10
+              }
+            ]
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /orderTracking</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/orders",
+      "testedAt": "2025-11-10T06:57:54.561Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /orders</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "customerid": 1,
+            "storeid": 1,
+            "status": "Pending",
+            "totalamount": 10,
+            "deliveryfee": 2,
+            "items": [
+              {
+                "productid": 1,
+                "quantity": 1,
+                "price": 10
+              }
+            ]
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /orders</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/payments",
+      "testedAt": "2025-11-10T06:57:54.664Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /payments</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /payments</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/products",
+      "testedAt": "2025-11-10T06:57:54.766Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /products</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "productname": "AutoProduct 1762757874772",
+            "price": 10,
+            "stock": 5,
+            "storeid": 1
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /products</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/rolePermissions",
+      "testedAt": "2025-11-10T06:57:54.860Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /rolePermissions</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /rolePermissions</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/roles",
+      "testedAt": "2025-11-10T06:57:54.956Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /roles</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /roles</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/sessions",
+      "testedAt": "2025-11-10T06:57:55.062Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /sessions</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /sessions</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/storeCategories",
+      "testedAt": "2025-11-10T06:57:55.160Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /storeCategories</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "storename": "AutoStore 1762757875166",
+            "phone": "0592302518",
+            "categoryid": 1
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /storeCategories</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/storeRatings",
+      "testedAt": "2025-11-10T06:57:55.256Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /storeRatings</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "storename": "AutoStore 1762757875262",
+            "phone": "0598164350",
+            "categoryid": 1
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /storeRatings</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/stores",
+      "testedAt": "2025-11-10T06:57:55.358Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /stores</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "storename": "AutoStore 1762757875365",
+            "phone": "0598231224",
+            "categoryid": 1
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /stores</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/supportTickets",
+      "testedAt": "2025-11-10T06:57:55.454Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /supportTickets</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /supportTickets</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/supportticketreply",
+      "testedAt": "2025-11-10T06:57:55.569Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /supportticketreply</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /supportticketreply</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/systemSettings",
+      "testedAt": "2025-11-10T06:57:55.670Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /systemSettings</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /systemSettings</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/transactions",
+      "testedAt": "2025-11-10T06:57:55.757Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /transactions</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /transactions</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/units",
+      "testedAt": "2025-11-10T06:57:55.859Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /units</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "unitname": "Box",
+            "unitcategory": "Packing"
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /units</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/users",
+      "testedAt": "2025-11-10T06:57:55.955Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /users</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /users</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    },
+    {
+      "route": "/api/verifyToken",
+      "testedAt": "2025-11-10T06:57:56.050Z",
+      "attempts": [
+        {
+          "method": "GET",
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /verifyToken</pre>\n</body>\n</html>\n"
+          }
+        },
+        {
+          "method": "POST",
+          "body": {
+            "dummy": true
+          },
+          "result": {
+            "ok": true,
+            "status": 404,
+            "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /verifyToken</pre>\n</body>\n</html>\n"
+          }
+        }
+      ]
+    }
+  ],
+  "login": {
+    "ok": true,
+    "status": 200,
+    "data": {
+      "success": true,
+      "message": "Login successful",
+      "timestamp": "2025-11-10T06:57:52.520Z",
+      "data": {
+        "userid": 1,
+        "username": "admin1",
+        "fullname": "Administrator",
+        "role": "Admin",
+        "token": "sess-1762757872113-99462732-f99e-492b-b087-6484018d81cb"
+      }
+    }
+  },
+  "finishedAt": "2025-11-10T06:57:56.144Z"
+}

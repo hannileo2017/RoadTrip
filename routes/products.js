@@ -1,182 +1,247 @@
-const { getSupabase } = require('../supabaseClient');
-let supabase = getSupabase();
-
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY || null;
-const SUPABASE_URL = process.env.SUPABASE_URL || null;
-
-try {
-  if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
-    const { createClient } = require('../supabase');
-    supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-  }
-} catch(e) { /* ignore */ }
-
+// routes/products.js
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const sql = require('../db');  // PostgreSQL client
 const crypto = require('crypto');
+const { createClient } = require('@supabase/supabase-js');
 
-// اسم الـ bucket
-const BUCKET = 'RoadTrip';
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-// ----------------- Helpers -----------------
+if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+  console.error('❌ SUPABASE_URL or SUPABASE_SERVICE_KEY not set in .env. Products routes will fail without them.');
+}
 
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+const BUCKET = 'Products'; // تأكد أن ال-bucket موجود في Supabase Storage
+
+// ---------------- Helpers ----------------
 async function uploadProductImage(base64String, objectPath) {
-  if (!base64String || typeof base64String !== 'string') throw new Error('Invalid image data');
-  const fileBuffer = Buffer.from(base64string, 'base64');
-  const { data, error } = await supabase.storage.from(bucket).upload(objectPath, fileBuffer, { upsert: true });
-  if (error) throw error;
-  const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(objectPath);
-  return urlData.publicUrl;
+  if (!base64String) return null;
+  try {
+    const fileBuffer = Buffer.from(base64String, 'base64');
+    const { error } = await supabase.storage.from(BUCKET).upload(objectPath, fileBuffer, { upsert: true });
+    if (error) throw error;
+    const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(objectPath);
+    return urlData?.publicUrl || null;
+  } catch (err) {
+    console.warn('⚠️ uploadProductImage failed:', err.message || err);
+    throw new Error('Image upload failed: ' + (err.message || String(err)));
+  }
 }
 
 async function removeObjectByUrl(publicUrl) {
   if (!publicUrl) return;
   try {
     const url = new URL(publicUrl);
-    const objectPath = decodeURIComponent(url.pathname.replace(`/storage/v1/object/public/${BUCKET}/`, ''));
-    if (objectPath) await supabase.storage.from(bucket).remove([objectPath]);
+    // pathname example: /storage/v1/object/public/Products/path/to/file.jpg
+    const prefix = `/storage/v1/object/public/${BUCKET}/`;
+    const pathname = url.pathname || '';
+    if (!pathname.includes(prefix)) return;
+    const objectPath = decodeURIComponent(pathname.replace(prefix, ''));
+    if (objectPath) {
+      const { error } = await supabase.storage.from(BUCKET).remove([objectPath]);
+      if (error) console.warn('⚠️ removeObjectByUrl supabase remove error:', error.message || error);
+    }
   } catch (err) {
-    console.warn('⚠️ removeObjectByUrl failed:', err.message);
+    console.warn('⚠️ removeObjectByUrl failed:', err.message || err);
   }
 }
 
-// ----------------- Routes -----------------
+// helper: try selecting with alias; if fails fallback to simple select and manual category join
+async function fetchProducts({ productId, from = 0, to = 19, search, filterCategoryId }) {
+  // Attempt 1: use supabase select join alias: store_category:categoryid(categoryname)
+  try {
+    if (productId !== undefined) {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, category:categoryid(categoryname)')
+        .eq('productid', productId)
+        .single();
+      if (error) throw error;
+      return { data, usedJoin: true };
+    } else {
+      let q = supabase.from('products').select('*, category:categoryid(categoryname)').order('updatedat', { ascending: false }).range(from, to);
+      if (search) q = q.ilike('productname', `%${search}%`);
+      if (filterCategoryId) q = q.eq('categoryid', filterCategoryId);
+      const { data, error } = await q;
+      if (error) throw error;
+      return { data, usedJoin: true };
+    }
+  } catch (err) {
+    // Fallback: plain select + manual category fetch
+    console.warn('⚠️ fetchProducts: join select failed, falling back to manual category mapping. Error:', err.message || err);
+    if (productId !== undefined) {
+      const { data, error } = await supabase.from('products').select('*').eq('productid', productId).single();
+      if (error) throw error;
+      // fetch category name if any
+      const category = data?.categoryid ? (await supabase.from('store_category').select('categoryid,categoryname').eq('categoryid', data.categoryid).single()).data : null;
+      if (category) data.category = { categoryid: category.categoryid, categoryname: category.categoryname };
+      return { data, usedJoin: false };
+    } else {
+      let q = supabase.from('products').select('*').order('updatedat', { ascending: false }).range(from, to);
+      if (search) q = q.ilike('productname', `%${search}%`);
+      if (filterCategoryId) q = q.eq('categoryid', filterCategoryId);
+      const { data, error } = await q;
+      if (error) throw error;
+      // load categories for mapping
+      const categoryIds = Array.from(new Set((data || []).map(p => p.categoryid).filter(Boolean)));
+      let categories = [];
+      if (categoryIds.length) {
+        const { data: cats } = await supabase.from('store_category').select('categoryid,categoryname').in('categoryid', categoryIds);
+        categories = cats || [];
+      }
+      const catMap = Object.fromEntries((categories || []).map(c => [c.categoryid, c.categoryname]));
+      const mapped = (data || []).map(p => ({ ...p, category: p.categoryid ? { categoryid: p.categoryid, categoryname: catMap[p.categoryid] || null } : null }));
+      return { data: mapped, usedJoin: false };
+    }
+  }
+}
 
-// GET /api/products
+// ---------------- Routes ----------------
+
+// GET list with pagination, search, category filter
 router.get('/', async (req, res) => {
   try {
-    let { page = 1, limit = 20, search = '' } = req.query;
+    let { page = 1, limit = 20, search = '', categoryid } = req.query;
     page = parseInt(page) || 1;
     limit = parseInt(limit) || 20;
-    const offset = (page - 1) * limit;
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
 
-    const rows = await sql.query(`
-      SELECT *
-      FROM "products"
-      WHERE "productname" ILIKE $1
-      ORDER BY "LastUpdated" DESC
-      OFFSET $2 ROWS FETCH NEXT $3 ROWS ONLY;
-    `, [`%${search}%`, offset, limit]);
-
-    res.json({ success: true, page, limit, count: rows.length, products: rows });
+    const { data, usedJoin } = await fetchProducts({ from, to, search, filterCategoryId: categoryid });
+    res.json({
+      success: true,
+      page,
+      limit,
+      usedCategoryJoin: usedJoin,
+      count: Array.isArray(data) ? data.length : (data ? 1 : 0),
+      products: data || []
+    });
   } catch (err) {
-    console.error('❌ Error fetching products:', err);
-    res.status(500).json({ success: false, error: err.message });
+    console.error('❌ GET /api/products error:', err.message || err);
+    res.status(500).json({ success: false, error: err.message || String(err) });
   }
 });
 
-// GET /api/products/:ProductID
-router.get('/:ProductID', async (req, res) => {
+// GET item
+router.get('/:productid', async (req, res) => {
   try {
-    const productId = req.params.ProductID;
-    const rows = await sql.query(`SELECT * FROM "products" WHERE "ProductID" = $1;`, [productId]);
-    if (!rows.length) return res.status(404).json({ success: false, error: 'Product not found' });
-    res.json({ success: true, product: rows[0] });
+    const productid = parseInt(req.params.productid);
+    if (Number.isNaN(productid)) return res.status(400).json({ success: false, error: 'Invalid productid' });
+
+    const { data } = await fetchProducts({ productId: productid });
+    if (!data) return res.status(404).json({ success: false, error: 'Product not found' });
+    res.json({ success: true, product: data });
   } catch (err) {
-    console.error('❌ Error fetching product:', err);
-    res.status(500).json({ success: false, error: err.message });
+    console.error('❌ GET /api/products/:id error:', err.message || err);
+    res.status(500).json({ success: false, error: err.message || String(err) });
   }
 });
 
-// POST /api/products
+// POST create product
 router.post('/', async (req, res) => {
   try {
-    const { StoreID, productname, Price, Stock = 0, Description = '', IsAvailable = true, ImageBase64 } = req.body;
-    if (!StoreID || !productname || Price === undefined) {
-      return res.status(400).json({ success: false, error: 'StoreID, productname, and Price are required' });
+    const {
+      storeid,
+      productname,
+      price,
+      stock = 0,
+      description = '',
+      isavailable = true,
+      categoryid = null,
+      imagebase64
+    } = req.body;
+
+    if (!storeid || !productname || price === undefined) {
+      return res.status(400).json({ success: false, error: 'storeid, productname and price are required' });
     }
 
-    const inserted = await sql.query(`
-      INSERT INTO "products" 
-        ("StoreID","productname","Price","Stock","Description","IsAvailable","ImageURL","CreatedAt","LastUpdated")
-      VALUES ($1,$2,$3,$4,$5,$6,NULL,NOW(),NOW())
-      RETURNING *;
-    `, [StoreID, productname, Price, Stock, Description, IsAvailable]);
-
-    let product = inserted[0];
-
-    if (ImageBase64) {
-      try {
-        const objectPath = `products/${product.ProductID}/${product.ProductID}-${Date.now()}.jpg`;
-        const imageUrl = await uploadProductImage(ImageBase64, objectPath);
-        const updated = await sql.query(`UPDATE "products" SET "ImageURL" = $1, "LastUpdated" = NOW() WHERE "ProductID" = $2 RETURNING *;`, [imageUrl, product.ProductID]);
-        product = updated[0];
-      } catch (uploadErr) {
-        console.warn('⚠️ Image upload failed:', uploadErr.message);
-      }
+    // handle image (optional)
+    let imageurl = null;
+    if (imagebase64) {
+      const objectPath = `products/${storeid}/${Date.now()}-${crypto.randomUUID()}.jpg`;
+      imageurl = await uploadProductImage(imagebase64, objectPath);
     }
 
-    res.status(201).json({ success: true, message: 'Product created successfully', product });
+    const insertBody = {
+      storeid,
+      productname,
+      description,
+      price,
+      stock,
+      imageurl,
+      isavailable,
+      categoryid: categoryid || null,
+      createdat: new Date(),
+      updatedat: new Date()
+    };
+
+    const { data, error } = await supabase.from('products').insert([insertBody]).select();
+    if (error) {
+      console.error('❌ supabase insert error:', error);
+      // if image uploaded, consider removing it on failure
+      if (imageurl) await removeObjectByUrl(imageurl);
+      throw error;
+    }
+
+    res.status(201).json({ success: true, message: 'Product created successfully', product: data[0] });
   } catch (err) {
-    console.error('❌ Error adding product:', err);
-    res.status(500).json({ success: false, error: err.message });
+    console.error('❌ POST /api/products error:', err.message || err);
+    res.status(500).json({ success: false, error: err.message || String(err) });
   }
 });
 
-// PUT /api/products/:ProductID
-router.put('/:ProductID', async (req, res) => {
+// PUT update product
+router.put('/:productid', async (req, res) => {
   try {
-    const productId = req.params.ProductID;
-    const body = req.body || {};
-    const allowed = new Set(['productname','Price','Stock','Description','IsAvailable']);
+    const productid = parseInt(req.params.productid);
+    if (Number.isNaN(productid)) return res.status(400).json({ success: false, error: 'Invalid productid' });
 
-    const existingRows = await sql.query(`SELECT * FROM "products" WHERE "ProductID" = $1 LIMIT 1;`, [productId]);
-    if (!existingRows.length) return res.status(404).json({ success: false, error: 'Product not found' });
-    const existing = existingRows[0];
+    const { imagebase64, ...fields } = req.body;
 
-    const updateObj = {};
-    for (const key of Object.keys(body)) {
-      if (allowed.has(key)) updateObj[key] = body[key];
+    // fetch existing
+    const { data: existing, error: exErr } = await supabase.from('products').select('*').eq('productid', productid).single();
+    if (exErr || !existing) return res.status(404).json({ success: false, error: 'Product not found' });
+
+    const updateObj = { ...fields, updatedat: new Date() };
+
+    if (imagebase64) {
+      // remove old image if exists
+      if (existing.imageurl) await removeObjectByUrl(existing.imageurl);
+      const objectPath = `products/${existing.storeid}/${productid}-${Date.now()}.jpg`;
+      const newUrl = await uploadProductImage(imagebase64, objectPath);
+      updateObj.imageurl = newUrl;
     }
 
-    if (body.ImageBase64) {
-      try {
-        if (existing.ImageURL) await removeObjectByUrl(existing.ImageURL);
-        const objectPath = `products/${productId}/${productId}-${Date.now()}.jpg`;
-        const url = await uploadProductImage(body.ImageBase64, objectPath);
-        updateObj.ImageURL = url;
-      } catch (uploadErr) {
-        console.warn('⚠️ Image upload failed on update:', uploadErr.message);
-      }
-    }
-
-    if (!Object.keys(updateObj).length) return res.status(400).json({ success: false, error: 'No valid fields to update' });
-
-    const { data, error } = await supabase
-      .from('products')
-      .update(updateobj)
-      .eq('ProductID', productId)
-      .select();
-
+    const { data, error } = await supabase.from('products').update(updateObj).eq('productid', productid).select();
     if (error) throw error;
 
-    const updated = (data && data[0]) ? data[0] : null;
-    res.json({ success: true, message: 'Product updated successfully', product: updated });
+    res.json({ success: true, message: 'Product updated successfully', product: data[0] });
   } catch (err) {
-    console.error('❌ Error updating product:', err);
-    res.status(500).json({ success: false, error: err.message });
+    console.error('❌ PUT /api/products/:id error:', err.message || err);
+    res.status(500).json({ success: false, error: err.message || String(err) });
   }
 });
 
-// DELETE /api/products/:productID
-router.delete('/:productID', async (req, res) => {
+// DELETE product
+router.delete('/:productid', async (req, res) => {
   try {
-    const productId = req.params.ProductID;
-    const deleted = await sql.query(`DELETE FROM "products" WHERE "ProductID" = $1 RETURNING *;`, [productId]);
-    if (!deleted.length) return res.status(404).json({ success: false, error: 'Product not found' });
+    const productid = parseInt(req.params.productid);
+    if (Number.isNaN(productid)) return res.status(400).json({ success: false, error: 'Invalid productid' });
 
-    try {
-      if (deleted[0].ImageURL) await removeObjectByUrl(deleted[0].ImageURL);
-    } catch (remErr) {
-      console.warn('⚠️ Failed to remove image from storage:', remErr.message);
-    }
+    const { data: existing, error: exErr } = await supabase.from('products').select('*').eq('productid', productid).single();
+    if (exErr || !existing) return res.status(404).json({ success: false, error: 'Product not found' });
 
-    res.json({ success: true, message: 'Product deleted successfully', product: deleted[0] });
+    if (existing.imageurl) await removeObjectByUrl(existing.imageurl);
+
+    const { data, error } = await supabase.from('products').delete().eq('productid', productid).select();
+    if (error) throw error;
+
+    res.json({ success: true, message: 'Product deleted successfully', product: data[0] });
   } catch (err) {
-    console.error('❌ Error deleting product:', err);
-    res.status(500).json({ success: false, error: err.message });
+    console.error('❌ DELETE /api/products/:id error:', err.message || err);
+    res.status(500).json({ success: false, error: err.message || String(err) });
   }
 });
 

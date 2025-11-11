@@ -1,0 +1,5355 @@
+{
+  "info": {
+    "name": "RoadTrip_API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "roadtrip-collection-1762845761275"
+  },
+  "item": [
+    {
+      "name": "README - Postman Environment setup",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "README",
+          "host": [
+            "README"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "/*",
+              "Before using this collection:",
+              "1) Create a Postman Environment named 'RoadTrip_API Env'.",
+              "2) Add variables:",
+              "   - API_BASE_URL = http://localhost:3000/api",
+              "   - authToken = <your_jwt_here>",
+              "   - SUPABASE_URL = https://dummy.supabase.co",
+              "   - SUPABASE_SERVICE_KEY = dummy_service_key",
+              "   - SUPABASE_ANON_KEY = dummy_anon_key",
+              "3) Import this collection and select the environment.",
+              "4) Replace authToken with a valid JWT for protected endpoints.",
+              "*/"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "apply-coupon",
+      "item": [
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/apply-coupon",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "apply-coupon"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "appSettings",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/appSettings",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "appSettings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:name",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/appSettings/:name",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "appSettings",
+                ":name"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/appSettings",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "appSettings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /:name",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/appSettings/:name",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "appSettings",
+                ":name"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/appSettings/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "appSettings",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "areas",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/areas",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "areas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/areas/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "areas",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/areas",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "areas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/areas/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "areas",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/areas/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "areas",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "auditTrail",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/auditTrail",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "auditTrail"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/auditTrail/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "auditTrail",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/auditTrail",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "auditTrail"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/auditTrail/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "auditTrail",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/auditTrail/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "auditTrail",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "POST /login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/auth/login",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "cities",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/cities",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "cities"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/cities",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "cities"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/cities/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "cities",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/cities/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "cities",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "coupon",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/coupon",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "coupon"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/coupon/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "coupon",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/coupon",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "coupon"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/coupon/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "coupon",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/coupon/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "coupon",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "couponadvanced",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/couponadvanced",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "couponadvanced"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/couponadvanced/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "couponadvanced",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/couponadvanced",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "couponadvanced"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/couponadvanced/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "couponadvanced",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/couponadvanced/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "couponadvanced",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "customers",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/customers",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:customerid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/customers/:customerid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "customers",
+                ":customerid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/customers",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:customerid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/customers/:customerid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "customers",
+                ":customerid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:customerid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/customers/:customerid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "customers",
+                ":customerid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /login-otp",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/customers/login-otp",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "customers",
+                "login-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /verify-otp",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/customers/verify-otp",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "customers",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /change-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/customers/change-password",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "customers",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /forgot-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/customers/forgot-password",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "customers",
+                "forgot-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /reset-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/customers/reset-password",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "customers",
+                "reset-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "debug",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/debug",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "debug"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "deviceTokens",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/deviceTokens",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "deviceTokens"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/deviceTokens/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "deviceTokens",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/deviceTokens",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "deviceTokens"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/deviceTokens/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "deviceTokens",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/deviceTokens/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "deviceTokens",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "driverLocations",
+      "item": [
+        {
+          "name": "POST /update-location",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/driverLocations/update-location",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "driverLocations",
+                "update-location"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:driverid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/driverLocations/:driverid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "driverLocations",
+                ":driverid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "driverRatings",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/driverRatings",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "driverRatings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/driverRatings/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "driverRatings",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/driverRatings",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "driverRatings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/driverRatings/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "driverRatings",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/driverRatings/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "driverRatings",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "drivers",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/drivers",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "drivers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:driverid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/drivers/:driverid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "drivers",
+                ":driverid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/drivers",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "drivers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:driverid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/drivers/:driverid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "drivers",
+                ":driverid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:driverid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/drivers/:driverid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "drivers",
+                ":driverid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /request-reset",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/drivers/request-reset",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "drivers",
+                "request-reset"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /verify-otp",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/drivers/verify-otp",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "drivers",
+                "verify-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /reset-password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/drivers/reset-password",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "drivers",
+                "reset-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "graphhopper",
+      "item": [
+        {
+          "name": "GET /route",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/graphhopper/route",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "graphhopper",
+                "route"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "notifications",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/notifications",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/notifications/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "notifications",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/notifications",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/notifications/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "notifications",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/notifications/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "notifications",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "orderDisputes",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderDisputes",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderDisputes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderDisputes/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderDisputes",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderDisputes",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderDisputes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderDisputes/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderDisputes",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderDisputes/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderDisputes",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "orderHistoryDetailed",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderHistoryDetailed",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderHistoryDetailed"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderHistoryDetailed/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderHistoryDetailed",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderHistoryDetailed",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderHistoryDetailed"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderHistoryDetailed/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderHistoryDetailed",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderHistoryDetailed/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderHistoryDetailed",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "orderItems",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderItems",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderItems"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderItems",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderItems"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:orderitemid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderItems/:orderitemid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderItems",
+                ":orderitemid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:orderitemid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderItems/:orderitemid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderItems",
+                ":orderitemid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "orders",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orders",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:orderid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orders/:orderid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orders",
+                ":orderid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orders",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:orderid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orders/:orderid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orders",
+                ":orderid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:orderid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orders/:orderid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orders",
+                ":orderid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "orderTracking",
+      "item": [
+        {
+          "name": "POST /track-order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderTracking/track-order",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderTracking",
+                "track-order"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:orderid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/orderTracking/:orderid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "orderTracking",
+                ":orderid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "payments",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/payments",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:paymentid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/payments/:paymentid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "payments",
+                ":paymentid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/payments",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:paymentid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/payments/:paymentid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "payments",
+                ":paymentid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:paymentid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/payments/:paymentid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "payments",
+                ":paymentid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "products",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/products",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:productid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/products/:productid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "products",
+                ":productid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/products",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:productid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/products/:productid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "products",
+                ":productid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:productid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/products/:productid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "products",
+                ":productid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "rolePermissions",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/rolePermissions",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "rolePermissions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /role/:roleid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/rolePermissions/role/:roleid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "rolePermissions",
+                "role",
+                ":roleid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:permissionid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/rolePermissions/:permissionid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "rolePermissions",
+                ":permissionid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/rolePermissions",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "rolePermissions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:permissionid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/rolePermissions/:permissionid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "rolePermissions",
+                ":permissionid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:permissionid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/rolePermissions/:permissionid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "rolePermissions",
+                ":permissionid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "roles",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/roles",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:roleid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/roles/:roleid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "roles",
+                ":roleid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/roles",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:roleid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/roles/:roleid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "roles",
+                ":roleid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:roleid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/roles/:roleid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "roles",
+                ":roleid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "sessions",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/sessions",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "sessions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/sessions",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "sessions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:sessionid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/sessions/:sessionid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "sessions",
+                ":sessionid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:sessionid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/sessions/:sessionid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "sessions",
+                ":sessionid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "storeCategories",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/storeCategories",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "storeCategories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:categoryid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/storeCategories/:categoryid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "storeCategories",
+                ":categoryid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/storeCategories",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "storeCategories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:categoryid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/storeCategories/:categoryid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "storeCategories",
+                ":categoryid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:categoryid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/storeCategories/:categoryid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "storeCategories",
+                ":categoryid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "storeRatings",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/storeRatings",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "storeRatings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:ratingid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/storeRatings/:ratingid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "storeRatings",
+                ":ratingid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/storeRatings",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "storeRatings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:ratingid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/storeRatings/:ratingid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "storeRatings",
+                ":ratingid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:ratingid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/storeRatings/:ratingid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "storeRatings",
+                ":ratingid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "stores",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/stores",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "stores"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:storeid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/stores/:storeid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "stores",
+                ":storeid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/stores",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "stores"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:storeid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/stores/:storeid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "stores",
+                ":storeid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:storeid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/stores/:storeid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "stores",
+                ":storeid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "supportticketreply",
+      "item": [
+        {
+          "name": "GET /ticket/:ticketid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/supportticketreply/ticket/:ticketid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "supportticketreply",
+                "ticket",
+                ":ticketid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/supportticketreply",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "supportticketreply"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:replyid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/supportticketreply/:replyid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "supportticketreply",
+                ":replyid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "supportTickets",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/supportTickets",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "supportTickets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /user/:userid",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/supportTickets/user/:userid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "supportTickets",
+                "user",
+                ":userid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /type/:usertype",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/supportTickets/type/:usertype",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "supportTickets",
+                "type",
+                ":usertype"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /status/:status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/supportTickets/status/:status",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "supportTickets",
+                "status",
+                ":status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/supportTickets",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "supportTickets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:ticketid",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/supportTickets/:ticketid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "supportTickets",
+                ":ticketid"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:ticketid",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/supportTickets/:ticketid",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "supportTickets",
+                ":ticketid"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "systemSettings",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/systemSettings",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "systemSettings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:SettingID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/systemSettings/:SettingID",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "systemSettings",
+                ":SettingID"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:SettingID",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/systemSettings/:SettingID",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "systemSettings",
+                ":SettingID"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/systemSettings",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "systemSettings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:SettingID",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/systemSettings/:SettingID",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "systemSettings",
+                ":SettingID"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "transactions",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/transactions",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/transactions/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "transactions",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/transactions",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT /:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/transactions/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "transactions",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/transactions/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "transactions",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "units",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/units",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "units"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/units/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "units",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/units",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "units"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/units/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "units",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/units/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "units",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "users",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/users",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/users/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/users",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/users/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE /:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/users/:id",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "verifyToken",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/verifyToken",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "verifyToken"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "__migrationhistory",
+      "item": [
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/__migrationhistory",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "__migrationhistory"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "disabled": false
+              }
+            ],
+            "url": {
+              "raw": "{{API_BASE_URL}}/__migrationhistory",
+              "host": [
+                "{{API_BASE_URL}}"
+              ],
+              "path": [
+                "__migrationhistory"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

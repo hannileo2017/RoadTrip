@@ -1,0 +1,80 @@
+{
+  "base": "http://localhost:3000/api/drivers",
+  "tests": [
+    {
+      "name": "Create Driver",
+      "method": "POST",
+      "body": {
+        "fullname": "Ali Ahmed",
+        "phone": "0591234567",
+        "email": "ali.ahmed@example.com",
+        "password": "Test1234!",
+        "vehicletype": "Motorcycle",
+        "vehiclenumber": "12345AB",
+        "licensenumber": "LN987654",
+        "nationalid": "ID123456789",
+        "address": "Ramallah, Palestine",
+        "cityid": 1,
+        "areaid": 2,
+        "status": "Active",
+        "maxload": "50kg",
+        "model": "Yamaha X",
+        "notes": "Test driver",
+        "photourl": "http://example.com/photo.jpg",
+        "available": true,
+        "rating": 5.0,
+        "fcmtoken": "fcm_token_example",
+        "nationalcardurl": "http://example.com/national_card.jpg",
+        "licenseurl": "http://example.com/license.jpg",
+        "qrcode": "http://example.com/qrcode.png"
+      },
+      "expect": {
+        "status": 201,
+        "success": true
+      }
+    },
+    {
+      "name": "Get Drivers List",
+      "method": "GET",
+      "query": {
+        "page": 1,
+        "limit": 10
+      },
+      "expect": {
+        "status": 200,
+        "success": true
+      }
+    },
+    {
+      "name": "Get Single Driver",
+      "method": "GET",
+      "path": "/DRV-1",
+      "expect": {
+        "status": 200,
+        "success": true
+      }
+    },
+    {
+      "name": "Update Driver",
+      "method": "PUT",
+      "path": "/DRV-1",
+      "body": {
+        "status": "Inactive",
+        "notes": "Updated notes"
+      },
+      "expect": {
+        "status": 200,
+        "success": true
+      }
+    },
+    {
+      "name": "Delete Driver",
+      "method": "DELETE",
+      "path": "/DRV-1",
+      "expect": {
+        "status": 200,
+        "success": true
+      }
+    }
+  ]
+}

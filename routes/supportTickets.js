@@ -1,104 +1,166 @@
-
-const { getSupabase } = require('../supabaseClient');
-let supabase = getSupabase();
-
-require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const sql = require('../db'); // db.js يستخدم postgres
+const sql = require('../db');
+require('dotenv').config();
 
-// دالة مساعدة للرد
+// 🧩 دالة موحدة للردود
 function sendResponse(res, success, message, data = null, status = 200) {
     res.status(status).json({ success, message, data, timestamp: new Date() });
 }
 
 // ==========================
-// 📍 عرض جميع التذاكر
+// 📍 1. جلب جميع التذاكر
 router.get('/', async (req, res) => {
     try {
-        const result = await sql.query(`SELECT * FROM "supporttickets" ORDER BY "CreatedAt" DESC`, [/* add params here */]);
-        sendResponse(res, true, 'Support tickets fetched successfully', { count: result.length, tickets: result });
+        const result = await sql.query(
+            `SELECT * FROM "supportticket" ORDER BY "createdat" DESC`
+        );
+        sendResponse(res, true, 'All support tickets fetched successfully', {
+            count: result.rows.length,
+            tickets: result.rows
+        });
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 إنشاء تذكرة جديدة
-router.post('/', async (req, res) => {
-    const { UserType, UserID, Subject, Message, Status, Priority } = req.body;
+// 📍 2. جلب التذاكر حسب UserID
+router.get('/user/:userid', async (req, res) => {
+    const { userid } = req.params;
     try {
-        if (!UserType || !UserID || !Subject || !Message) 
-            return sendResponse(res, false, 'UserType, UserID, Subject, and Message are required', null, 400);
+        const result = await sql.query(
+            `SELECT * FROM "supportticket" WHERE "userid" = $1 ORDER BY "createdat" DESC`,
+            [userid]
+        );
 
-        const result = await sql.query(`
-            INSERT INTO "SupportTickets" ("UserType","UserID","Subject","Message","Status","Priority","CreatedAt","UpdatedAt")
-            VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
-            RETURNING "TicketID"
-        `, [/* add params here */]);
-        sendResponse(res, true, 'Support ticket created successfully', { TicketID: result[0].TicketID }, 201);
+        if (result.rows.length === 0)
+            return sendResponse(res, false, 'No tickets found for this user', [], 404);
+
+        sendResponse(res, true, 'Support tickets for user fetched successfully', {
+            count: result.rows.length,
+            tickets: result.rows
+        });
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 تحديث تذكرة
-router.put('/:TicketID', async (req, res) => {
-    const { TicketID } = req.params;
+// 📍 3. جلب التذاكر حسب نوع المستخدم (UserType)
+router.get('/type/:usertype', async (req, res) => {
+    const { usertype } = req.params;
+    try {
+        const result = await sql.query(
+            `SELECT * FROM "supportticket" WHERE LOWER("usertype") = LOWER($1) ORDER BY "createdat" DESC`,
+            [usertype]
+        );
+
+        if (result.rows.length === 0)
+            return sendResponse(res, false, 'No tickets found for this user type', [], 404);
+
+        sendResponse(res, true, 'Support tickets by user type fetched successfully', {
+            count: result.rows.length,
+            tickets: result.rows
+        });
+    } catch (err) {
+        sendResponse(res, false, err.message, null, 500);
+    }
+});
+
+// ==========================
+// 📍 4. جلب التذاكر حسب الحالة (Status)
+router.get('/status/:status', async (req, res) => {
+    const { status } = req.params;
+    try {
+        const result = await sql.query(
+            `SELECT * FROM "supportticket" WHERE LOWER("status") = LOWER($1) ORDER BY "createdat" DESC`,
+            [status]
+        );
+
+        if (result.rows.length === 0)
+            return sendResponse(res, false, 'No tickets found for this status', [], 404);
+
+        sendResponse(res, true, 'Support tickets by status fetched successfully', {
+            count: result.rows.length,
+            tickets: result.rows
+        });
+    } catch (err) {
+        sendResponse(res, false, err.message, null, 500);
+    }
+});
+
+// ==========================
+// 📍 5. إنشاء تذكرة جديدة
+router.post('/', async (req, res) => {
+    const { usertype, userid, subject, message, status = 'open', priority = 'normal' } = req.body;
+
+    try {
+        if (!usertype || !userid || !subject || !message)
+            return sendResponse(res, false, 'usertype, userid, subject, and message are required', null, 400);
+
+        const insertResult = await sql.query(
+            `INSERT INTO "supportticket" ("usertype", "userid", "subject", "message", "status", "priority", "createdat", "updatedat")
+             VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
+             RETURNING "ticketid"`,
+            [usertype, userid, subject, message, status, priority]
+        );
+
+        sendResponse(res, true, 'Support ticket created successfully', {
+            ticketid: insertResult.rows[0].ticketid
+        }, 201);
+    } catch (err) {
+        sendResponse(res, false, err.message, null, 500);
+    }
+});
+
+// ==========================
+// 📍 6. تحديث تذكرة
+router.put('/:ticketid', async (req, res) => {
+    const { ticketid } = req.params;
     const updateData = req.body;
+
     try {
         const fields = Object.keys(updateData);
-        if (!fields.length) return sendResponse(res, false, 'Nothing to update', null, 400);
+        if (fields.length === 0) return sendResponse(res, false, 'Nothing to update', null, 400);
 
-        const setQuery = fields.map((f, i) => `"${f}" = ${updateData[f]}`).join(', ');
-        const result = await sql.query(`
-            UPDATE "SupportTickets"
-            SET $1, "UpdatedAt" = NOW()
-            WHERE "TicketID" = $2
-            RETURNING *
-        `, [/* add params here */]);
-        if (!result.length) return sendResponse(res, false, 'Ticket not found', null, 404);
-        sendResponse(res, true, 'Support ticket updated successfully', result[0]);
+        const setClause = fields.map((f, i) => `"${f.toLowerCase()}" = $${i + 1}`).join(', ');
+        const values = Object.values(updateData);
+
+        const query = `
+            UPDATE "supportticket"
+            SET ${setClause}, "updatedat" = NOW()
+            WHERE "ticketid" = $${fields.length + 1}
+            RETURNING *;
+        `;
+
+        const result = await sql.query(query, [...values, ticketid]);
+        if (result.rows.length === 0) return sendResponse(res, false, 'Ticket not found', null, 404);
+
+        sendResponse(res, true, 'Support ticket updated successfully', result.rows[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 حذف تذكرة
-router.delete('/:TicketID', async (req, res) => {
-    const { TicketID } = req.params;
+// 📍 7. حذف تذكرة
+router.delete('/:ticketid', async (req, res) => {
+    const { ticketid } = req.params;
+
     try {
-        const result = await sql.query(`
-            DELETE FROM "supporttickets"
-            WHERE "TicketID" = $1
-            RETURNING *
-        `, [/* add params here */]);
-        if (!result.length) return sendResponse(res, false, 'Ticket not found', null, 404);
-        sendResponse(res, true, 'Support ticket deleted successfully', result[0]);
+        const result = await sql.query(
+            `DELETE FROM "supportticket" WHERE "ticketid" = $1 RETURNING *`,
+            [ticketid]
+        );
+
+        if (result.rows.length === 0)
+            return sendResponse(res, false, 'Ticket not found', null, 404);
+
+        sendResponse(res, true, 'Support ticket deleted successfully', result.rows[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 module.exports = router;
-
-// --- auto-added init shim (safe) ---
-try {
-  if (!module.exports) module.exports = router;
-} catch(e) {}
-
-if (!module.exports.init) {
-  module.exports.init = function initRoute(opts = {}) {
-    try {
-      if (opts.supabaseKey && !supabase && SUPABASE_URL) {
-        try {
-          
-          supabase = createClient(SUPABASE_URL, opts.supabaseKey);
-        } catch(err) { /* ignore */ }
-      }
-    } catch(err) { /* ignore */ }
-    return module.exports;
-  };
-}

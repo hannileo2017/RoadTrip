@@ -1,0 +1,303 @@
+{
+  "base": "http://localhost:3000",
+  "results": [
+    {
+      "path": "/api/driver",
+      "create": {
+        "status": 201,
+        "data": {
+          "success": true,
+          "driver": {
+            "driverid": "DRV-1762434446747",
+            "fullname": "Auto Test Driver",
+            "phone": "0551002003",
+            "email": "autotest.driver@example.com",
+            "password": null,
+            "vehicletype": null,
+            "vehiclenumber": null,
+            "licensenumber": null,
+            "nationalid": null,
+            "address": null,
+            "isactive": true,
+            "createdat": "2025-11-06T10:07:51.418Z",
+            "cityid": null,
+            "areaid": null,
+            "status": null,
+            "maxload": null,
+            "model": null,
+            "lastupdated": null,
+            "notes": null,
+            "photourl": null,
+            "available": true,
+            "rating": null,
+            "fcmtoken": null,
+            "nationalcardurl": null,
+            "licenseurl": null,
+            "otp": null,
+            "qrcode": null,
+            "otpexpires": null
+          }
+        },
+        "id": "DRV-1762434446747"
+      },
+      "get": {
+        "status": 200,
+        "data": {
+          "success": true,
+          "driver": {
+            "driverid": "DRV-1762434446747",
+            "fullname": "Auto Test Driver",
+            "phone": "0551002003",
+            "email": "autotest.driver@example.com",
+            "password": null,
+            "vehicletype": null,
+            "vehiclenumber": null,
+            "licensenumber": null,
+            "nationalid": null,
+            "address": null,
+            "isactive": true,
+            "createdat": "2025-11-06T10:07:51.418Z",
+            "cityid": null,
+            "areaid": null,
+            "status": null,
+            "maxload": null,
+            "model": null,
+            "lastupdated": null,
+            "notes": null,
+            "photourl": null,
+            "available": true,
+            "rating": null,
+            "fcmtoken": null,
+            "nationalcardurl": null,
+            "licenseurl": null,
+            "otp": null,
+            "qrcode": null,
+            "otpexpires": null
+          }
+        }
+      },
+      "update": {
+        "status": 200,
+        "data": {
+          "success": true,
+          "driver": {
+            "driverid": "DRV-1762434446747",
+            "fullname": "Auto Test Driver",
+            "phone": "0551002003",
+            "email": "autotest.driver@example.com",
+            "password": null,
+            "vehicletype": null,
+            "vehiclenumber": null,
+            "licensenumber": null,
+            "nationalid": null,
+            "address": null,
+            "isactive": true,
+            "createdat": "2025-11-06T10:07:51.418Z",
+            "cityid": null,
+            "areaid": null,
+            "status": "Available",
+            "maxload": null,
+            "model": null,
+            "lastupdated": "2025-11-06T10:07:52.047Z",
+            "notes": null,
+            "photourl": null,
+            "available": true,
+            "rating": null,
+            "fcmtoken": null,
+            "nationalcardurl": null,
+            "licenseurl": null,
+            "otp": null,
+            "qrcode": null,
+            "otpexpires": null
+          }
+        }
+      },
+      "delete": {
+        "status": 200,
+        "data": {
+          "success": true,
+          "message": "Driver deleted",
+          "driver": {
+            "driverid": "DRV-1762434446747",
+            "fullname": "Auto Test Driver",
+            "phone": "0551002003",
+            "email": "autotest.driver@example.com",
+            "password": null,
+            "vehicletype": null,
+            "vehiclenumber": null,
+            "licensenumber": null,
+            "nationalid": null,
+            "address": null,
+            "isactive": true,
+            "createdat": "2025-11-06T10:07:51.418Z",
+            "cityid": null,
+            "areaid": null,
+            "status": "Available",
+            "maxload": null,
+            "model": null,
+            "lastupdated": "2025-11-06T10:07:52.047Z",
+            "notes": null,
+            "photourl": null,
+            "available": true,
+            "rating": null,
+            "fcmtoken": null,
+            "nationalcardurl": null,
+            "licenseurl": null,
+            "otp": null,
+            "qrcode": null,
+            "otpexpires": null
+          }
+        }
+      },
+      "errors": []
+    },
+    {
+      "path": "/api/customers",
+      "create": null,
+      "get": null,
+      "update": null,
+      "delete": null,
+      "errors": [
+        {
+          "op": "create",
+          "error": "Request failed with status code 409",
+          "detail": {
+            "success": false,
+            "message": "Phone or Email already registered",
+            "timestamp": "2025-11-06T13:07:28.291Z",
+            "data": null
+          }
+        }
+      ]
+    },
+    {
+      "path": "/api/stores",
+      "create": {
+        "status": 201,
+        "data": {
+          "success": true,
+          "message": "Store created successfully",
+          "data": {
+            "storeid": 11,
+            "storename": "Auto Test Store",
+            "categoryid": 1,
+            "cityid": 1,
+            "areaid": 1,
+            "address": null,
+            "phone": "0553004005",
+            "email": "store@example.com",
+            "description": "Test store (auto)",
+            "isactive": true,
+            "createdat": "2025-11-06T10:07:52.984Z",
+            "logourl": null,
+            "rating": 0,
+            "otp": "964570",
+            "otpexpires": "2025-11-06T10:17:52.984Z",
+            "phoneconfirmed": false,
+            "fcmtoken": null
+          }
+        },
+        "id": 11
+      },
+      "get": {
+        "status": 200,
+        "data": {
+          "success": true,
+          "data": {
+            "storeid": 11,
+            "storename": "Auto Test Store",
+            "categoryid": 1,
+            "cityid": 1,
+            "areaid": 1,
+            "address": null,
+            "phone": "0553004005",
+            "email": "store@example.com",
+            "description": "Test store (auto)",
+            "isactive": true,
+            "createdat": "2025-11-06T10:07:52.984Z",
+            "logourl": null,
+            "rating": 0,
+            "otp": "964570",
+            "otpexpires": "2025-11-06T10:17:52.984Z",
+            "phoneconfirmed": false,
+            "fcmtoken": null
+          }
+        }
+      },
+      "update": null,
+      "delete": {
+        "status": 200,
+        "data": {
+          "success": true,
+          "message": "Store deleted successfully",
+          "data": {
+            "storeid": 11,
+            "storename": "Auto Test Store",
+            "categoryid": 1,
+            "cityid": 1,
+            "areaid": 1,
+            "address": null,
+            "phone": "0553004005",
+            "email": "store@example.com",
+            "description": "Test store (auto)",
+            "isactive": true,
+            "createdat": "2025-11-06T10:07:52.984Z",
+            "logourl": null,
+            "rating": 0,
+            "otp": "964570",
+            "otpexpires": "2025-11-06T10:17:52.984Z",
+            "phoneconfirmed": false,
+            "fcmtoken": null
+          }
+        }
+      },
+      "errors": [
+        {
+          "op": "update",
+          "error": "Request failed with status code 500",
+          "detail": {
+            "success": false,
+            "error": "column \"updatedat\" of relation \"stores\" does not exist"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/api/products",
+      "create": null,
+      "get": null,
+      "update": null,
+      "delete": null,
+      "errors": [
+        {
+          "op": "create",
+          "error": "Request failed with status code 500",
+          "detail": {
+            "success": false,
+            "error": "Could not find the 'categoryid' column of 'products' in the schema cache"
+          }
+        }
+      ]
+    },
+    {
+      "path": "/api/orders",
+      "create": null,
+      "get": null,
+      "update": null,
+      "delete": null,
+      "errors": [
+        {
+          "op": "create",
+          "error": "Request failed with status code 400",
+          "detail": {
+            "success": false,
+            "message": "CustomerID, StoreID, and Status are required",
+            "timestamp": "2025-11-06T13:07:33.004Z",
+            "data": null
+          }
+        }
+      ]
+    }
+  ],
+  "timestamp": "2025-11-06T13:07:33.016Z"
+}

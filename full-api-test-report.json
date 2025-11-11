@@ -1,0 +1,1001 @@
+[
+  {
+    "method": "get",
+    "route": "/appSettings",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Settings retrieved successfully",
+      "timestamp": "2025-11-09T10:03:15.275Z",
+      "data": {
+        "page": 1,
+        "limit": 20,
+        "total": 0,
+        "settings": []
+      }
+    }
+  },
+  {
+    "method": "get",
+    "route": "/systemSettings",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "System settings fetched successfully",
+      "data": {
+        "count": 0,
+        "settings": []
+      },
+      "timestamp": "2025-11-09T10:03:15.684Z"
+    }
+  },
+  {
+    "method": "post",
+    "route": "/users",
+    "status": 404,
+    "success": false,
+    "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /api/users</pre>\n</body>\n</html>\n"
+  },
+  {
+    "method": "get",
+    "route": "/users",
+    "status": 404,
+    "success": false,
+    "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /api/users</pre>\n</body>\n</html>\n"
+  },
+  {
+    "method": "post",
+    "route": "/auth/login",
+    "status": 400,
+    "success": false,
+    "data": {
+      "success": false,
+      "message": "UserName and Password are required",
+      "timestamp": "2025-11-09T10:03:15.748Z",
+      "data": null
+    }
+  },
+  {
+    "method": "post",
+    "route": "/driver",
+    "status": 401,
+    "success": false,
+    "data": {
+      "success": false,
+      "message": "Authorization header missing"
+    }
+  },
+  {
+    "method": "get",
+    "route": "/driver",
+    "status": 401,
+    "success": false,
+    "data": {
+      "success": false,
+      "message": "Authorization header missing"
+    }
+  },
+  {
+    "method": "post",
+    "route": "/driver/request-reset",
+    "status": 404,
+    "success": false,
+    "data": {
+      "success": false,
+      "message": "Driver not found"
+    }
+  },
+  {
+    "method": "post",
+    "route": "/customers",
+    "status": 201,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Customer created successfully. OTP sent via SMS.",
+      "timestamp": "2025-11-09T10:03:17.221Z",
+      "data": {
+        "customerid": 11,
+        "fullname": "Customer 1762682596309",
+        "phone": "0595268242",
+        "email": "customer1762682596309@example.com",
+        "cityid": null,
+        "areaid": null,
+        "createdat": "2025-11-09T07:03:41.859Z",
+        "photourl": null
+      }
+    }
+  },
+  {
+    "method": "get",
+    "route": "/customers",
+    "status": 401,
+    "success": false,
+    "data": {
+      "success": false,
+      "error": "No token provided"
+    }
+  },
+  {
+    "method": "post",
+    "route": "/stores",
+    "status": 404,
+    "success": false,
+    "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /api/stores</pre>\n</body>\n</html>\n"
+  },
+  {
+    "method": "get",
+    "route": "/stores",
+    "status": 404,
+    "success": false,
+    "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /api/stores</pre>\n</body>\n</html>\n"
+  },
+  {
+    "method": "get",
+    "route": "/storeCategories",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Categories fetched successfully",
+      "data": {
+        "count": 4,
+        "categories": [
+          {
+            "categoryid": 2,
+            "categoryname": "سوبرماركت",
+            "description": "متاجر البقالة"
+          },
+          {
+            "categoryid": 4,
+            "categoryname": "مشروبات",
+            "description": "متاجر مشروبات"
+          },
+          {
+            "categoryid": 1,
+            "categoryname": "مطاعم",
+            "description": "مطاعم تقديم الطعام"
+          },
+          {
+            "categoryid": 3,
+            "categoryname": "مكياج",
+            "description": "منتجات تجميل"
+          }
+        ]
+      },
+      "timestamp": "2025-11-09T10:03:17.644Z"
+    }
+  },
+  {
+    "method": "get",
+    "route": "/storeRatings",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Store ratings fetched successfully",
+      "data": {
+        "count": 2,
+        "ratings": [
+          {
+            "ratingid": 1,
+            "storeid": 1,
+            "customerid": 4,
+            "rating": 5,
+            "comment": "Very tasty food",
+            "createdat": "2025-10-28T03:51:25.780Z"
+          },
+          {
+            "ratingid": 2,
+            "storeid": 2,
+            "customerid": 4,
+            "rating": 4,
+            "comment": "Good quality products",
+            "createdat": "2025-10-28T03:51:25.780Z"
+          }
+        ]
+      },
+      "timestamp": "2025-11-09T10:03:18.024Z"
+    }
+  },
+  {
+    "method": "post",
+    "route": "/products",
+    "status": 400,
+    "success": false,
+    "data": {
+      "success": false,
+      "error": "storeid, productname and price are required"
+    }
+  },
+  {
+    "method": "get",
+    "route": "/products",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "page": 1,
+      "limit": 20,
+      "usedCategoryJoin": false,
+      "count": 8,
+      "products": [
+        {
+          "productid": 1,
+          "storeid": 1,
+          "productname": "Burger",
+          "description": "Delicious beef burger",
+          "price": 15.5,
+          "stock": 50,
+          "imageurl": null,
+          "isavailable": true,
+          "createdat": "2025-10-28T06:51:25.78013",
+          "updatedat": null,
+          "categoryid": null,
+          "category": null
+        },
+        {
+          "productid": 2,
+          "storeid": 1,
+          "productname": "Pizza",
+          "description": "Cheese pizza",
+          "price": 25,
+          "stock": 20,
+          "imageurl": null,
+          "isavailable": true,
+          "createdat": "2025-10-28T06:51:25.78013",
+          "updatedat": null,
+          "categoryid": null,
+          "category": null
+        },
+        {
+          "productid": 3,
+          "storeid": 2,
+          "productname": "Milk",
+          "description": "Fresh milk 1L",
+          "price": 5,
+          "stock": 100,
+          "imageurl": null,
+          "isavailable": true,
+          "createdat": "2025-10-28T06:51:25.78013",
+          "updatedat": null,
+          "categoryid": null,
+          "category": null
+        },
+        {
+          "productid": 4,
+          "storeid": 2,
+          "productname": "Bread",
+          "description": "Whole wheat bread",
+          "price": 3.5,
+          "stock": 80,
+          "imageurl": null,
+          "isavailable": true,
+          "createdat": "2025-10-28T06:51:25.78013",
+          "updatedat": null,
+          "categoryid": null,
+          "category": null
+        },
+        {
+          "productid": 8,
+          "storeid": 14,
+          "productname": "Auto Test Product",
+          "description": "Auto product",
+          "price": 9.99,
+          "stock": 10,
+          "imageurl": null,
+          "isavailable": true,
+          "createdat": "2025-11-08T09:51:43.539",
+          "updatedat": "2025-11-08T09:51:43.539",
+          "categoryid": null,
+          "category": null
+        },
+        {
+          "productid": 7,
+          "storeid": 14,
+          "productname": "Auto Test Product",
+          "description": "Auto product",
+          "price": 9.99,
+          "stock": 10,
+          "imageurl": null,
+          "isavailable": true,
+          "createdat": "2025-11-08T09:49:38.514",
+          "updatedat": "2025-11-08T09:49:38.514",
+          "categoryid": null,
+          "category": null
+        },
+        {
+          "productid": 6,
+          "storeid": 14,
+          "productname": "Auto Test Product",
+          "description": "Auto product",
+          "price": 9.99,
+          "stock": 10,
+          "imageurl": null,
+          "isavailable": true,
+          "createdat": "2025-11-08T09:38:18.376",
+          "updatedat": "2025-11-08T09:38:18.376",
+          "categoryid": null,
+          "category": null
+        },
+        {
+          "productid": 5,
+          "storeid": 14,
+          "productname": "Auto Test Product",
+          "description": "Auto product",
+          "price": 9.99,
+          "stock": 10,
+          "imageurl": null,
+          "isavailable": true,
+          "createdat": "2025-11-08T09:28:16.351",
+          "updatedat": "2025-11-08T09:28:16.351",
+          "categoryid": null,
+          "category": null
+        }
+      ]
+    }
+  },
+  {
+    "method": "get",
+    "route": "/orders",
+    "status": 404,
+    "success": false,
+    "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /api/orders</pre>\n</body>\n</html>\n"
+  },
+  {
+    "method": "get",
+    "route": "/orderItems",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Order items fetched successfully",
+      "data": {
+        "page": 1,
+        "limit": 50,
+        "count": 6,
+        "items": [
+          {
+            "orderitemid": 1,
+            "orderid": "ORD001",
+            "productid": 1,
+            "quantity": 2,
+            "price": "15.50"
+          },
+          {
+            "orderitemid": 2,
+            "orderid": "ORD001",
+            "productid": 2,
+            "quantity": 1,
+            "price": "25.00"
+          },
+          {
+            "orderitemid": 3,
+            "orderid": "ORD002",
+            "productid": 3,
+            "quantity": 1,
+            "price": "5.00"
+          },
+          {
+            "orderitemid": 4,
+            "orderid": "ORD002",
+            "productid": 4,
+            "quantity": 1,
+            "price": "3.50"
+          },
+          {
+            "orderitemid": 5,
+            "orderid": "4",
+            "productid": 1,
+            "quantity": 2,
+            "price": "0.00"
+          },
+          {
+            "orderitemid": 6,
+            "orderid": "5",
+            "productid": 1,
+            "quantity": 2,
+            "price": "0.00"
+          }
+        ]
+      },
+      "timestamp": "2025-11-09T10:03:20.247Z"
+    }
+  },
+  {
+    "method": "get",
+    "route": "/orderTracking",
+    "status": 404,
+    "success": false,
+    "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /api/orderTracking</pre>\n</body>\n</html>\n"
+  },
+  {
+    "method": "get",
+    "route": "/orderHistoryDetailed",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Order history detailed fetched successfully",
+      "timestamp": "2025-11-09T10:03:20.696Z",
+      "data": {
+        "page": 1,
+        "limit": 50,
+        "count": 2,
+        "history": [
+          {
+            "HistoryID": 1,
+            "OrderID": 1,
+            "PreviousStatus": "Pending",
+            "NewStatus": "Confirmed",
+            "ChangedBy": "Admin",
+            "ChangeTime": "2025-11-09T05:42:02.250Z",
+            "CreatedAt": "2025-11-09T05:42:02.250Z",
+            "UpdatedAt": null
+          },
+          {
+            "HistoryID": 2,
+            "OrderID": 2,
+            "PreviousStatus": "Confirmed",
+            "NewStatus": "Delivered",
+            "ChangedBy": "Driver1",
+            "ChangeTime": "2025-11-09T05:42:02.250Z",
+            "CreatedAt": "2025-11-09T05:42:02.250Z",
+            "UpdatedAt": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "method": "get",
+    "route": "/orderDisputes",
+    "status": 500,
+    "success": false,
+    "data": {
+      "success": false,
+      "message": "supabase.from(...).select(...).orders is not a function",
+      "timestamp": "2025-11-09T10:03:20.704Z",
+      "data": null
+    }
+  },
+  {
+    "method": "get",
+    "route": "/payments",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Payments fetched successfully",
+      "data": {
+        "payments": {
+          "command": "SELECT",
+          "rowCount": 2,
+          "oid": null,
+          "rows": [
+            {
+              "paymentid": 1,
+              "orderid": "ORD001",
+              "paymenttype": "Credit Card",
+              "amount": "45.50",
+              "paymentstatus": "Paid",
+              "transactionid": "TXN001",
+              "createdat": "2025-10-28T03:51:25.780Z"
+            },
+            {
+              "paymentid": 2,
+              "orderid": "ORD002",
+              "paymenttype": "Cash",
+              "amount": "10.50",
+              "paymentstatus": "Paid",
+              "transactionid": "TXN002",
+              "createdat": "2025-10-28T03:51:25.780Z"
+            }
+          ],
+          "fields": [
+            {
+              "name": "paymentid",
+              "tableID": 17682,
+              "columnID": 1,
+              "dataTypeID": 23,
+              "dataTypeSize": 4,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "orderid",
+              "tableID": 17682,
+              "columnID": 2,
+              "dataTypeID": 1043,
+              "dataTypeSize": -1,
+              "dataTypeModifier": 132,
+              "format": "text"
+            },
+            {
+              "name": "paymenttype",
+              "tableID": 17682,
+              "columnID": 3,
+              "dataTypeID": 25,
+              "dataTypeSize": -1,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "amount",
+              "tableID": 17682,
+              "columnID": 4,
+              "dataTypeID": 1700,
+              "dataTypeSize": -1,
+              "dataTypeModifier": 655366,
+              "format": "text"
+            },
+            {
+              "name": "paymentstatus",
+              "tableID": 17682,
+              "columnID": 5,
+              "dataTypeID": 25,
+              "dataTypeSize": -1,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "transactionid",
+              "tableID": 17682,
+              "columnID": 6,
+              "dataTypeID": 25,
+              "dataTypeSize": -1,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "createdat",
+              "tableID": 17682,
+              "columnID": 7,
+              "dataTypeID": 1114,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            }
+          ],
+          "_parsers": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "_types": {
+            "_types": {
+              "arrayParser": {},
+              "builtins": {
+                "BOOL": 16,
+                "BYTEA": 17,
+                "CHAR": 18,
+                "INT8": 20,
+                "INT2": 21,
+                "INT4": 23,
+                "REGPROC": 24,
+                "TEXT": 25,
+                "OID": 26,
+                "TID": 27,
+                "XID": 28,
+                "CID": 29,
+                "JSON": 114,
+                "XML": 142,
+                "PG_NODE_TREE": 194,
+                "SMGR": 210,
+                "PATH": 602,
+                "POLYGON": 604,
+                "CIDR": 650,
+                "FLOAT4": 700,
+                "FLOAT8": 701,
+                "ABSTIME": 702,
+                "RELTIME": 703,
+                "TINTERVAL": 704,
+                "CIRCLE": 718,
+                "MACADDR8": 774,
+                "MONEY": 790,
+                "MACADDR": 829,
+                "INET": 869,
+                "ACLITEM": 1033,
+                "BPCHAR": 1042,
+                "VARCHAR": 1043,
+                "DATE": 1082,
+                "TIME": 1083,
+                "TIMESTAMP": 1114,
+                "TIMESTAMPTZ": 1184,
+                "INTERVAL": 1186,
+                "TIMETZ": 1266,
+                "BIT": 1560,
+                "VARBIT": 1562,
+                "NUMERIC": 1700,
+                "REFCURSOR": 1790,
+                "REGPROCEDURE": 2202,
+                "REGOPER": 2203,
+                "REGOPERATOR": 2204,
+                "REGCLASS": 2205,
+                "REGTYPE": 2206,
+                "UUID": 2950,
+                "TXID_SNAPSHOT": 2970,
+                "PG_LSN": 3220,
+                "PG_NDISTINCT": 3361,
+                "PG_DEPENDENCIES": 3402,
+                "TSVECTOR": 3614,
+                "TSQUERY": 3615,
+                "GTSVECTOR": 3642,
+                "REGCONFIG": 3734,
+                "REGDICTIONARY": 3769,
+                "JSONB": 3802,
+                "REGNAMESPACE": 4089,
+                "REGROLE": 4096
+              }
+            },
+            "text": {},
+            "binary": {}
+          },
+          "RowCtor": null,
+          "rowAsArray": false,
+          "_prebuiltEmptyResultObject": {
+            "paymentid": null,
+            "orderid": null,
+            "paymenttype": null,
+            "amount": null,
+            "paymentstatus": null,
+            "transactionid": null,
+            "createdat": null
+          }
+        }
+      },
+      "timestamp": "2025-11-09T10:03:21.205Z"
+    }
+  },
+  {
+    "method": "get",
+    "route": "/coupon",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Coupons retrieved successfully",
+      "timestamp": "2025-11-09T10:03:22.048Z",
+      "data": {
+        "page": 1,
+        "limit": 20,
+        "total": 1,
+        "coupons": [
+          {
+            "couponid": 1,
+            "code": "NEW50",
+            "discountpercent": "50.00",
+            "expirydate": "2025-12-31T20:59:59.000Z",
+            "isactive": true,
+            "updatedat": "2025-11-06T03:51:13.999Z"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "method": "get",
+    "route": "/couponadvanced",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "CouponAdvanced list retrieved",
+      "timestamp": "2025-11-09T10:03:22.816Z",
+      "data": {
+        "page": 1,
+        "limit": 20,
+        "total": 3,
+        "items": [
+          {
+            "advancedid": 1,
+            "couponid": 101,
+            "minimumamount": "50",
+            "maxdiscount": "20",
+            "appliestoreid": 1,
+            "createdat": "2025-11-03T07:17:06.459Z",
+            "updatedat": "2025-11-06T03:56:21.395Z"
+          },
+          {
+            "advancedid": 2,
+            "couponid": 102,
+            "minimumamount": "100",
+            "maxdiscount": "50",
+            "appliestoreid": 2,
+            "createdat": "2025-11-03T07:17:06.459Z",
+            "updatedat": "2025-11-06T03:56:21.395Z"
+          },
+          {
+            "advancedid": 3,
+            "couponid": 103,
+            "minimumamount": "0",
+            "maxdiscount": "15",
+            "appliestoreid": null,
+            "createdat": "2025-11-03T07:17:06.459Z",
+            "updatedat": "2025-11-06T03:56:21.395Z"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "method": "post",
+    "route": "/apply-coupon",
+    "status": 400,
+    "success": false,
+    "data": {
+      "success": false,
+      "message": "OrderID and CouponCode are required",
+      "timestamp": "2025-11-09T10:03:22.825Z",
+      "data": null
+    }
+  },
+  {
+    "method": "get",
+    "route": "/notifications",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Notifications retrieved successfully",
+      "timestamp": "2025-11-09T10:03:23.101Z",
+      "data": {
+        "page": 1,
+        "limit": 50,
+        "count": 0,
+        "notifications": []
+      }
+    }
+  },
+  {
+    "method": "get",
+    "route": "/deviceTokens",
+    "status": 500,
+    "success": false,
+    "data": {
+      "success": false,
+      "message": "Could not find the table 'public.devicetokens' in the schema cache",
+      "data": null
+    }
+  },
+  {
+    "method": "get",
+    "route": "/driverLocations",
+    "status": 404,
+    "success": false,
+    "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /api/driverLocations</pre>\n</body>\n</html>\n"
+  },
+  {
+    "method": "get",
+    "route": "/graphhopper",
+    "status": 404,
+    "success": false,
+    "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /api/graphhopper</pre>\n</body>\n</html>\n"
+  },
+  {
+    "method": "get",
+    "route": "/driverRatings",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Driver ratings fetched successfully",
+      "timestamp": "2025-11-09T10:03:23.881Z",
+      "data": {
+        "page": 1,
+        "limit": 50,
+        "count": 2,
+        "avgRating": null,
+        "ratings": [
+          {
+            "ratingid": 1,
+            "driverid": "DRV001",
+            "customerid": 4,
+            "rating": 5,
+            "comment": "Excellent service",
+            "createdat": "2025-10-28T03:51:25.780Z",
+            "orderid": null
+          },
+          {
+            "ratingid": 2,
+            "driverid": "DRV002",
+            "customerid": 4,
+            "rating": 4,
+            "comment": "Good service",
+            "createdat": "2025-10-28T03:51:25.780Z",
+            "orderid": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "method": "get",
+    "route": "/roles",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Roles fetched successfully",
+      "timestamp": "2025-11-09T10:03:24.243Z",
+      "data": [
+        {
+          "roleid": 1,
+          "rolename": "Admin",
+          "description": "مدير النظام الكامل"
+        },
+        {
+          "roleid": 2,
+          "rolename": "Driver",
+          "description": "سائق التوصيل"
+        },
+        {
+          "roleid": 3,
+          "rolename": "StoreOwner",
+          "description": "مالك المتجر"
+        },
+        {
+          "roleid": 4,
+          "rolename": "Customer",
+          "description": "زبون"
+        }
+      ]
+    }
+  },
+  {
+    "method": "get",
+    "route": "/rolePermissions",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Role permissions fetched successfully",
+      "timestamp": "2025-11-09T10:03:24.676Z",
+      "data": []
+    }
+  },
+  {
+    "method": "get",
+    "route": "/areas",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Areas retrieved successfully",
+      "timestamp": "2025-11-09T10:03:25.117Z",
+      "data": {
+        "page": 1,
+        "limit": 20,
+        "count": 3,
+        "areas": [
+          {
+            "areaid": 1,
+            "areaname": "البياض",
+            "cityid": 1,
+            "isactive": true,
+            "createdat": "2025-11-03T06:17:07.834Z",
+            "updatedat": "2025-11-03T06:17:07.834Z",
+            "cityname": "حماه"
+          },
+          {
+            "areaid": 3,
+            "areaname": "الشريعة",
+            "cityid": 1,
+            "isactive": true,
+            "createdat": "2025-11-03T06:17:28.637Z",
+            "updatedat": "2025-11-03T06:17:28.637Z",
+            "cityname": "حماه"
+          },
+          {
+            "areaid": 2,
+            "areaname": "حي الكرامة",
+            "cityid": 1,
+            "isactive": true,
+            "createdat": "2025-11-03T06:17:22.997Z",
+            "updatedat": "2025-11-03T06:17:22.997Z",
+            "cityname": "حماه"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "method": "get",
+    "route": "/cities",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Cities retrieved successfully",
+      "timestamp": "2025-11-09T10:03:25.540Z",
+      "data": {
+        "page": 1,
+        "limit": 20,
+        "count": 1,
+        "cities": [
+          {
+            "cityid": 1,
+            "cityname": "حماه",
+            "isactive": true,
+            "createdat": "2025-11-03T06:15:08.999Z",
+            "updatedat": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "method": "get",
+    "route": "/units",
+    "status": 500,
+    "success": false,
+    "data": {
+      "success": false,
+      "message": "Failed to fetch units",
+      "data": null,
+      "timestamp": "2025-11-09T10:03:25.953Z"
+    }
+  },
+  {
+    "method": "get",
+    "route": "/supportTickets",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "All support tickets fetched successfully",
+      "data": {
+        "count": 0,
+        "tickets": []
+      },
+      "timestamp": "2025-11-09T10:03:27.671Z"
+    }
+  },
+  {
+    "method": "get",
+    "route": "/supportticketreply",
+    "status": 404,
+    "success": false,
+    "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /api/supportticketreply</pre>\n</body>\n</html>\n"
+  },
+  {
+    "method": "get",
+    "route": "/verifyToken",
+    "status": 401,
+    "success": false,
+    "data": {
+      "success": false,
+      "error": "No token provided"
+    }
+  },
+  {
+    "method": "get",
+    "route": "/auditTrail",
+    "status": 500,
+    "success": false,
+    "data": {
+      "success": false,
+      "message": "Failed to retrieve audit logs",
+      "timestamp": "2025-11-09T10:03:27.959Z",
+      "data": null
+    }
+  },
+  {
+    "method": "get",
+    "route": "/transactions",
+    "status": 200,
+    "success": true,
+    "data": {
+      "success": true,
+      "message": "Transactions fetched successfully",
+      "data": [],
+      "timestamp": "2025-11-09T10:03:30.175Z"
+    }
+  }
+]

@@ -1,17 +1,19 @@
 // middleware/verifyToken.js
 const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
 
-const verifyToken = (req, res, next) => {
-  const token = req.headers['authorization']?.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'No token provided' });
+module.exports = function verifyToken(req, res, next) {
+  const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+  if (!authHeader) return res.status(401).json({ success: false, error: 'No token provided' });
+
+  const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    const decoded = jwt.verify(token, JWT_SECRET);
+    // ⚡ تعديل: ليكون مطابقاً لما يستخدم في customers.js
+    req.customerid = decoded.customerid; 
     next();
   } catch (err) {
-    res.status(401).json({ message: 'Invalid token' });
+    return res.status(401).json({ success: false, error: 'Invalid or expired token' });
   }
 };
-
-module.exports = verifyToken;

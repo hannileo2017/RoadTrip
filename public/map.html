@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RoadTrip Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <div id="map" style="width: 100%; height: 600px;"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const map = L.map('map').setView([24.7136, 46.6753], 10); // الرياض
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        const socket = io();
+
+        const driversMarkers = {};
+        const ordersPaths = {};
+
+        socket.on('driver-location-update', (data) => {
+            const { driverid, latitude, longitude } = data;
+            if (driversMarkers[driverid])
+                driversMarkers[driverid].setLatLng([latitude, longitude]);
+            else
+                driversMarkers[driverid] = L.marker([latitude, longitude]).addTo(map).bindPopup(driverid);
+        });
+
+        socket.on('order-tracking-update', (data) => {
+            const { orderid, latitude, longitude } = data;
+            if (!ordersPaths[orderid]) ordersPaths[orderid] = [];
+            ordersPaths[orderid].push([latitude, longitude]);
+
+            if (ordersPaths[orderid].polyline) map.removeLayer(ordersPaths[orderid].polyline);
+            ordersPaths[orderid].polyline = L.polyline(ordersPaths[orderid], { color: 'red' }).addTo(map);
+        });
+    </script>
+</body>
+</html>

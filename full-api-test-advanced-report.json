@@ -1,0 +1,1808 @@
+{
+  "startedAt": "2025-11-09T12:30:53.647Z",
+  "results": [
+    {
+      "path": "/auth/login",
+      "method": "POST",
+      "timestamp": "2025-11-09T12:30:57.301Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Login successful",
+        "timestamp": "2025-11-09T12:30:57.854Z",
+        "data": {
+          "userid": 1,
+          "username": "admin1",
+          "fullname": "Administrator",
+          "role": "Admin",
+          "token": "sess-1762691457573-445f69dc-9b84-41d0-a223-67cf2dcbb54a"
+        }
+      }
+    },
+    {
+      "path": "/appSettings",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:30:57.987Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Settings retrieved successfully",
+        "timestamp": "2025-11-09T12:30:58.555Z",
+        "data": {
+          "page": 1,
+          "limit": 20,
+          "total": 0,
+          "settings": []
+        }
+      }
+    },
+    {
+      "path": "/systemSettings",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:30:58.691Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "System settings fetched successfully",
+        "data": {
+          "count": 0,
+          "settings": []
+        },
+        "timestamp": "2025-11-09T12:30:58.942Z"
+      }
+    },
+    {
+      "path": "/areas",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:30:59.065Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Areas retrieved successfully",
+        "timestamp": "2025-11-09T12:30:59.337Z",
+        "data": {
+          "page": 1,
+          "limit": 20,
+          "count": 3,
+          "areas": [
+            {
+              "areaid": 1,
+              "areaname": "البياض",
+              "cityid": 1,
+              "isactive": true,
+              "createdat": "2025-11-03T06:17:07.834Z",
+              "updatedat": "2025-11-03T06:17:07.834Z",
+              "cityname": "حماه"
+            },
+            {
+              "areaid": 3,
+              "areaname": "الشريعة",
+              "cityid": 1,
+              "isactive": true,
+              "createdat": "2025-11-03T06:17:28.637Z",
+              "updatedat": "2025-11-03T06:17:28.637Z",
+              "cityname": "حماه"
+            },
+            {
+              "areaid": 2,
+              "areaname": "حي الكرامة",
+              "cityid": 1,
+              "isactive": true,
+              "createdat": "2025-11-03T06:17:22.997Z",
+              "updatedat": "2025-11-03T06:17:22.997Z",
+              "cityname": "حماه"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/cities",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:30:59.457Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Cities retrieved successfully",
+        "timestamp": "2025-11-09T12:30:59.706Z",
+        "data": {
+          "page": 1,
+          "limit": 20,
+          "count": 1,
+          "cities": [
+            {
+              "cityid": 1,
+              "cityname": "حماه",
+              "isactive": true,
+              "createdat": "2025-11-03T06:15:08.999Z",
+              "updatedat": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/storeCategories",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:30:59.847Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Categories fetched successfully",
+        "data": {
+          "count": 4,
+          "categories": [
+            {
+              "categoryid": 2,
+              "categoryname": "سوبرماركت",
+              "description": "متاجر البقالة"
+            },
+            {
+              "categoryid": 4,
+              "categoryname": "مشروبات",
+              "description": "متاجر مشروبات"
+            },
+            {
+              "categoryid": 1,
+              "categoryname": "مطاعم",
+              "description": "مطاعم تقديم الطعام"
+            },
+            {
+              "categoryid": 3,
+              "categoryname": "مكياج",
+              "description": "منتجات تجميل"
+            }
+          ]
+        },
+        "timestamp": "2025-11-09T12:31:00.115Z"
+      }
+    },
+    {
+      "path": "/storeRatings",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:00.250Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Store ratings fetched successfully",
+        "data": {
+          "count": 2,
+          "ratings": [
+            {
+              "ratingid": 1,
+              "storeid": 1,
+              "customerid": 4,
+              "rating": 5,
+              "comment": "Very tasty food",
+              "createdat": "2025-10-28T03:51:25.780Z"
+            },
+            {
+              "ratingid": 2,
+              "storeid": 2,
+              "customerid": 4,
+              "rating": 4,
+              "comment": "Good quality products",
+              "createdat": "2025-10-28T03:51:25.780Z"
+            }
+          ]
+        },
+        "timestamp": "2025-11-09T12:31:00.536Z"
+      }
+    },
+    {
+      "path": "/stores",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:00.659Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "data": [
+          {
+            "storeid": 19,
+            "storename": "Auto Test Store",
+            "categoryid": 1,
+            "cityid": 1,
+            "areaid": 1,
+            "address": null,
+            "phone": "052818542",
+            "email": "8429@example.com",
+            "description": "Test store (auto)",
+            "isactive": true,
+            "createdat": "2025-11-08T06:52:08.395Z",
+            "logourl": null,
+            "rating": 0,
+            "otp": "521260",
+            "otpexpires": "2025-11-08T07:02:08.395Z",
+            "phoneconfirmed": false,
+            "fcmtoken": null,
+            "updatedat": null
+          },
+          {
+            "storeid": 18,
+            "storename": "Auto Test Store",
+            "categoryid": 1,
+            "cityid": 1,
+            "areaid": 1,
+            "address": null,
+            "phone": "052818542",
+            "email": "8429@example.com",
+            "description": "Test store (auto)",
+            "isactive": true,
+            "createdat": "2025-11-08T06:50:03.235Z",
+            "logourl": null,
+            "rating": 0,
+            "otp": "069613",
+            "otpexpires": "2025-11-08T07:00:03.235Z",
+            "phoneconfirmed": false,
+            "fcmtoken": null,
+            "updatedat": null
+          },
+          {
+            "storeid": 17,
+            "storename": "Auto Test Store",
+            "categoryid": 1,
+            "cityid": 1,
+            "areaid": 1,
+            "address": null,
+            "phone": "052818542",
+            "email": "8429@example.com",
+            "description": "Test store (auto)",
+            "isactive": true,
+            "createdat": "2025-11-08T06:38:43.153Z",
+            "logourl": null,
+            "rating": 0,
+            "otp": "943834",
+            "otpexpires": "2025-11-08T06:48:43.153Z",
+            "phoneconfirmed": false,
+            "fcmtoken": null,
+            "updatedat": null
+          },
+          {
+            "storeid": 16,
+            "storename": "Auto Test Store",
+            "categoryid": 1,
+            "cityid": 1,
+            "areaid": 1,
+            "address": null,
+            "phone": "052818542",
+            "email": "8429@example.com",
+            "description": "Test store (auto)",
+            "isactive": true,
+            "createdat": "2025-11-08T06:28:41.077Z",
+            "logourl": null,
+            "rating": 0,
+            "otp": "812763",
+            "otpexpires": "2025-11-08T06:38:41.077Z",
+            "phoneconfirmed": false,
+            "fcmtoken": null,
+            "updatedat": null
+          },
+          {
+            "storeid": 15,
+            "storename": "Auto Test Store",
+            "categoryid": 1,
+            "cityid": 1,
+            "areaid": 1,
+            "address": null,
+            "phone": "052818542",
+            "email": "8429@example.com",
+            "description": "Test store (auto)",
+            "isactive": true,
+            "createdat": "2025-11-08T06:16:30.870Z",
+            "logourl": null,
+            "rating": 0,
+            "otp": "676956",
+            "otpexpires": "2025-11-08T06:26:30.870Z",
+            "phoneconfirmed": false,
+            "fcmtoken": null,
+            "updatedat": null
+          },
+          {
+            "storeid": 14,
+            "storename": "Auto Test Store",
+            "categoryid": 1,
+            "cityid": 1,
+            "areaid": 1,
+            "address": null,
+            "phone": "052818542",
+            "email": "8429@example.com",
+            "description": "Test store (auto)",
+            "isactive": true,
+            "createdat": "2025-11-08T06:04:09.126Z",
+            "logourl": null,
+            "rating": 0,
+            "otp": "399016",
+            "otpexpires": "2025-11-08T06:14:09.126Z",
+            "phoneconfirmed": false,
+            "fcmtoken": null,
+            "updatedat": null
+          },
+          {
+            "storeid": 6,
+            "storename": "Test Store",
+            "categoryid": null,
+            "cityid": 1,
+            "areaid": null,
+            "address": null,
+            "phone": "0502222222",
+            "email": null,
+            "description": "",
+            "isactive": true,
+            "createdat": "2025-11-06T09:06:43.459Z",
+            "logourl": null,
+            "rating": 0,
+            "otp": "013558",
+            "otpexpires": "2025-11-06T09:16:43.459Z",
+            "phoneconfirmed": false,
+            "fcmtoken": null,
+            "updatedat": null
+          },
+          {
+            "storeid": 1,
+            "storename": "Food King",
+            "categoryid": 1,
+            "cityid": null,
+            "areaid": null,
+            "address": null,
+            "phone": "0551112222",
+            "email": "foodking@example.com",
+            "description": null,
+            "isactive": true,
+            "createdat": "2025-10-28T03:51:25.780Z",
+            "logourl": null,
+            "rating": 4.5,
+            "otp": null,
+            "otpexpires": null,
+            "phoneconfirmed": false,
+            "fcmtoken": null,
+            "updatedat": null
+          },
+          {
+            "storeid": 2,
+            "storename": "SuperMart",
+            "categoryid": 2,
+            "cityid": null,
+            "areaid": null,
+            "address": null,
+            "phone": "0553334444",
+            "email": "supermart@example.com",
+            "description": null,
+            "isactive": true,
+            "createdat": "2025-10-28T03:51:25.780Z",
+            "logourl": null,
+            "rating": 4.2,
+            "otp": null,
+            "otpexpires": null,
+            "phoneconfirmed": false,
+            "fcmtoken": null,
+            "updatedat": null
+          }
+        ]
+      }
+    },
+    {
+      "path": "/products",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:01.331Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "page": 1,
+        "limit": 20,
+        "usedCategoryJoin": true,
+        "count": 8,
+        "products": [
+          {
+            "productid": 1,
+            "storeid": 1,
+            "productname": "Burger",
+            "description": "Delicious beef burger",
+            "price": 15.5,
+            "stock": 50,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-10-28T06:51:25.78013",
+            "updatedat": null,
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 2,
+            "storeid": 1,
+            "productname": "Pizza",
+            "description": "Cheese pizza",
+            "price": 25,
+            "stock": 20,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-10-28T06:51:25.78013",
+            "updatedat": null,
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 3,
+            "storeid": 2,
+            "productname": "Milk",
+            "description": "Fresh milk 1L",
+            "price": 5,
+            "stock": 100,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-10-28T06:51:25.78013",
+            "updatedat": null,
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 4,
+            "storeid": 2,
+            "productname": "Bread",
+            "description": "Whole wheat bread",
+            "price": 3.5,
+            "stock": 80,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-10-28T06:51:25.78013",
+            "updatedat": null,
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 8,
+            "storeid": 14,
+            "productname": "Auto Test Product",
+            "description": "Auto product",
+            "price": 9.99,
+            "stock": 10,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-11-08T09:51:43.539",
+            "updatedat": "2025-11-08T09:51:43.539",
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 7,
+            "storeid": 14,
+            "productname": "Auto Test Product",
+            "description": "Auto product",
+            "price": 9.99,
+            "stock": 10,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-11-08T09:49:38.514",
+            "updatedat": "2025-11-08T09:49:38.514",
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 6,
+            "storeid": 14,
+            "productname": "Auto Test Product",
+            "description": "Auto product",
+            "price": 9.99,
+            "stock": 10,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-11-08T09:38:18.376",
+            "updatedat": "2025-11-08T09:38:18.376",
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 5,
+            "storeid": 14,
+            "productname": "Auto Test Product",
+            "description": "Auto product",
+            "price": 9.99,
+            "stock": 10,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-11-08T09:28:16.351",
+            "updatedat": "2025-11-08T09:28:16.351",
+            "categoryid": null,
+            "category": null
+          }
+        ]
+      }
+    },
+    {
+      "path": "/products",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:02.550Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "page": 1,
+        "limit": 20,
+        "usedCategoryJoin": true,
+        "count": 8,
+        "products": [
+          {
+            "productid": 1,
+            "storeid": 1,
+            "productname": "Burger",
+            "description": "Delicious beef burger",
+            "price": 15.5,
+            "stock": 50,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-10-28T06:51:25.78013",
+            "updatedat": null,
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 2,
+            "storeid": 1,
+            "productname": "Pizza",
+            "description": "Cheese pizza",
+            "price": 25,
+            "stock": 20,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-10-28T06:51:25.78013",
+            "updatedat": null,
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 3,
+            "storeid": 2,
+            "productname": "Milk",
+            "description": "Fresh milk 1L",
+            "price": 5,
+            "stock": 100,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-10-28T06:51:25.78013",
+            "updatedat": null,
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 4,
+            "storeid": 2,
+            "productname": "Bread",
+            "description": "Whole wheat bread",
+            "price": 3.5,
+            "stock": 80,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-10-28T06:51:25.78013",
+            "updatedat": null,
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 8,
+            "storeid": 14,
+            "productname": "Auto Test Product",
+            "description": "Auto product",
+            "price": 9.99,
+            "stock": 10,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-11-08T09:51:43.539",
+            "updatedat": "2025-11-08T09:51:43.539",
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 7,
+            "storeid": 14,
+            "productname": "Auto Test Product",
+            "description": "Auto product",
+            "price": 9.99,
+            "stock": 10,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-11-08T09:49:38.514",
+            "updatedat": "2025-11-08T09:49:38.514",
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 6,
+            "storeid": 14,
+            "productname": "Auto Test Product",
+            "description": "Auto product",
+            "price": 9.99,
+            "stock": 10,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-11-08T09:38:18.376",
+            "updatedat": "2025-11-08T09:38:18.376",
+            "categoryid": null,
+            "category": null
+          },
+          {
+            "productid": 5,
+            "storeid": 14,
+            "productname": "Auto Test Product",
+            "description": "Auto product",
+            "price": 9.99,
+            "stock": 10,
+            "imageurl": null,
+            "isavailable": true,
+            "createdat": "2025-11-08T09:28:16.351",
+            "updatedat": "2025-11-08T09:28:16.351",
+            "categoryid": null,
+            "category": null
+          }
+        ]
+      }
+    },
+    {
+      "path": "/drivers",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:03.050Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "page": 1,
+        "limit": 10,
+        "count": 4,
+        "drivers": [
+          {
+            "driverid": "DRV-1762592613439",
+            "fullname": "Auto Test Driver",
+            "phone": "057231221",
+            "email": "autotestdriver2352@example.com",
+            "password": null,
+            "vehicletype": null,
+            "vehiclenumber": null,
+            "licensenumber": null,
+            "nationalid": null,
+            "address": null,
+            "isactive": true,
+            "createdat": "2025-11-08T06:04:03.748Z",
+            "cityid": null,
+            "areaid": null,
+            "status": null,
+            "maxload": null,
+            "model": null,
+            "lastupdated": null,
+            "notes": null,
+            "photourl": null,
+            "available": true,
+            "rating": null,
+            "fcmtoken": null,
+            "nationalcardurl": null,
+            "licenseurl": null,
+            "otp": null,
+            "qrcode": null,
+            "otpexpires": null
+          },
+          {
+            "driverid": "DRV-1762591938187",
+            "fullname": "Auto Test Driver",
+            "phone": "0551002003",
+            "email": "autotest.driver@example.com",
+            "password": null,
+            "vehicletype": null,
+            "vehiclenumber": null,
+            "licensenumber": null,
+            "nationalid": null,
+            "address": null,
+            "isactive": true,
+            "createdat": "2025-11-08T05:52:45.334Z",
+            "cityid": null,
+            "areaid": null,
+            "status": null,
+            "maxload": null,
+            "model": null,
+            "lastupdated": null,
+            "notes": null,
+            "photourl": null,
+            "available": true,
+            "rating": null,
+            "fcmtoken": null,
+            "nationalcardurl": null,
+            "licenseurl": null,
+            "otp": null,
+            "qrcode": null,
+            "otpexpires": null
+          },
+          {
+            "driverid": "DRV002",
+            "fullname": "Omar Saleh",
+            "phone": "0509876543",
+            "email": "omar@example.com",
+            "password": null,
+            "vehicletype": null,
+            "vehiclenumber": null,
+            "licensenumber": null,
+            "nationalid": null,
+            "address": null,
+            "isactive": true,
+            "createdat": "2025-10-28T03:51:25.780Z",
+            "cityid": null,
+            "areaid": null,
+            "status": null,
+            "maxload": null,
+            "model": null,
+            "lastupdated": null,
+            "notes": null,
+            "photourl": null,
+            "available": true,
+            "rating": 4.8,
+            "fcmtoken": null,
+            "nationalcardurl": null,
+            "licenseurl": null,
+            "otp": null,
+            "qrcode": null,
+            "otpexpires": null
+          },
+          {
+            "driverid": "DRV001",
+            "fullname": "Ali Hassan",
+            "phone": "0501234567",
+            "email": "ali@example.com",
+            "password": null,
+            "vehicletype": null,
+            "vehiclenumber": null,
+            "licensenumber": null,
+            "nationalid": null,
+            "address": null,
+            "isactive": true,
+            "createdat": "2025-10-28T03:51:25.780Z",
+            "cityid": null,
+            "areaid": null,
+            "status": null,
+            "maxload": null,
+            "model": null,
+            "lastupdated": null,
+            "notes": null,
+            "photourl": null,
+            "available": true,
+            "rating": 4.5,
+            "fcmtoken": null,
+            "nationalcardurl": null,
+            "licenseurl": null,
+            "otp": "693014",
+            "qrcode": null,
+            "otpexpires": "2025-11-09T12:20:05.723Z"
+          }
+        ]
+      }
+    },
+    {
+      "path": "/drivers",
+      "method": "POST",
+      "timestamp": "2025-11-09T12:31:03.691Z",
+      "status": 201,
+      "ok": true,
+      "response": {
+        "success": true,
+        "driver": {
+          "driverid": "DRV-1762691464205-a5f83ff4",
+          "fullname": "Test Driver",
+          "phone": "0590000001",
+          "email": null,
+          "password": null,
+          "vehicletype": "Motorbike",
+          "vehiclenumber": null,
+          "licensenumber": null,
+          "nationalid": null,
+          "address": null,
+          "isactive": true,
+          "createdat": "2025-11-09T09:31:29.215Z",
+          "cityid": null,
+          "areaid": null,
+          "status": null,
+          "maxload": null,
+          "model": null,
+          "lastupdated": "2025-11-09T09:31:29.215Z",
+          "notes": null,
+          "photourl": null,
+          "available": true,
+          "rating": null,
+          "fcmtoken": null,
+          "nationalcardurl": null,
+          "licenseurl": null,
+          "otp": null,
+          "qrcode": null,
+          "otpexpires": null
+        }
+      }
+    },
+    {
+      "path": "/drivers/request-reset",
+      "method": "POST",
+      "timestamp": "2025-11-09T12:31:04.597Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "OTP generated"
+      }
+    },
+    {
+      "path": "/driverLocations",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:05.283Z",
+      "ok": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /api/driverLocations</pre>\n</body>\n</html>\n"
+    },
+    {
+      "path": "/driverRatings",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:05.423Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Driver ratings fetched successfully",
+        "timestamp": "2025-11-09T12:31:05.718Z",
+        "data": {
+          "page": 1,
+          "limit": 50,
+          "count": 2,
+          "avgRating": null,
+          "ratings": [
+            {
+              "ratingid": 1,
+              "driverid": "DRV001",
+              "customerid": 4,
+              "rating": 5,
+              "comment": "Excellent service",
+              "createdat": "2025-10-28T03:51:25.780Z",
+              "orderid": null
+            },
+            {
+              "ratingid": 2,
+              "driverid": "DRV002",
+              "customerid": 4,
+              "rating": 4,
+              "comment": "Good service",
+              "createdat": "2025-10-28T03:51:25.780Z",
+              "orderid": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/customers",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:05.862Z",
+      "ok": false,
+      "status": 401,
+      "error": {
+        "success": false,
+        "error": "Invalid or expired token"
+      }
+    },
+    {
+      "path": "/customers",
+      "method": "POST",
+      "timestamp": "2025-11-09T12:31:05.987Z",
+      "status": 201,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Customer created successfully. OTP sent via SMS.",
+        "timestamp": "2025-11-09T12:31:06.680Z",
+        "data": {
+          "customerid": 13,
+          "fullname": "Auto Customer",
+          "phone": "059111222",
+          "email": null,
+          "cityid": null,
+          "areaid": null,
+          "createdat": "2025-11-09T09:31:31.415Z",
+          "photourl": null
+        }
+      }
+    },
+    {
+      "path": "/units",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:06.816Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Units retrieved successfully",
+        "timestamp": "2025-11-09T12:31:07.090Z",
+        "data": {
+          "page": 1,
+          "limit": 20,
+          "count": 0,
+          "units": []
+        }
+      }
+    },
+    {
+      "path": "/units",
+      "method": "POST",
+      "timestamp": "2025-11-09T12:31:07.221Z",
+      "status": 201,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Unit created successfully",
+        "timestamp": "2025-11-09T12:31:07.508Z",
+        "data": {
+          "unitid": 1,
+          "unitname": "Box",
+          "unitcategory": "Packing"
+        }
+      }
+    },
+    {
+      "path": "/orders",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:07.643Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Orders fetched successfully",
+        "timestamp": "2025-11-09T12:31:08.203Z",
+        "data": {
+          "page": 1,
+          "limit": 10,
+          "count": 5,
+          "orders": [
+            {
+              "orderid": 5,
+              "customerid": 6,
+              "storeid": 1,
+              "driverid": null,
+              "totalamount": "0.00",
+              "deliveryfee": "0.00",
+              "paymentmethod": "Cash",
+              "status": "Pending",
+              "deliveryaddress": null,
+              "notes": null,
+              "estimatedtime": null,
+              "cityid": 1,
+              "areaid": 1,
+              "createdat": "2025-11-09T05:56:00.068Z",
+              "updatedat": null,
+              "CityID": null,
+              "AreaID": null,
+              "UpdatedAt": null,
+              "cityname": "حماه",
+              "areaname": "البياض",
+              "transaction": null
+            },
+            {
+              "orderid": 4,
+              "customerid": 6,
+              "storeid": 1,
+              "driverid": null,
+              "totalamount": "0.00",
+              "deliveryfee": "0.00",
+              "paymentmethod": "Cash",
+              "status": "Pending",
+              "deliveryaddress": null,
+              "notes": null,
+              "estimatedtime": null,
+              "cityid": 1,
+              "areaid": 1,
+              "createdat": "2025-11-09T05:51:57.971Z",
+              "updatedat": null,
+              "CityID": null,
+              "AreaID": null,
+              "UpdatedAt": null,
+              "cityname": "حماه",
+              "areaname": "البياض",
+              "transaction": null
+            },
+            {
+              "orderid": 3,
+              "customerid": 6,
+              "storeid": 14,
+              "driverid": "DRV001",
+              "totalamount": "50.00",
+              "deliveryfee": "5.00",
+              "paymentmethod": "Cash",
+              "status": "Pending",
+              "deliveryaddress": "Auto Address",
+              "notes": null,
+              "estimatedtime": null,
+              "cityid": 1,
+              "areaid": 1,
+              "createdat": "2025-11-08T06:52:10.249Z",
+              "updatedat": null,
+              "CityID": null,
+              "AreaID": null,
+              "UpdatedAt": null,
+              "cityname": "حماه",
+              "areaname": "البياض",
+              "transaction": null
+            },
+            {
+              "orderid": 2,
+              "customerid": 6,
+              "storeid": 14,
+              "driverid": "DRV001",
+              "totalamount": "50.00",
+              "deliveryfee": "5.00",
+              "paymentmethod": "Cash",
+              "status": "Pending",
+              "deliveryaddress": "Auto Address",
+              "notes": null,
+              "estimatedtime": null,
+              "cityid": 1,
+              "areaid": 1,
+              "createdat": "2025-11-08T06:50:05.828Z",
+              "updatedat": null,
+              "CityID": null,
+              "AreaID": null,
+              "UpdatedAt": null,
+              "cityname": "حماه",
+              "areaname": "البياض",
+              "transaction": null
+            },
+            {
+              "orderid": 1,
+              "customerid": 6,
+              "storeid": 14,
+              "driverid": "DRV001",
+              "totalamount": "50.00",
+              "deliveryfee": "5.00",
+              "paymentmethod": "Cash",
+              "status": "Pending",
+              "deliveryaddress": "Auto Address",
+              "notes": null,
+              "estimatedtime": null,
+              "cityid": 1,
+              "areaid": 1,
+              "createdat": "2025-11-08T06:38:45.655Z",
+              "updatedat": null,
+              "CityID": null,
+              "AreaID": null,
+              "UpdatedAt": null,
+              "cityname": "حماه",
+              "areaname": "البياض",
+              "transaction": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/orders",
+      "method": "POST",
+      "timestamp": "2025-11-09T12:31:08.331Z",
+      "ok": false,
+      "status": 400,
+      "error": {
+        "success": false,
+        "message": "Foreign key constraint failed",
+        "timestamp": "2025-11-09T12:31:12.046Z",
+        "data": null
+      }
+    },
+    {
+      "path": "/orderItems",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:12.175Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Order items fetched successfully",
+        "data": {
+          "page": 1,
+          "limit": 50,
+          "count": 6,
+          "items": [
+            {
+              "orderitemid": 1,
+              "orderid": "ORD001",
+              "productid": 1,
+              "quantity": 2,
+              "price": "15.50"
+            },
+            {
+              "orderitemid": 2,
+              "orderid": "ORD001",
+              "productid": 2,
+              "quantity": 1,
+              "price": "25.00"
+            },
+            {
+              "orderitemid": 3,
+              "orderid": "ORD002",
+              "productid": 3,
+              "quantity": 1,
+              "price": "5.00"
+            },
+            {
+              "orderitemid": 4,
+              "orderid": "ORD002",
+              "productid": 4,
+              "quantity": 1,
+              "price": "3.50"
+            },
+            {
+              "orderitemid": 5,
+              "orderid": "4",
+              "productid": 1,
+              "quantity": 2,
+              "price": "0.00"
+            },
+            {
+              "orderitemid": 6,
+              "orderid": "5",
+              "productid": 1,
+              "quantity": 2,
+              "price": "0.00"
+            }
+          ]
+        },
+        "timestamp": "2025-11-09T12:31:12.451Z"
+      }
+    },
+    {
+      "path": "/orderHistoryDetailed",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:12.582Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Order history detailed fetched successfully",
+        "timestamp": "2025-11-09T12:31:12.861Z",
+        "data": {
+          "page": 1,
+          "limit": 50,
+          "count": 2,
+          "history": [
+            {
+              "HistoryID": 1,
+              "OrderID": 1,
+              "PreviousStatus": "Pending",
+              "NewStatus": "Confirmed",
+              "ChangedBy": "Admin",
+              "ChangeTime": "2025-11-09T05:42:02.250Z",
+              "CreatedAt": "2025-11-09T05:42:02.250Z",
+              "UpdatedAt": null
+            },
+            {
+              "HistoryID": 2,
+              "OrderID": 2,
+              "PreviousStatus": "Confirmed",
+              "NewStatus": "Delivered",
+              "ChangedBy": "Driver1",
+              "ChangeTime": "2025-11-09T05:42:02.250Z",
+              "CreatedAt": "2025-11-09T05:42:02.250Z",
+              "UpdatedAt": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/payments",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:12.987Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Payments fetched successfully",
+        "data": {
+          "payments": {
+            "command": "SELECT",
+            "rowCount": 2,
+            "oid": null,
+            "rows": [
+              {
+                "paymentid": 1,
+                "orderid": "ORD001",
+                "paymenttype": "Credit Card",
+                "amount": "45.50",
+                "paymentstatus": "Paid",
+                "transactionid": "TXN001",
+                "createdat": "2025-10-28T03:51:25.780Z"
+              },
+              {
+                "paymentid": 2,
+                "orderid": "ORD002",
+                "paymenttype": "Cash",
+                "amount": "10.50",
+                "paymentstatus": "Paid",
+                "transactionid": "TXN002",
+                "createdat": "2025-10-28T03:51:25.780Z"
+              }
+            ],
+            "fields": [
+              {
+                "name": "paymentid",
+                "tableID": 17682,
+                "columnID": 1,
+                "dataTypeID": 23,
+                "dataTypeSize": 4,
+                "dataTypeModifier": -1,
+                "format": "text"
+              },
+              {
+                "name": "orderid",
+                "tableID": 17682,
+                "columnID": 2,
+                "dataTypeID": 1043,
+                "dataTypeSize": -1,
+                "dataTypeModifier": 132,
+                "format": "text"
+              },
+              {
+                "name": "paymenttype",
+                "tableID": 17682,
+                "columnID": 3,
+                "dataTypeID": 25,
+                "dataTypeSize": -1,
+                "dataTypeModifier": -1,
+                "format": "text"
+              },
+              {
+                "name": "amount",
+                "tableID": 17682,
+                "columnID": 4,
+                "dataTypeID": 1700,
+                "dataTypeSize": -1,
+                "dataTypeModifier": 655366,
+                "format": "text"
+              },
+              {
+                "name": "paymentstatus",
+                "tableID": 17682,
+                "columnID": 5,
+                "dataTypeID": 25,
+                "dataTypeSize": -1,
+                "dataTypeModifier": -1,
+                "format": "text"
+              },
+              {
+                "name": "transactionid",
+                "tableID": 17682,
+                "columnID": 6,
+                "dataTypeID": 25,
+                "dataTypeSize": -1,
+                "dataTypeModifier": -1,
+                "format": "text"
+              },
+              {
+                "name": "createdat",
+                "tableID": 17682,
+                "columnID": 7,
+                "dataTypeID": 1114,
+                "dataTypeSize": 8,
+                "dataTypeModifier": -1,
+                "format": "text"
+              }
+            ],
+            "_parsers": [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            "_types": {
+              "_types": {
+                "arrayParser": {},
+                "builtins": {
+                  "BOOL": 16,
+                  "BYTEA": 17,
+                  "CHAR": 18,
+                  "INT8": 20,
+                  "INT2": 21,
+                  "INT4": 23,
+                  "REGPROC": 24,
+                  "TEXT": 25,
+                  "OID": 26,
+                  "TID": 27,
+                  "XID": 28,
+                  "CID": 29,
+                  "JSON": 114,
+                  "XML": 142,
+                  "PG_NODE_TREE": 194,
+                  "SMGR": 210,
+                  "PATH": 602,
+                  "POLYGON": 604,
+                  "CIDR": 650,
+                  "FLOAT4": 700,
+                  "FLOAT8": 701,
+                  "ABSTIME": 702,
+                  "RELTIME": 703,
+                  "TINTERVAL": 704,
+                  "CIRCLE": 718,
+                  "MACADDR8": 774,
+                  "MONEY": 790,
+                  "MACADDR": 829,
+                  "INET": 869,
+                  "ACLITEM": 1033,
+                  "BPCHAR": 1042,
+                  "VARCHAR": 1043,
+                  "DATE": 1082,
+                  "TIME": 1083,
+                  "TIMESTAMP": 1114,
+                  "TIMESTAMPTZ": 1184,
+                  "INTERVAL": 1186,
+                  "TIMETZ": 1266,
+                  "BIT": 1560,
+                  "VARBIT": 1562,
+                  "NUMERIC": 1700,
+                  "REFCURSOR": 1790,
+                  "REGPROCEDURE": 2202,
+                  "REGOPER": 2203,
+                  "REGOPERATOR": 2204,
+                  "REGCLASS": 2205,
+                  "REGTYPE": 2206,
+                  "UUID": 2950,
+                  "TXID_SNAPSHOT": 2970,
+                  "PG_LSN": 3220,
+                  "PG_NDISTINCT": 3361,
+                  "PG_DEPENDENCIES": 3402,
+                  "TSVECTOR": 3614,
+                  "TSQUERY": 3615,
+                  "GTSVECTOR": 3642,
+                  "REGCONFIG": 3734,
+                  "REGDICTIONARY": 3769,
+                  "JSONB": 3802,
+                  "REGNAMESPACE": 4089,
+                  "REGROLE": 4096
+                }
+              },
+              "text": {},
+              "binary": {}
+            },
+            "RowCtor": null,
+            "rowAsArray": false,
+            "_prebuiltEmptyResultObject": {
+              "paymentid": null,
+              "orderid": null,
+              "paymenttype": null,
+              "amount": null,
+              "paymentstatus": null,
+              "transactionid": null,
+              "createdat": null
+            }
+          }
+        },
+        "timestamp": "2025-11-09T12:31:13.280Z"
+      }
+    },
+    {
+      "path": "/auditTrail",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:13.408Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Audit logs retrieved successfully",
+        "timestamp": "2025-11-09T12:31:13.709Z",
+        "data": {
+          "page": 1,
+          "limit": 20,
+          "count": 8,
+          "logs": [
+            {
+              "logid": 8,
+              "userid": 1,
+              "username": "admin1",
+              "fullname": "Administrator",
+              "action": "UPDATE",
+              "tableaffected": "users",
+              "recordid": 1,
+              "timestamp": "2025-11-09T11:35:48.157Z"
+            },
+            {
+              "logid": 7,
+              "userid": 1,
+              "username": "admin1",
+              "fullname": "Administrator",
+              "action": "UPDATE",
+              "tableaffected": "users",
+              "recordid": 7,
+              "timestamp": "2025-11-09T08:55:37.371Z"
+            },
+            {
+              "logid": 6,
+              "userid": 1,
+              "username": "admin1",
+              "fullname": "Administrator",
+              "action": "CREATE",
+              "tableaffected": "users",
+              "recordid": 7,
+              "timestamp": "2025-11-09T08:55:32.317Z"
+            },
+            {
+              "logid": 5,
+              "userid": 1,
+              "username": "admin1",
+              "fullname": "Administrator",
+              "action": "UPDATE",
+              "tableaffected": "users",
+              "recordid": 6,
+              "timestamp": "2025-11-09T08:54:33.961Z"
+            },
+            {
+              "logid": 4,
+              "userid": 1,
+              "username": "admin1",
+              "fullname": "Administrator",
+              "action": "UPDATE",
+              "tableaffected": "users",
+              "recordid": 6,
+              "timestamp": "2025-11-09T08:49:13.757Z"
+            },
+            {
+              "logid": 3,
+              "userid": 1,
+              "username": "admin1",
+              "fullname": "Administrator",
+              "action": "CREATE",
+              "tableaffected": "users",
+              "recordid": 6,
+              "timestamp": "2025-11-09T08:48:53.068Z"
+            },
+            {
+              "logid": 2,
+              "userid": 1,
+              "username": "admin1",
+              "fullname": "Administrator",
+              "action": "CREATE",
+              "tableaffected": "users",
+              "recordid": 5,
+              "timestamp": "2025-11-04T08:12:07.762Z"
+            },
+            {
+              "logid": 1,
+              "userid": 1,
+              "username": "admin1",
+              "fullname": "Administrator",
+              "action": "CREATE",
+              "tableaffected": "users",
+              "recordid": 123,
+              "timestamp": "2025-11-04T07:56:55.032Z"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/transactions",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:13.833Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Transactions fetched successfully",
+        "data": [],
+        "timestamp": "2025-11-09T12:31:14.098Z"
+      }
+    },
+    {
+      "path": "/notifications",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:14.221Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Notifications retrieved successfully",
+        "timestamp": "2025-11-09T12:31:15.432Z",
+        "data": {
+          "page": 1,
+          "limit": 50,
+          "count": 0,
+          "notifications": []
+        }
+      }
+    },
+    {
+      "path": "/roles",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:15.559Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Roles fetched successfully",
+        "timestamp": "2025-11-09T12:31:15.846Z",
+        "data": [
+          {
+            "roleid": 1,
+            "rolename": "Admin",
+            "description": "مدير النظام الكامل"
+          },
+          {
+            "roleid": 2,
+            "rolename": "Driver",
+            "description": "سائق التوصيل"
+          },
+          {
+            "roleid": 3,
+            "rolename": "StoreOwner",
+            "description": "مالك المتجر"
+          },
+          {
+            "roleid": 4,
+            "rolename": "Customer",
+            "description": "زبون"
+          }
+        ]
+      }
+    },
+    {
+      "path": "/rolePermissions",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:15.972Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Role permissions fetched successfully",
+        "timestamp": "2025-11-09T12:31:16.259Z",
+        "data": []
+      }
+    },
+    {
+      "path": "/sessions",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:16.393Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Sessions fetched successfully",
+        "data": {
+          "count": 10,
+          "sessions": [
+            {
+              "sessionid": 10,
+              "userid": 1,
+              "logintime": "2025-11-09T09:31:22.589Z",
+              "logouttime": null,
+              "deviceinfo": null,
+              "sessiontoken": "sess-1762691457573-445f69dc-9b84-41d0-a223-67cf2dcbb54a"
+            },
+            {
+              "sessionid": 9,
+              "userid": 1,
+              "logintime": "2025-11-09T09:31:22.015Z",
+              "logouttime": null,
+              "deviceinfo": null,
+              "sessiontoken": "sess-1762691457008-55743049-112c-4d83-811c-b158f93683c7"
+            },
+            {
+              "sessionid": 8,
+              "userid": 1,
+              "logintime": "2025-11-09T09:16:43.986Z",
+              "logouttime": null,
+              "deviceinfo": null,
+              "sessiontoken": "sess-1762690578962-58fff8c5-5559-43e1-ae34-e5678a94ede1"
+            },
+            {
+              "sessionid": 7,
+              "userid": 1,
+              "logintime": "2025-11-09T09:10:29.276Z",
+              "logouttime": null,
+              "deviceinfo": null,
+              "sessiontoken": "sess-1762690204274-4f9c0890-415b-4775-80eb-1d151bf876a1"
+            },
+            {
+              "sessionid": 6,
+              "userid": 1,
+              "logintime": "2025-11-09T09:05:55.991Z",
+              "logouttime": null,
+              "deviceinfo": null,
+              "sessiontoken": "sess-1762689930987-9a218386-85d1-4bb4-8af9-0233d8b98423"
+            },
+            {
+              "sessionid": 5,
+              "userid": 1,
+              "logintime": "2025-11-09T08:52:24.422Z",
+              "logouttime": null,
+              "deviceinfo": null,
+              "sessiontoken": "sess-1762689119458-bdf4e9bd-9ed4-4d30-87fb-d40a751d63bc"
+            },
+            {
+              "sessionid": 4,
+              "userid": 1,
+              "logintime": "2025-11-09T08:37:57.956Z",
+              "logouttime": null,
+              "deviceinfo": null,
+              "sessiontoken": "sess-1762688253014-07dc3148-2eb2-4e27-89a2-64f65271c035"
+            },
+            {
+              "sessionid": 3,
+              "userid": 7,
+              "logintime": "2025-11-09T05:55:37.648Z",
+              "logouttime": null,
+              "deviceinfo": "PC Chrome",
+              "sessiontoken": "99074d62-3adf-4fba-94f3-396a5866ea73"
+            },
+            {
+              "sessionid": 2,
+              "userid": 6,
+              "logintime": "2025-11-09T05:54:34.211Z",
+              "logouttime": null,
+              "deviceinfo": "PC Chrome",
+              "sessiontoken": "f9aff8d1-3a3b-491e-8642-a2aef88dbbf7"
+            },
+            {
+              "sessionid": 1,
+              "userid": 6,
+              "logintime": "2025-11-09T05:49:13.998Z",
+              "logouttime": "2025-11-09T05:55:48.805Z",
+              "deviceinfo": null,
+              "sessiontoken": "aa40050a-f94a-4904-a22f-044ff782cb5e"
+            }
+          ]
+        },
+        "timestamp": "2025-11-09T12:31:16.686Z"
+      }
+    },
+    {
+      "path": "/storeRatings",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:16.826Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Store ratings fetched successfully",
+        "data": {
+          "count": 2,
+          "ratings": [
+            {
+              "ratingid": 1,
+              "storeid": 1,
+              "customerid": 4,
+              "rating": 5,
+              "comment": "Very tasty food",
+              "createdat": "2025-10-28T03:51:25.780Z"
+            },
+            {
+              "ratingid": 2,
+              "storeid": 2,
+              "customerid": 4,
+              "rating": 4,
+              "comment": "Good quality products",
+              "createdat": "2025-10-28T03:51:25.780Z"
+            }
+          ]
+        },
+        "timestamp": "2025-11-09T12:31:17.111Z"
+      }
+    },
+    {
+      "path": "/storeCategories",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:17.257Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "Categories fetched successfully",
+        "data": {
+          "count": 4,
+          "categories": [
+            {
+              "categoryid": 2,
+              "categoryname": "سوبرماركت",
+              "description": "متاجر البقالة"
+            },
+            {
+              "categoryid": 4,
+              "categoryname": "مشروبات",
+              "description": "متاجر مشروبات"
+            },
+            {
+              "categoryid": 1,
+              "categoryname": "مطاعم",
+              "description": "مطاعم تقديم الطعام"
+            },
+            {
+              "categoryid": 3,
+              "categoryname": "مكياج",
+              "description": "منتجات تجميل"
+            }
+          ]
+        },
+        "timestamp": "2025-11-09T12:31:17.546Z"
+      }
+    },
+    {
+      "path": "/supportTickets",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:17.675Z",
+      "status": 200,
+      "ok": true,
+      "response": {
+        "success": true,
+        "message": "All support tickets fetched successfully",
+        "data": {
+          "count": 0,
+          "tickets": []
+        },
+        "timestamp": "2025-11-09T12:31:17.957Z"
+      }
+    },
+    {
+      "path": "/apply-coupon",
+      "method": "POST",
+      "timestamp": "2025-11-09T12:31:18.083Z",
+      "ok": false,
+      "status": 400,
+      "error": {
+        "success": false,
+        "message": "OrderID and CouponCode are required",
+        "timestamp": "2025-11-09T12:31:18.090Z",
+        "data": null
+      }
+    },
+    {
+      "path": "/verifyToken",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:18.237Z",
+      "ok": false,
+      "status": 401,
+      "error": {
+        "success": false,
+        "error": "Invalid or expired token"
+      }
+    },
+    {
+      "path": "/deviceTokens",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:18.360Z",
+      "ok": false,
+      "status": 500,
+      "error": {
+        "success": false,
+        "message": "Could not find the table 'public.devicetokens' in the schema cache",
+        "data": null
+      }
+    },
+    {
+      "path": "/graphhopper",
+      "method": "GET",
+      "timestamp": "2025-11-09T12:31:18.925Z",
+      "ok": false,
+      "status": 404,
+      "error": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot GET /api/graphhopper</pre>\n</body>\n</html>\n"
+    }
+  ],
+  "login": {
+    "status": 200,
+    "data": {
+      "success": true,
+      "message": "Login successful",
+      "timestamp": "2025-11-09T12:30:57.284Z",
+      "data": {
+        "userid": 1,
+        "username": "admin1",
+        "fullname": "Administrator",
+        "role": "Admin",
+        "token": "sess-1762691457008-55743049-112c-4d83-811c-b158f93683c7"
+      }
+    }
+  },
+  "finishedAt": "2025-11-09T12:31:19.067Z"
+}

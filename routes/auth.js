@@ -1,99 +1,83 @@
-
-const { getSupabase } = require('../supabaseClient');
-let supabase = getSupabase();
-
 const express = require('express');
 const router = express.Router();
-const sql = require('../db'); // PostgreSQL client
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const sql = require('../db');
+const crypto = require('crypto');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
-
-// دالة موحدة للرد
-function sendResponse(res, success, message, data = null, status = 200) {
-    return res.status(status).json({
-        success,
-        message,
-        timestamp: new Date(),
-        data
-    });
+// =====================
+// Helpers كلمة مرور
+// =====================
+function hashPasswordWithSalt(password, salt) {
+  const h = crypto.createHash('sha256');
+  h.update(salt + password, 'utf8');
+  return h.digest('hex');
 }
 
-// ==========================
-// تسجيل مستخدم جديد
-router.post('/register', async (req, res) => {
-    try {
-        const { FullName, UserName, Email, Phone, Password, UserType } = req.body;
-        if (!FullName || !UserName || !Email || !Phone || !Password || !UserType)
-            return sendResponse(res, false, 'All fields are required', null, 400);
+function verifyStoredPassword(stored, password) {
+  const parts = (stored || '').split(':');
+  if (parts.length !== 2) return false;
+  const [salt, hash] = parts;
+  return hashPasswordWithSalt(password, salt) === hash;
+}
 
-        const hashedPassword = await bcrypt.hash(Password, 10);
+// =====================
+// Helper للردود
+// =====================
+function sendResponse(res, success, message, data = null, status = 200) {
+  return res.status(status).json({ success, message, timestamp: new Date(), data });
+}
 
-        await sql.query(`
-            INSERT INTO "Users" ("FullName","UserName","Email","Phone","Password","UserType")
-            VALUES ($1, $2, $3, $4, $5, $6)
-        `, [/* add params here */]);
+// =====================
+// تسجيل محاولة دخول فاشلة
+// =====================
+async function logFailedLogin(username, ip) {
+  try {
+    await sql.query(
+      `INSERT INTO failed_logins (username, ipaddress, attempttime)
+       VALUES ($1, $2, NOW())`,
+      [username, ip]
+    );
+  } catch (err) {
+    console.error('Error logging failed login:', err);
+  }
+}
 
-        sendResponse(res, true, 'User registered successfully');
-    } catch (err) {
-        console.error('Error POST /auth/register:', err);
-        sendResponse(res, false, 'Failed to register user', null, 500);
-    }
-});
-
-// ==========================
-// تسجيل دخول
+// =====================
+// POST /api/auth/login
+// =====================
 router.post('/login', async (req, res) => {
-    try {
-        const { UserName, Password } = req.body;
-        if (!UserName || !Password)
-            return sendResponse(res, false, 'UserName and Password are required', null, 400);
+  try {
+    const { username, password } = req.body;
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
-        const users = await sql.query(`
-            SELECT * FROM "users" WHERE "UserName" = $1
-        `, [/* add params here */]);
+    if (!username || !password) return sendResponse(res, false, 'username & password required', null, 400);
 
-        const user = users[0];
-        if (!user) return sendResponse(res, false, 'User not found', null, 404);
-
-        const validPass = await bcrypt.compare(Password, user.Password);
-        if (!validPass) return sendResponse(res, false, 'Invalid password', null, 401);
-
-        const token = jwt.sign(
-            { id: user.UserID, type: user.UserType },
-            JWT_SECRET,
-            { expiresIn: '7d' }
-        );
-
-        // لا ترسل كلمة المرور مع البيانات
-        const { Password: _, ...userWithoutPassword } = user;
-
-        sendResponse(res, true, 'Login successful', { token, user: userWithoutPassword });
-    } catch (err) {
-        console.error('Error POST /auth/login:', err);
-        sendResponse(res, false, 'Failed to login', null, 500);
+    const result = await sql.query('SELECT * FROM users WHERE username=$1 LIMIT 1', [username]);
+    if (!result.rows.length) {
+      await logFailedLogin(username, ip);
+      return sendResponse(res, false, 'Invalid username or password', null, 401);
     }
+
+    const user = result.rows[0];
+    if (!verifyStoredPassword(user.password, password)) {
+      await logFailedLogin(username, ip);
+      return sendResponse(res, false, 'Invalid username or password', null, 401);
+    }
+
+    // توليد session token عشوائي
+    const token = `sess-${Date.now()}-${crypto.randomUUID()}`;
+    await sql.query('INSERT INTO sessions (userid, sessiontoken, logintime) VALUES ($1,$2,NOW())', [user.userid, token]);
+
+    sendResponse(res, true, 'Login successful', {
+      userid: user.userid,
+      username: user.username,
+      fullname: user.fullname,
+      role: user.role,
+      token
+    });
+  } catch (err) {
+    console.error('POST /auth/login error:', err);
+    sendResponse(res, false, 'Login failed', null, 500);
+  }
 });
 
 module.exports = router;
-
-// --- auto-added init shim (safe) ---
-try {
-  if (!module.exports) module.exports = router;
-} catch(e) {}
-
-if (!module.exports.init) {
-  module.exports.init = function initRoute(opts = {}) {
-    try {
-      if (opts.supabaseKey && !supabase && SUPABASE_URL) {
-        try {
-          
-          supabase = createClient(SUPABASE_URL, opts.supabaseKey);
-        } catch(err) { /* ignore */ }
-      }
-    } catch(err) { /* ignore */ }
-    return module.exports;
-  };
-}

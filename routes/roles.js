@@ -1,99 +1,112 @@
-
-const { getSupabase } = require('../supabaseClient');
-let supabase = getSupabase();
-
-require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const sql = require('../db'); // db.js يستخدم postgres
+const sql = require('../db'); // الاتصال بقاعدة بيانات PostgreSQL
 
 // ==========================
-// 📍 عرض كل الأدوار
+// 📍 دالة موحدة للرد
+function sendResponse(res, success, message, data = null, status = 200) {
+    return res.status(status).json({ success, message, timestamp: new Date(), data });
+}
+
+// ==========================
+// 📍 عرض كل الأدوار مع ترتيب حسب roleid
 router.get('/', async (req, res) => {
     try {
-        const result = await sql.query(`SELECT * FROM "roles"`, [/* add params here */]);
-        res.json(result);
+        const result = await sql.query(`SELECT * FROM "roles" ORDER BY "roleid" ASC`);
+        sendResponse(res, true, 'Roles fetched successfully', result.rows);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
-// 📍 إضافة دور جديد
-router.post('/', async (req, res) => {
-    const { RoleID, RoleName, Description } = req.body;
+// 📍 عرض دور محدد
+router.get('/:roleid', async (req, res) => {
+    const { roleid } = req.params;
     try {
+        const result = await sql.query(`SELECT * FROM "roles" WHERE "roleid"=$1`, [roleid]);
+        if (!result.rows.length) return sendResponse(res, false, '❌ الدور غير موجود', null, 404);
+        sendResponse(res, true, 'Role fetched successfully', result.rows[0]);
+    } catch (err) {
+        sendResponse(res, false, err.message, null, 500);
+    }
+});
+
+// ==========================
+// 📍 إضافة دور جديد مع التحقق من التكرار
+router.post('/', async (req, res) => {
+    const { roleid, rolename, description } = req.body;
+
+    if (!rolename) {
+        return sendResponse(res, false, '❌ اسم الدور مطلوب', null, 400);
+    }
+
+    try {
+        // تحقق من وجود roleid أو rolename مسبقًا
+        const existing = await sql.query(
+            `SELECT * FROM "roles" WHERE "roleid"=$1 OR "rolename"=$2`,
+            [roleid, rolename]
+        );
+
+        if (existing.rows.length) {
+            return sendResponse(res, false, '❌ هذا الدور موجود بالفعل', null, 400);
+        }
+
         const result = await sql.query(`
-            INSERT INTO "Roles" ("RoleID", "RoleName", "Description")
+            INSERT INTO "roles" ("roleid", "rolename", "description")
             VALUES ($1, $2, $3)
             RETURNING *
-        `, [/* add params here */]);
-        res.status(201).json({ message: '✅ تم إضافة الدور بنجاح', role: result[0] });
+        `, [roleid, rolename, description]);
+
+        sendResponse(res, true, '✅ تم إضافة الدور بنجاح', result.rows[0], 201);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
 // 📍 تحديث دور
-router.put('/:RoleID', async (req, res) => {
-    const { RoleID } = req.params;
+router.put('/:roleid', async (req, res) => {
+    const { roleid } = req.params;
     const updateData = req.body;
     const keys = Object.keys(updateData);
-    if (!keys.length) return res.status(400).json({ message: 'لا يوجد بيانات لتحديثها' });
+    if (!keys.length) return sendResponse(res, false, '❌ لا يوجد بيانات لتحديثها', null, 400);
 
     try {
         const setClauses = keys.map((k, idx) => `"${k}"=$${idx + 1}`).join(', ');
         const values = keys.map(k => updateData[k]);
+        values.push(roleid);
 
         const result = await sql.query(`
-            UPDATE "Roles"
-            SET $1
-            WHERE "RoleID"=$2
+            UPDATE "roles"
+            SET ${setClauses}
+            WHERE "roleid"=$${values.length}
             RETURNING *
-        `, [/* add params here */]);
+        `, values);
 
-        if (!result.length) return res.status(404).json({ message: 'الدور غير موجود' });
-        res.json({ message: '✅ تم تحديث الدور بنجاح', role: result[0] });
+        if (!result.rows.length) return sendResponse(res, false, '❌ الدور غير موجود', null, 404);
+        sendResponse(res, true, '✅ تم تحديث الدور بنجاح', result.rows[0]);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
 // ==========================
 // 📍 حذف دور
-router.delete('/:RoleID', async (req, res) => {
-    const { RoleID } = req.params;
+router.delete('/:roleid', async (req, res) => {
+    const { roleid } = req.params;
     try {
         const result = await sql.query(`
             DELETE FROM "roles"
-            WHERE "RoleID"=$1
+            WHERE "roleid"=$1
             RETURNING *
-        `, [/* add params here */]);
-        if (!result.length) return res.status(404).json({ message: 'الدور غير موجود' });
-        res.json({ message: '✅ تم حذف الدور بنجاح', role: result[0] });
+        `, [roleid]);
+
+        if (!result.rows.length) return sendResponse(res, false, '❌ الدور غير موجود', null, 404);
+        sendResponse(res, true, '✅ تم حذف الدور بنجاح', result.rows[0]);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        sendResponse(res, false, err.message, null, 500);
     }
 });
 
 module.exports = router;
-
-// --- auto-added init shim (safe) ---
-try {
-  if (!module.exports) module.exports = router;
-} catch(e) {}
-
-if (!module.exports.init) {
-  module.exports.init = function initRoute(opts = {}) {
-    try {
-      if (opts.supabaseKey && !supabase && SUPABASE_URL) {
-        try {
-          
-          supabase = createClient(SUPABASE_URL, opts.supabaseKey);
-        } catch(err) { /* ignore */ }
-      }
-    } catch(err) { /* ignore */ }
-    return module.exports;
-  };
-}

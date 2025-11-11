@@ -1,44 +1,32 @@
+require('dotenv').config();
+const express = require('express');
+const router = express.Router();
 const sql = require('../db');
-const { getSupabase } = require('../supabaseClient');
-let supabase = getSupabase();
+const verifyToken = require('../middleware/verifyToken');
+const { createClient } = require('@supabase/supabase-js');
 
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY || null;
 const SUPABASE_URL = process.env.SUPABASE_URL || null;
 
-try {
-  if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
-    
+let supabase = null;
+if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
     supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-  }
-} catch(e) { /* @supabase/supabase-js may be missing locally — ignore */ }
+}
 
-const express = require('express');
-const router = express.Router();
-const verifyToken = require('../middleware/verifyToken');
+// دالة مساعدة للرد
+function sendResponse(res, success, message, data = null, status = 200) {
+    res.status(status).json({ success, message, data, timestamp: new Date() });
+}
 
-// كل روت داخل هذا الملف يستخدم التحقق
+// ==========================
+// GET جميع الطلبات مع التحقق
 router.get('/', verifyToken, async (req, res) => {
-  // هنا كود جلب الطلبات
-  res.json({ message: 'Orders fetched successfully' });
+    try {
+        const { rows } = await sql.query(`SELECT * FROM "orders" ORDER BY "CreatedAt" DESC`);
+        sendResponse(res, true, 'Orders fetched successfully', { count: rows.length, orders: rows });
+    } catch (err) {
+        sendResponse(res, false, err.message, null, 500);
+    }
 });
 
 module.exports = router;
-
-// --- auto-added init shim (safe) ---
-try {
-  if (!module.exports) module.exports = router;
-} catch(e) {}
-
-if (!module.exports.init) {
-  module.exports.init = function initRoute(opts = {}) {
-    try {
-      if (opts.supabaseKey && !supabase && SUPABASE_URL) {
-        try {
-          
-          supabase = createClient(SUPABASE_URL, opts.supabaseKey);
-        } catch(err) { /* ignore */ }
-      }
-    } catch(err) { /* ignore */ }
-    return module.exports;
-  };
-}

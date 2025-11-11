@@ -1,15 +1,11 @@
-require('dotenv').config();
+// routes/appSettings.js
 const express = require('express');
 const router = express.Router();
-const sql = require('../db'); // تأكد أن db.js يحتوي على Pool من pg أو client جاهز للاتصال
+const { dbQuery, requireSession, requireRole } = require('../middleware/auth');
 
-// ✅ dbQuery helper صحيح
-const dbQuery = async (...args) => {
-  const r = await sql.query(...args);
-  return (r && r.rows) ? r.rows : r;
-};
-
-// 🧩 دالة مساعدة لتوحيد الردود
+// =====================
+// Helper للردود
+// =====================
 function sendResponse(res, success, message, data = null, status = 200) {
   return res.status(status).json({
     success,
@@ -19,33 +15,54 @@ function sendResponse(res, success, message, data = null, status = 200) {
   });
 }
 
-// 📍 جلب جميع الإعدادات مع إمكانية البحث
-router.get('/', async (req, res) => {
+// =====================
+// GET جميع الإعدادات مع Pagination + Search
+// =====================
+router.get('/', requireSession, async (req, res) => {
   try {
-    const { search = '' } = req.query;
+    let { page = 1, limit = 20, search = '' } = req.query;
+    page = parseInt(page);
+    limit = parseInt(limit);
+    const offset = (page - 1) * limit;
+
     const result = await dbQuery(
       `SELECT * FROM appsettings
        WHERE settingname ILIKE $1 OR settingvalue ILIKE $1
-       ORDER BY updatedat DESC`,
+       ORDER BY updatedat DESC
+       LIMIT $2 OFFSET $3`,
+      [`%${search}%`, limit, offset]
+    );
+
+    const totalCountResult = await dbQuery(
+      `SELECT COUNT(*)::int AS total FROM appsettings
+       WHERE settingname ILIKE $1 OR settingvalue ILIKE $1`,
       [`%${search}%`]
     );
-    sendResponse(res, true, 'Settings retrieved successfully', result);
+
+    sendResponse(res, true, 'Settings retrieved successfully', {
+      page,
+      limit,
+      total: totalCountResult[0].total,
+      settings: result
+    });
   } catch (err) {
     console.error('Error GET /appSettings:', err);
     sendResponse(res, false, 'Failed to retrieve settings', null, 500);
   }
 });
 
-// 📍 جلب إعداد واحد حسب الاسم
-router.get('/:name', async (req, res) => {
+// =====================
+// GET إعداد واحد حسب الاسم
+// =====================
+router.get('/:name', requireSession, async (req, res) => {
   try {
     const { name } = req.params;
     const result = await dbQuery(
       `SELECT * FROM appsettings WHERE settingname = $1`,
       [name]
     );
-    if (!result.length)
-      return sendResponse(res, false, `Setting ${name} not found`, null, 404);
+
+    if (!result.length) return sendResponse(res, false, `Setting "${name}" not found`, null, 404);
 
     sendResponse(res, true, 'Setting retrieved successfully', result[0]);
   } catch (err) {
@@ -54,16 +71,17 @@ router.get('/:name', async (req, res) => {
   }
 });
 
-// 📍 إضافة أو تحديث إعداد
-router.post('/', async (req, res) => {
+// =====================
+// POST لإضافة أو تحديث إعداد (Admin/Manager فقط)
+// =====================
+router.post('/', requireSession, requireRole(['Admin', 'Manager']), async (req, res) => {
   try {
-    const { SettingName, SettingValue } = req.body;
-    if (!SettingName)
-      return sendResponse(res, false, 'SettingName is required', null, 400);
+    const { settingName, settingValue } = req.body;
+    if (!settingName) return sendResponse(res, false, 'settingName is required', null, 400);
 
     const exists = await dbQuery(
       `SELECT * FROM appsettings WHERE settingname = $1`,
-      [SettingName]
+      [settingName]
     );
 
     if (exists.length) {
@@ -71,29 +89,30 @@ router.post('/', async (req, res) => {
         `UPDATE appsettings
          SET settingvalue = $1, updatedat = NOW()
          WHERE settingname = $2`,
-        [SettingValue || '', SettingName]
+        [settingValue || '', settingName]
       );
+      sendResponse(res, true, `Setting "${settingName}" updated successfully`);
     } else {
       await dbQuery(
-        `INSERT INTO appsettings(settingname,settingvalue,updatedat)
+        `INSERT INTO appsettings(settingname, settingvalue, updatedat)
          VALUES($1, $2, NOW())`,
-        [SettingName, SettingValue || '']
+        [settingName, settingValue || '']
       );
+      sendResponse(res, true, `Setting "${settingName}" added successfully`);
     }
-
-    sendResponse(res, true, 'Setting added or updated successfully');
   } catch (err) {
     console.error('Error POST /appSettings', err);
     sendResponse(res, false, 'Failed to add/update setting', null, 500);
   }
 });
 
-// 📍 تحديث قيمة إعداد محدد فقط
-router.patch('/:name', async (req, res) => {
+// =====================
+// PATCH لتحديث قيمة إعداد فقط (Admin/Manager فقط)
+// =====================
+router.patch('/:name', requireSession, requireRole(['Admin', 'Manager']), async (req, res) => {
   try {
-    const { SettingValue } = req.body;
-    if (SettingValue === undefined)
-      return sendResponse(res, false, 'SettingValue is required', null, 400);
+    const { settingValue } = req.body;
+    if (settingValue === undefined) return sendResponse(res, false, 'settingValue is required', null, 400);
 
     const { name } = req.params;
     const exists = await dbQuery(
@@ -101,25 +120,26 @@ router.patch('/:name', async (req, res) => {
       [name]
     );
 
-    if (!exists.length)
-      return sendResponse(res, false, `Setting ${name} not found`, null, 404);
+    if (!exists.length) return sendResponse(res, false, `Setting "${name}" not found`, null, 404);
 
     await dbQuery(
       `UPDATE appsettings
        SET settingvalue = $1, updatedat = NOW()
        WHERE settingname = $2`,
-      [SettingValue, name]
+      [settingValue, name]
     );
 
-    sendResponse(res, true, 'Setting value updated successfully');
+    sendResponse(res, true, `Setting "${name}" value updated successfully`);
   } catch (err) {
     console.error('Error PATCH /appSettings/:name', err);
     sendResponse(res, false, 'Failed to update setting', null, 500);
   }
 });
 
-// 📍 حذف إعداد حسب الاسم أو ID
-router.delete('/:id', async (req, res) => {
+// =====================
+// DELETE إعداد حسب ID أو الاسم (Admin/Manager فقط)
+// =====================
+router.delete('/:id', requireSession, requireRole(['Admin', 'Manager']), async (req, res) => {
   try {
     const id = req.params.id;
 
@@ -129,8 +149,7 @@ router.delete('/:id', async (req, res) => {
       [id]
     );
 
-    if (!exists.length)
-      return sendResponse(res, false, `Setting ${id} not found`, null, 404);
+    if (!exists.length) return sendResponse(res, false, `Setting "${id}" not found`, null, 404);
 
     await dbQuery(
       `DELETE FROM appsettings 
@@ -138,7 +157,7 @@ router.delete('/:id', async (req, res) => {
       [id]
     );
 
-    sendResponse(res, true, 'Setting deleted successfully');
+    sendResponse(res, true, `Setting "${id}" deleted successfully`);
   } catch (err) {
     console.error('Error DELETE /appSettings/:id', err);
     sendResponse(res, false, 'Failed to delete setting', null, 500);

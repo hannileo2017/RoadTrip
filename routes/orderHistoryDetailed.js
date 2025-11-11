@@ -1,4 +1,3 @@
-
 const { getSupabase } = require('../supabaseClient');
 let supabase = getSupabase();
 
@@ -24,29 +23,36 @@ router.get('/', async (req, res) => {
         let params = [];
 
         if (orderId) {
-            where.push(`"OrderID" ILIKE $${params.length + 1}`);
             params.push(`%${orderId}%`);
+            where.push(`"OrderID" ILIKE $${params.length}`);
         }
         if (status) {
-            where.push(`"NewStatus" ILIKE $${params.length + 1}`);
             params.push(`%${status}%`);
+            where.push(`"NewStatus" ILIKE $${params.length}`);
         }
 
         const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
 
-        const result = await sql.query(`
+        // الآن نُنشئ نص الاستعلام مع باراميترات OFFSET و LIMIT بوضع أرقام صحيحة
+        const offsetParamIndex = params.length + 1;
+        const limitParamIndex = params.length + 2;
+
+        const queryText = `
             SELECT "HistoryID", "OrderID", "PreviousStatus", "NewStatus", "ChangedBy", "ChangeTime", "CreatedAt", "UpdatedAt"
             FROM "orderhistorydetailed"
-            $1
+            ${whereClause}
             ORDER BY "ChangeTime" DESC
-            OFFSET $2 LIMIT $3
-        `, [/* add params here */]);
+            OFFSET $${offsetParamIndex} LIMIT $${limitParamIndex}
+        `;
+        const queryParams = params.concat([offset, limit]);
+
+        const result = await sql.query(queryText, queryParams);
 
         sendResponse(res, true, 'Order history detailed fetched successfully', {
             page,
             limit,
-            count: result.length,
-            history: result
+            count: Array.isArray(result) ? result.length : (result.rows ? result.rows.length : 0),
+            history: Array.isArray(result) ? result : (result.rows ? result.rows : [])
         });
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
@@ -57,11 +63,14 @@ router.get('/', async (req, res) => {
 // 📍 جلب سجل حسب HistoryID
 router.get('/:id', async (req, res) => {
     try {
+        const id = req.params.id;
         const result = await sql.query(`
             SELECT * FROM "orderhistorydetailed" WHERE "HistoryID" = $1
-        `, [/* add params here */]);
-        if (!result.length) return sendResponse(res, false, 'History record not found', null, 404);
-        sendResponse(res, true, 'History record fetched successfully', result[0]);
+        `, [id]);
+
+        const rows = Array.isArray(result) ? result : (result.rows ? result.rows : []);
+        if (!rows.length) return sendResponse(res, false, 'History record not found', null, 404);
+        sendResponse(res, true, 'History record fetched successfully', rows[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
@@ -71,17 +80,19 @@ router.get('/:id', async (req, res) => {
 // 📍 إنشاء سجل تاريخ مفصل جديد
 router.post('/', async (req, res) => {
     try {
-        const { OrderID, PreviousStatus, NewStatus, ChangedBy, ChangeTime } = req.body;
+        const { OrderID, PreviousStatus = null, NewStatus, ChangedBy = null, ChangeTime } = req.body;
         if (!OrderID || !NewStatus || !ChangeTime) 
             return sendResponse(res, false, 'OrderID, NewStatus, and ChangeTime are required', null, 400);
 
         const result = await sql.query(`
-            INSERT INTO "OrderHistoryDetailed"
+            INSERT INTO "orderhistorydetailed"
             ("OrderID", "PreviousStatus", "NewStatus", "ChangedBy", "ChangeTime")
             VALUES ($1, $2, $3, $4, $5)
             RETURNING *
-        `, [/* add params here */]);
-        sendResponse(res, true, 'History detailed record created successfully', result[0], 201);
+        `, [OrderID, PreviousStatus, NewStatus, ChangedBy, ChangeTime]);
+
+        const row = Array.isArray(result) ? result[0] : (result.rows ? result.rows[0] : null);
+        sendResponse(res, true, 'History detailed record created successfully', row, 201);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
@@ -95,19 +106,25 @@ router.put('/:id', async (req, res) => {
         const keys = Object.keys(updates);
         if (!keys.length) return sendResponse(res, false, 'Nothing to update', null, 400);
 
-        // بناء SET dynamically
-        const setClauses = keys.map((k, idx) => `"${k}"=$${idx + 1}`).join(', ');
+        // بناء SET dynamically مع باراميترات $1..$n
+        const setClauses = keys.map((k, idx) => `"${k}" = $${idx + 1}`).join(', ');
         const values = keys.map(k => updates[k]);
 
-        const result = await sql.query(`
-            UPDATE "OrderHistoryDetailed"
-            SET $1, "UpdatedAt"=NOW()
-            WHERE "HistoryID"= $1
-            RETURNING *
-        `, [/* add params here */]);
+        // نضيف UpdatedAt و HistoryID في النهاية
+        values.push(req.params.id); // هذا سيكون الباراميتر الأخير
+        const historyIdParamIndex = values.length;
 
-        if (!result.length) return sendResponse(res, false, 'History record not found', null, 404);
-        sendResponse(res, true, 'History detailed record updated successfully', result[0]);
+        const queryText = `
+            UPDATE "orderhistorydetailed"
+            SET ${setClauses}, "UpdatedAt" = NOW()
+            WHERE "HistoryID" = $${historyIdParamIndex}
+            RETURNING *
+        `;
+        const result = await sql.query(queryText, values);
+
+        const rows = Array.isArray(result) ? result : (result.rows ? result.rows : []);
+        if (!rows.length) return sendResponse(res, false, 'History record not found', null, 404);
+        sendResponse(res, true, 'History detailed record updated successfully', rows[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
@@ -117,13 +134,16 @@ router.put('/:id', async (req, res) => {
 // 📍 حذف سجل تاريخ مفصل
 router.delete('/:id', async (req, res) => {
     try {
+        const id = req.params.id;
         const result = await sql.query(`
             DELETE FROM "orderhistorydetailed"
-            WHERE "HistoryID"= $1
+            WHERE "HistoryID" = $1
             RETURNING *
-        `, [/* add params here */]);
-        if (!result.length) return sendResponse(res, false, 'History record not found', null, 404);
-        sendResponse(res, true, 'History detailed record deleted successfully', result[0]);
+        `, [id]);
+
+        const rows = Array.isArray(result) ? result : (result.rows ? result.rows : []);
+        if (!rows.length) return sendResponse(res, false, 'History record not found', null, 404);
+        sendResponse(res, true, 'History detailed record deleted successfully', rows[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }

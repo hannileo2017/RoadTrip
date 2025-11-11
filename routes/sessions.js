@@ -1,4 +1,3 @@
-
 const { getSupabase } = require('../supabaseClient');
 let supabase = getSupabase();
 
@@ -18,10 +17,10 @@ router.get('/', async (req, res) => {
     try {
         const result = await sql.query(`
             SELECT *
-            FROM "sessions"
-            ORDER BY "LoginTime" DESC
-        `, [/* add params here */]);
-        sendResponse(res, true, 'Sessions fetched successfully', { count: result.length, sessions: result });
+            FROM sessions
+            ORDER BY logintime DESC
+        `);
+        sendResponse(res, true, 'Sessions fetched successfully', { count: result.rows.length, sessions: result.rows });
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
@@ -31,17 +30,18 @@ router.get('/', async (req, res) => {
 // 📍 إضافة جلسة جديدة
 router.post('/', async (req, res) => {
     try {
-        const { UserID, LoginTime, LogoutTime, DeviceInfo, SessionToken } = req.body;
-        if (!UserID || !LoginTime || !SessionToken) {
-            return sendResponse(res, false, 'UserID, LoginTime, and SessionToken are required', null, 400);
+        const { userid, logintime, logouttime = null, deviceinfo = null, sessiontoken } = req.body;
+        if (!userid || !logintime || !sessiontoken) {
+            return sendResponse(res, false, 'userid, logintime, and sessiontoken are required', null, 400);
         }
 
         const result = await sql.query(`
-            INSERT INTO "Sessions" ("UserID", "LoginTime", "LogoutTime", "DeviceInfo", "SessionToken")
+            INSERT INTO sessions (userid, logintime, logouttime, deviceinfo, sessiontoken)
             VALUES ($1, $2, $3, $4, $5)
             RETURNING *
-        `, [/* add params here */]);
-        sendResponse(res, true, 'Session created successfully', result[0], 201);
+        `, [userid, logintime, logouttime, deviceinfo, sessiontoken]);
+
+        sendResponse(res, true, 'Session created successfully', result.rows[0], 201);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
@@ -49,25 +49,25 @@ router.post('/', async (req, res) => {
 
 // ==========================
 // 📍 تحديث جلسة
-router.put('/:SessionID', async (req, res) => {
+router.put('/:sessionid', async (req, res) => {
     try {
-        const { SessionID } = req.params;
+        const { sessionid } = req.params;
         const updateData = req.body;
         const keys = Object.keys(updateData);
         if (!keys.length) return sendResponse(res, false, 'No fields to update', null, 400);
 
-        const setClauses = keys.map((k, idx) => `"${k}"=$${idx + 1}`).join(', ');
+        const setClauses = keys.map((k, idx) => `${k}=$${idx+1}`).join(', ');
         const values = keys.map(k => updateData[k]);
 
         const result = await sql.query(`
-            UPDATE "Sessions"
-            SET $1
-            WHERE "SessionID" = $2
+            UPDATE sessions
+            SET ${setClauses}
+            WHERE sessionid=$${keys.length + 1}
             RETURNING *
-        `, [/* add params here */])(...values);
+        `, [...values, sessionid]);
 
-        if (!result.length) return sendResponse(res, false, 'Session not found', null, 404);
-        sendResponse(res, true, 'Session updated successfully', result[0]);
+        if (!result.rows.length) return sendResponse(res, false, 'Session not found', null, 404);
+        sendResponse(res, true, 'Session updated successfully', result.rows[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
@@ -75,38 +75,20 @@ router.put('/:SessionID', async (req, res) => {
 
 // ==========================
 // 📍 حذف جلسة
-router.delete('/:SessionID', async (req, res) => {
+router.delete('/:sessionid', async (req, res) => {
     try {
-        const { SessionID } = req.params;
+        const { sessionid } = req.params;
         const result = await sql.query(`
-            DELETE FROM "sessions"
-            WHERE "SessionID" = $1
+            DELETE FROM sessions
+            WHERE sessionid = $1
             RETURNING *
-        `, [/* add params here */]);
-        if (!result.length) return sendResponse(res, false, 'Session not found', null, 404);
-        sendResponse(res, true, 'Session deleted successfully', result[0]);
+        `, [sessionid]);
+
+        if (!result.rows.length) return sendResponse(res, false, 'Session not found', null, 404);
+        sendResponse(res, true, 'Session deleted successfully', result.rows[0]);
     } catch (err) {
         sendResponse(res, false, err.message, null, 500);
     }
 });
 
 module.exports = router;
-
-// --- auto-added init shim (safe) ---
-try {
-  if (!module.exports) module.exports = router;
-} catch(e) {}
-
-if (!module.exports.init) {
-  module.exports.init = function initRoute(opts = {}) {
-    try {
-      if (opts.supabaseKey && !supabase && SUPABASE_URL) {
-        try {
-          
-          supabase = createClient(SUPABASE_URL, opts.supabaseKey);
-        } catch(err) { /* ignore */ }
-      }
-    } catch(err) { /* ignore */ }
-    return module.exports;
-  };
-}

@@ -15,19 +15,37 @@
     "@babel/parser": "^7.28.5",
     "@supabase/supabase-js": "^2.78.0",
     "@vonage/server-sdk": "^3.25.1",
-    "axios": "^1.12.2",
     "bcrypt": "^6.0.0",
+    "chalk": "^5.6.2",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
-    "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "fs-extra": "^11.3.2",
     "jsonwebtoken": "^9.0.2",
+    "minimist": "^1.2.8",
     "mssql": "^12.0.0",
+    "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.10",
     "pg": "^8.16.3",
     "postgres": "^3.4.7",
     "recast": "^0.23.11",
+    "socket.io": "^4.8.1",
     "twilio": "^5.10.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hannileo2017/RoadTrip.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hannileo2017/RoadTrip/issues"
+  },
+  "homepage": "https://github.com/hannileo2017/RoadTrip#readme",
+  "devDependencies": {
+    "axios": "^1.13.2",
+    "chai": "^6.2.0",
+    "dotenv": "^17.2.3",
+    "mocha": "^11.7.5",
+    "nodemon": "^3.1.10"
   }
 }

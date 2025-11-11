@@ -1,3 +1,0 @@
-Bios0965458077
-hannileo2017@gmail.com
-npm install @vonage/server-sdk

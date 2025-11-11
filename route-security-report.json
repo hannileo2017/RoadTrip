@@ -1,0 +1,3034 @@
+{
+  "generatedAt": "2025-11-11T08:19:04.751Z",
+  "routes": [
+    {
+      "file": "__migrationhistory.js",
+      "fileBase": "__migrationhistory",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "__migrationhistory.js",
+      "fileBase": "__migrationhistory",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "appSettings.js",
+      "fileBase": "appSettings",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "appSettings.js",
+      "fileBase": "appSettings",
+      "path": "/:name",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "appSettings.js",
+      "fileBase": "appSettings",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "appSettings.js",
+      "fileBase": "appSettings",
+      "path": "/:name",
+      "methods": [
+        "PATCH"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "appSettings.js",
+      "fileBase": "appSettings",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "apply-coupon.js",
+      "fileBase": "apply-coupon",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "areas.js",
+      "fileBase": "areas",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [
+        "cityCheck"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "areas.js",
+      "fileBase": "areas",
+      "path": "/:id",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [
+        "cityCheck"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "areas.js",
+      "fileBase": "areas",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [
+        "cityCheck"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "areas.js",
+      "fileBase": "areas",
+      "path": "/:id",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [
+        "cityCheck"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "areas.js",
+      "fileBase": "areas",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [
+        "cityCheck"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "auditTrail.js",
+      "fileBase": "auditTrail",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "auditTrail.js",
+      "fileBase": "auditTrail",
+      "path": "/:id",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "auditTrail.js",
+      "fileBase": "auditTrail",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "auditTrail.js",
+      "fileBase": "auditTrail",
+      "path": "/:id",
+      "methods": [
+        "PATCH"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "auditTrail.js",
+      "fileBase": "auditTrail",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "auth.js",
+      "fileBase": "auth",
+      "path": "/login",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role",
+        "session"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "cities.js",
+      "fileBase": "cities",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [
+        "check",
+        "dupCheck",
+        "areaCheck"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "cities.js",
+      "fileBase": "cities",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [
+        "check",
+        "dupCheck",
+        "areaCheck"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "cities.js",
+      "fileBase": "cities",
+      "path": "/:id",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [
+        "check",
+        "dupCheck",
+        "areaCheck"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "cities.js",
+      "fileBase": "cities",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [
+        "check",
+        "dupCheck",
+        "areaCheck"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "coupon.js",
+      "fileBase": "coupon",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "coupon.js",
+      "fileBase": "coupon",
+      "path": "/:id",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "coupon.js",
+      "fileBase": "coupon",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "coupon.js",
+      "fileBase": "coupon",
+      "path": "/:id",
+      "methods": [
+        "PATCH"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "coupon.js",
+      "fileBase": "coupon",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "couponadvanced.js",
+      "fileBase": "couponadvanced",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "couponadvanced.js",
+      "fileBase": "couponadvanced",
+      "path": "/:id",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "couponadvanced.js",
+      "fileBase": "couponadvanced",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "couponadvanced.js",
+      "fileBase": "couponadvanced",
+      "path": "/:id",
+      "methods": [
+        "PATCH"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "couponadvanced.js",
+      "fileBase": "couponadvanced",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "customers.js",
+      "fileBase": "customers",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "verifyToken",
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verifyToken",
+        "verify",
+        "requireRole",
+        "jwt"
+      ],
+      "staticProbableMiddleware": [
+        "verifyToken",
+        "check"
+      ],
+      "recommendations": [
+        "Auth and role-check middleware detected — OK (review naming and logic)",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "customers.js",
+      "fileBase": "customers",
+      "path": "/:customerid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "verifyToken",
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verifyToken",
+        "verify",
+        "requireRole",
+        "jwt"
+      ],
+      "staticProbableMiddleware": [
+        "verifyToken",
+        "check"
+      ],
+      "recommendations": [
+        "Auth and role-check middleware detected — OK (review naming and logic)",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "customers.js",
+      "fileBase": "customers",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verifyToken",
+        "verify",
+        "requireRole",
+        "jwt"
+      ],
+      "staticProbableMiddleware": [
+        "verifyToken",
+        "check"
+      ],
+      "recommendations": [
+        "Auth and role-check middleware detected — OK (review naming and logic)",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "customers.js",
+      "fileBase": "customers",
+      "path": "/:customerid",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "verifyToken",
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verifyToken",
+        "verify",
+        "requireRole",
+        "jwt"
+      ],
+      "staticProbableMiddleware": [
+        "verifyToken",
+        "check"
+      ],
+      "recommendations": [
+        "Auth and role-check middleware detected — OK (review naming and logic)",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "customers.js",
+      "fileBase": "customers",
+      "path": "/:customerid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "verifyToken",
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verifyToken",
+        "verify",
+        "requireRole",
+        "jwt"
+      ],
+      "staticProbableMiddleware": [
+        "verifyToken",
+        "check"
+      ],
+      "recommendations": [
+        "Auth and role-check middleware detected — OK (review naming and logic)",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "customers.js",
+      "fileBase": "customers",
+      "path": "/login-otp",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verifyToken",
+        "verify",
+        "requireRole",
+        "jwt"
+      ],
+      "staticProbableMiddleware": [
+        "verifyToken",
+        "check"
+      ],
+      "recommendations": [
+        "Auth and role-check middleware detected — OK (review naming and logic)",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "customers.js",
+      "fileBase": "customers",
+      "path": "/verify-otp",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verifyToken",
+        "verify",
+        "requireRole",
+        "jwt"
+      ],
+      "staticProbableMiddleware": [
+        "verifyToken",
+        "check"
+      ],
+      "recommendations": [
+        "Auth and role-check middleware detected — OK (review naming and logic)",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "customers.js",
+      "fileBase": "customers",
+      "path": "/change-password",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "verifyToken",
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verifyToken",
+        "verify",
+        "requireRole",
+        "jwt"
+      ],
+      "staticProbableMiddleware": [
+        "verifyToken",
+        "check"
+      ],
+      "recommendations": [
+        "Auth and role-check middleware detected — OK (review naming and logic)",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "customers.js",
+      "fileBase": "customers",
+      "path": "/forgot-password",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verifyToken",
+        "verify",
+        "requireRole",
+        "jwt"
+      ],
+      "staticProbableMiddleware": [
+        "verifyToken",
+        "check"
+      ],
+      "recommendations": [
+        "Auth and role-check middleware detected — OK (review naming and logic)",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "customers.js",
+      "fileBase": "customers",
+      "path": "/reset-password",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verifyToken",
+        "verify",
+        "requireRole",
+        "jwt"
+      ],
+      "staticProbableMiddleware": [
+        "verifyToken",
+        "check"
+      ],
+      "recommendations": [
+        "Auth and role-check middleware detected — OK (review naming and logic)",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "debug.js",
+      "fileBase": "debug",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "deviceTokens.js",
+      "fileBase": "deviceTokens",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "deviceTokens.js",
+      "fileBase": "deviceTokens",
+      "path": "/:id",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "deviceTokens.js",
+      "fileBase": "deviceTokens",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "deviceTokens.js",
+      "fileBase": "deviceTokens",
+      "path": "/:id",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "deviceTokens.js",
+      "fileBase": "deviceTokens",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "driverLocations.js",
+      "fileBase": "driverLocations",
+      "path": "/update-location",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "driverLocations.js",
+      "fileBase": "driverLocations",
+      "path": "/:driverid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "driverRatings.js",
+      "fileBase": "driverRatings",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "driverRatings.js",
+      "fileBase": "driverRatings",
+      "path": "/:id",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "driverRatings.js",
+      "fileBase": "driverRatings",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "driverRatings.js",
+      "fileBase": "driverRatings",
+      "path": "/:id",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "driverRatings.js",
+      "fileBase": "driverRatings",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "drivers.js",
+      "fileBase": "drivers",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "requireSession",
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verify"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "drivers.js",
+      "fileBase": "drivers",
+      "path": "/:driverid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "requireSession",
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verify"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "drivers.js",
+      "fileBase": "drivers",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "requireSession",
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verify"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "drivers.js",
+      "fileBase": "drivers",
+      "path": "/:driverid",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "requireSession",
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verify"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "drivers.js",
+      "fileBase": "drivers",
+      "path": "/:driverid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "requireSession",
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verify"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "drivers.js",
+      "fileBase": "drivers",
+      "path": "/request-reset",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verify"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "drivers.js",
+      "fileBase": "drivers",
+      "path": "/verify-otp",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verify"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "drivers.js",
+      "fileBase": "drivers",
+      "path": "/reset-password",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verify"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "graphhopper.js",
+      "fileBase": "graphhopper",
+      "path": "/route",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "notifications.js",
+      "fileBase": "notifications",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "notifications.js",
+      "fileBase": "notifications",
+      "path": "/:id",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "notifications.js",
+      "fileBase": "notifications",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "notifications.js",
+      "fileBase": "notifications",
+      "path": "/:id",
+      "methods": [
+        "PATCH"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "notifications.js",
+      "fileBase": "notifications",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderDisputes.js",
+      "fileBase": "orderDisputes",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderDisputes.js",
+      "fileBase": "orderDisputes",
+      "path": "/:id",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderDisputes.js",
+      "fileBase": "orderDisputes",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderDisputes.js",
+      "fileBase": "orderDisputes",
+      "path": "/:id",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderDisputes.js",
+      "fileBase": "orderDisputes",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderHistoryDetailed.js",
+      "fileBase": "orderHistoryDetailed",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderHistoryDetailed.js",
+      "fileBase": "orderHistoryDetailed",
+      "path": "/:id",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderHistoryDetailed.js",
+      "fileBase": "orderHistoryDetailed",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderHistoryDetailed.js",
+      "fileBase": "orderHistoryDetailed",
+      "path": "/:id",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderHistoryDetailed.js",
+      "fileBase": "orderHistoryDetailed",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderItems.js",
+      "fileBase": "orderItems",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderItems.js",
+      "fileBase": "orderItems",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderItems.js",
+      "fileBase": "orderItems",
+      "path": "/:orderitemid",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderItems.js",
+      "fileBase": "orderItems",
+      "path": "/:orderitemid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderTracking.js",
+      "fileBase": "orderTracking",
+      "path": "/track-order",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orderTracking.js",
+      "fileBase": "orderTracking",
+      "path": "/:orderid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orders.js",
+      "fileBase": "orders",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "requireRole"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orders.js",
+      "fileBase": "orders",
+      "path": "/:orderid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "requireRole"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orders.js",
+      "fileBase": "orders",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "requireRole"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orders.js",
+      "fileBase": "orders",
+      "path": "/:orderid",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "requireRole"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "orders.js",
+      "fileBase": "orders",
+      "path": "/:orderid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "requireRole"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "payments.js",
+      "fileBase": "payments",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "payments.js",
+      "fileBase": "payments",
+      "path": "/:paymentid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "payments.js",
+      "fileBase": "payments",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "payments.js",
+      "fileBase": "payments",
+      "path": "/:paymentid",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "payments.js",
+      "fileBase": "payments",
+      "path": "/:paymentid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "products.js",
+      "fileBase": "products",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "products.js",
+      "fileBase": "products",
+      "path": "/:productid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "products.js",
+      "fileBase": "products",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "products.js",
+      "fileBase": "products",
+      "path": "/:productid",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "products.js",
+      "fileBase": "products",
+      "path": "/:productid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "rolePermissions.js",
+      "fileBase": "rolePermissions",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "checkRole",
+        "role"
+      ],
+      "staticProbableMiddleware": [
+        "roleCheck",
+        "newRoleId",
+        "checkRole",
+        "checkKey"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "rolePermissions.js",
+      "fileBase": "rolePermissions",
+      "path": "/role/:roleid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "checkRole",
+        "role"
+      ],
+      "staticProbableMiddleware": [
+        "roleCheck",
+        "newRoleId",
+        "checkRole",
+        "checkKey"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "rolePermissions.js",
+      "fileBase": "rolePermissions",
+      "path": "/:permissionid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "checkRole",
+        "role"
+      ],
+      "staticProbableMiddleware": [
+        "roleCheck",
+        "newRoleId",
+        "checkRole",
+        "checkKey"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "rolePermissions.js",
+      "fileBase": "rolePermissions",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "checkRole",
+        "role"
+      ],
+      "staticProbableMiddleware": [
+        "roleCheck",
+        "newRoleId",
+        "checkRole",
+        "checkKey"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "rolePermissions.js",
+      "fileBase": "rolePermissions",
+      "path": "/:permissionid",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "checkRole",
+        "role"
+      ],
+      "staticProbableMiddleware": [
+        "roleCheck",
+        "newRoleId",
+        "checkRole",
+        "checkKey"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "rolePermissions.js",
+      "fileBase": "rolePermissions",
+      "path": "/:permissionid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "checkRole",
+        "role"
+      ],
+      "staticProbableMiddleware": [
+        "roleCheck",
+        "newRoleId",
+        "checkRole",
+        "checkKey"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "roles.js",
+      "fileBase": "roles",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "roles.js",
+      "fileBase": "roles",
+      "path": "/:roleid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "roles.js",
+      "fileBase": "roles",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "roles.js",
+      "fileBase": "roles",
+      "path": "/:roleid",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "roles.js",
+      "fileBase": "roles",
+      "path": "/:roleid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "sessions.js",
+      "fileBase": "sessions",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "session"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "sessions.js",
+      "fileBase": "sessions",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "session"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "sessions.js",
+      "fileBase": "sessions",
+      "path": "/:sessionid",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "session"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "sessions.js",
+      "fileBase": "sessions",
+      "path": "/:sessionid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "session"
+      ],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "storeCategories.js",
+      "fileBase": "storeCategories",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "storeCategories.js",
+      "fileBase": "storeCategories",
+      "path": "/:categoryid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "storeCategories.js",
+      "fileBase": "storeCategories",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "storeCategories.js",
+      "fileBase": "storeCategories",
+      "path": "/:categoryid",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "storeCategories.js",
+      "fileBase": "storeCategories",
+      "path": "/:categoryid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "storeRatings.js",
+      "fileBase": "storeRatings",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "storeRatings.js",
+      "fileBase": "storeRatings",
+      "path": "/:ratingid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "storeRatings.js",
+      "fileBase": "storeRatings",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "storeRatings.js",
+      "fileBase": "storeRatings",
+      "path": "/:ratingid",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "storeRatings.js",
+      "fileBase": "storeRatings",
+      "path": "/:ratingid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "stores.js",
+      "fileBase": "stores",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "stores.js",
+      "fileBase": "stores",
+      "path": "/:storeid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "stores.js",
+      "fileBase": "stores",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "stores.js",
+      "fileBase": "stores",
+      "path": "/:storeid",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "stores.js",
+      "fileBase": "stores",
+      "path": "/:storeid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "supportTickets.js",
+      "fileBase": "supportTickets",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "supportTickets.js",
+      "fileBase": "supportTickets",
+      "path": "/user/:userid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "supportTickets.js",
+      "fileBase": "supportTickets",
+      "path": "/type/:usertype",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "supportTickets.js",
+      "fileBase": "supportTickets",
+      "path": "/status/:status",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "supportTickets.js",
+      "fileBase": "supportTickets",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "supportTickets.js",
+      "fileBase": "supportTickets",
+      "path": "/:ticketid",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "supportTickets.js",
+      "fileBase": "supportTickets",
+      "path": "/:ticketid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "supportticketreply.js",
+      "fileBase": "supportticketreply",
+      "path": "/ticket/:ticketid",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "supportticketreply.js",
+      "fileBase": "supportticketreply",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "supportticketreply.js",
+      "fileBase": "supportticketreply",
+      "path": "/:replyid",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "systemSettings.js",
+      "fileBase": "systemSettings",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "systemSettings.js",
+      "fileBase": "systemSettings",
+      "path": "/:SettingID",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "systemSettings.js",
+      "fileBase": "systemSettings",
+      "path": "/:SettingID",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "systemSettings.js",
+      "fileBase": "systemSettings",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "systemSettings.js",
+      "fileBase": "systemSettings",
+      "path": "/:SettingID",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "transactions.js",
+      "fileBase": "transactions",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "transactions.js",
+      "fileBase": "transactions",
+      "path": "/:id",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "transactions.js",
+      "fileBase": "transactions",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "transactions.js",
+      "fileBase": "transactions",
+      "path": "/:id",
+      "methods": [
+        "PUT"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "transactions.js",
+      "fileBase": "transactions",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "units.js",
+      "fileBase": "units",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "units.js",
+      "fileBase": "units",
+      "path": "/:id",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "units.js",
+      "fileBase": "units",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "units.js",
+      "fileBase": "units",
+      "path": "/:id",
+      "methods": [
+        "PATCH"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "units.js",
+      "fileBase": "units",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [],
+      "staticProbableMiddleware": [],
+      "recommendations": [
+        "Add authentication (verifyToken) if route exposes or modifies user-sensitive data",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "users.js",
+      "fileBase": "users",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword",
+        "roleFilter"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "users.js",
+      "fileBase": "users",
+      "path": "/:id",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword",
+        "roleFilter"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "users.js",
+      "fileBase": "users",
+      "path": "/",
+      "methods": [
+        "POST"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword",
+        "roleFilter"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "users.js",
+      "fileBase": "users",
+      "path": "/:id",
+      "methods": [
+        "PATCH"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword",
+        "roleFilter"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "users.js",
+      "fileBase": "users",
+      "path": "/:id",
+      "methods": [
+        "DELETE"
+      ],
+      "middleware": [
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "role"
+      ],
+      "staticProbableMiddleware": [
+        "verifyStoredPassword",
+        "roleFilter"
+      ],
+      "recommendations": [
+        "Add authentication (verifyToken) and role-based authorization (admin/owner) — HIGH PRIORITY",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    },
+    {
+      "file": "verifyToken.js",
+      "fileBase": "verifyToken",
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "middleware": [
+        "verifyToken",
+        "<anonymous>"
+      ],
+      "staticKeywords": [
+        "verifyToken"
+      ],
+      "staticProbableMiddleware": [
+        "verifyToken"
+      ],
+      "recommendations": [
+        "Consider adding role checks if endpoint should be limited to certain users",
+        "Some handlers are anonymous — consider naming middleware/handlers for clearer reports"
+      ]
+    }
+  ],
+  "summary": {
+    "totalRoutes": 162,
+    "highPriority": 54,
+    "needAuth": 151,
+    "namedMiddlewareIssues": 162
+  }
+}

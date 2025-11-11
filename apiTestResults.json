@@ -1,0 +1,216 @@
+[
+  {
+    "path": "/apply-coupon",
+    "method": "POST",
+    "auth": false,
+    "status": 400,
+    "body": {
+      "success": false,
+      "message": "OrderID and CouponCode are required",
+      "timestamp": "2025-11-10T08:18:26.845Z",
+      "data": null
+    }
+  },
+  {
+    "path": "/appSettings",
+    "method": "GET",
+    "auth": false,
+    "status": 200,
+    "body": {
+      "success": true,
+      "message": "Settings retrieved successfully",
+      "timestamp": "2025-11-10T08:18:27.337Z",
+      "data": {
+        "page": 1,
+        "limit": 20,
+        "total": 0,
+        "settings": []
+      }
+    }
+  },
+  {
+    "path": "/appSettings",
+    "method": "POST",
+    "auth": false,
+    "status": 400,
+    "body": {
+      "success": false,
+      "message": "settingName is required",
+      "timestamp": "2025-11-10T08:18:27.348Z",
+      "data": null
+    }
+  },
+  {
+    "path": "/areas",
+    "method": "GET",
+    "auth": false,
+    "status": 200,
+    "body": {
+      "success": true,
+      "message": "Areas retrieved successfully",
+      "timestamp": "2025-11-10T08:18:27.620Z",
+      "data": {
+        "page": 1,
+        "limit": 20,
+        "count": 3,
+        "areas": [
+          {
+            "areaid": 1,
+            "areaname": "البياض",
+            "cityid": 1,
+            "isactive": true,
+            "createdat": "2025-11-03T06:17:07.834Z",
+            "updatedat": "2025-11-03T06:17:07.834Z",
+            "cityname": "حماه"
+          },
+          {
+            "areaid": 3,
+            "areaname": "الشريعة",
+            "cityid": 1,
+            "isactive": true,
+            "createdat": "2025-11-03T06:17:28.637Z",
+            "updatedat": "2025-11-03T06:17:28.637Z",
+            "cityname": "حماه"
+          },
+          {
+            "areaid": 2,
+            "areaname": "حي الكرامة",
+            "cityid": 1,
+            "isactive": true,
+            "createdat": "2025-11-03T06:17:22.997Z",
+            "updatedat": "2025-11-03T06:17:22.997Z",
+            "cityname": "حماه"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "path": "/auditTrail",
+    "method": "GET",
+    "auth": false,
+    "status": 200,
+    "body": {
+      "success": true,
+      "message": "Audit logs retrieved successfully",
+      "timestamp": "2025-11-10T08:18:27.883Z",
+      "data": {
+        "page": 1,
+        "limit": 20,
+        "count": 8,
+        "logs": [
+          {
+            "logid": 8,
+            "userid": 1,
+            "username": "admin1",
+            "fullname": "Administrator",
+            "action": "UPDATE",
+            "tableaffected": "users",
+            "recordid": 1,
+            "timestamp": "2025-11-09T11:35:48.157Z"
+          },
+          {
+            "logid": 7,
+            "userid": 1,
+            "username": "admin1",
+            "fullname": "Administrator",
+            "action": "UPDATE",
+            "tableaffected": "users",
+            "recordid": 7,
+            "timestamp": "2025-11-09T08:55:37.371Z"
+          },
+          {
+            "logid": 6,
+            "userid": 1,
+            "username": "admin1",
+            "fullname": "Administrator",
+            "action": "CREATE",
+            "tableaffected": "users",
+            "recordid": 7,
+            "timestamp": "2025-11-09T08:55:32.317Z"
+          },
+          {
+            "logid": 5,
+            "userid": 1,
+            "username": "admin1",
+            "fullname": "Administrator",
+            "action": "UPDATE",
+            "tableaffected": "users",
+            "recordid": 6,
+            "timestamp": "2025-11-09T08:54:33.961Z"
+          },
+          {
+            "logid": 4,
+            "userid": 1,
+            "username": "admin1",
+            "fullname": "Administrator",
+            "action": "UPDATE",
+            "tableaffected": "users",
+            "recordid": 6,
+            "timestamp": "2025-11-09T08:49:13.757Z"
+          },
+          {
+            "logid": 3,
+            "userid": 1,
+            "username": "admin1",
+            "fullname": "Administrator",
+            "action": "CREATE",
+            "tableaffected": "users",
+            "recordid": 6,
+            "timestamp": "2025-11-09T08:48:53.068Z"
+          },
+          {
+            "logid": 2,
+            "userid": 1,
+            "username": "admin1",
+            "fullname": "Administrator",
+            "action": "CREATE",
+            "tableaffected": "users",
+            "recordid": 5,
+            "timestamp": "2025-11-04T08:12:07.762Z"
+          },
+          {
+            "logid": 1,
+            "userid": 1,
+            "username": "admin1",
+            "fullname": "Administrator",
+            "action": "CREATE",
+            "tableaffected": "users",
+            "recordid": 123,
+            "timestamp": "2025-11-04T07:56:55.032Z"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "path": "/customers",
+    "method": "GET",
+    "auth": true,
+    "status": 401,
+    "body": {
+      "success": false,
+      "error": "No token provided"
+    }
+  },
+  {
+    "path": "/orders",
+    "method": "GET",
+    "auth": true,
+    "status": 401,
+    "body": {
+      "success": false,
+      "message": "Authorization header missing"
+    }
+  },
+  {
+    "path": "/stores",
+    "method": "GET",
+    "auth": true,
+    "status": 401,
+    "body": {
+      "success": false,
+      "message": "Authorization header missing"
+    }
+  }
+]

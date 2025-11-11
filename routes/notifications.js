@@ -1,153 +1,171 @@
-const sql = require('../db');
 const express = require('express');
+const router = express.Router();
 const { getSupabase } = require('../supabaseClient');
 let supabase = getSupabase();
-
-const router = express.Router();
-
 require('dotenv').config();
 
-// استخدم Service Role Key لضمان عمل جميع العمليات
-
-// دالة موحدة للرد مع طابع زمني
+// 🔧 دالة موحدة للرد
 function sendResponse(res, success, message, data = null, status = 200) {
-    return res.status(status).json({ success, message, timestamp: new Date(), data });
+  return res.status(status).json({
+    success,
+    message,
+    timestamp: new Date(),
+    data
+  });
 }
 
 // ==========================
-// جلب كل الإشعارات مع Pagination + فلترة UserType و UserID
+// 📜 GET جميع الإشعارات مع Pagination + فلترة
+// ==========================
 router.get('/', async (req, res) => {
-    try {
-        let { page = 1, limit = 50, userType = '', userId = '' } = req.query;
-        page = parseInt(page);
-        limit = parseInt(limit);
-        const from = (page - 1) * limit;
-        const to = from + limit - 1;
+  try {
+    let { page = 1, limit = 50, userid = '', usertype = '' } = req.query;
+    page = parseInt(page);
+    limit = parseInt(limit);
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
 
-        let query = supabase
-            .from('notifications')
-            .select('*')
-            .orders('CreatedAt', { ascending: false })
-            .range(from, to);
+    let query = supabase
+      .from('notification')
+      .select('*')
+      .order('createdat', { ascending: false })
+      .range(from, to);
 
-        if (userType) query = query.ilike('UserType', `%${userType}%`);
-        if (userId) query = query.eq('UserID', parseInt(userId));
+    if (userid) query = query.eq('userid', parseInt(userid));
+    if (usertype) query = query.ilike('usertype', `%${usertype}%`);
 
-        const { data, error } = await query;
-        if (error) throw error;
+    const { data, error } = await query;
+    if (error) throw error;
 
-        sendResponse(res, true, 'Notifications fetched successfully', {
-            page,
-            limit,
-            count: data.length,
-            notifications: data
-        });
-    } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
-    }
+    sendResponse(res, true, 'Notifications retrieved successfully', {
+      page,
+      limit,
+      count: data?.length || 0,
+      notifications: data
+    });
+  } catch (err) {
+    console.error('Error GET /notification:', err);
+    sendResponse(res, false, err.message, null, 500);
+  }
 });
 
 // ==========================
-// جلب إشعار حسب NotificationID
+// 📜 GET إشعار واحد حسب ID
+// ==========================
 router.get('/:id', async (req, res) => {
-    try {
-        const { data, error } = await supabase
-            .from('notifications')
-            .select('*')
-            .eq('NotificationID', parseInt(req.params.id))
-            .single();
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return sendResponse(res, false, 'Invalid notification ID', null, 400);
 
-        if (error) return sendResponse(res, false, 'Notification not found', null, 404);
-        sendResponse(res, true, 'Notification fetched successfully', data);
-    } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
-    }
+    const { data, error } = await supabase
+      .from('notification')
+      .select('*')
+      .eq('notificationid', id)
+      .single();
+
+    if (error || !data) return sendResponse(res, false, 'Notification not found', null, 404);
+    sendResponse(res, true, 'Notification retrieved successfully', data);
+  } catch (err) {
+    console.error('Error GET /notification/:id:', err);
+    sendResponse(res, false, err.message, null, 500);
+  }
 });
 
 // ==========================
-// إنشاء إشعار جديد
+// 📨 POST إنشاء إشعار جديد
+// ==========================
 router.post('/', async (req, res) => {
-    const { UserType, UserID, Message, Title, NotificationType } = req.body;
-    if (!UserType || !Message) return sendResponse(res, false, 'UserType and Message are required', null, 400);
+  try {
+    const { userid, title, message, usertype } = req.body;
 
-    try {
-        const { data, error } = await supabase
-            .from('notifications')
-            .insert({
-                UserType,
-                UserID: UserID || null,
-                Message,
-                IsRead: false,
-                Title: Title || null,
-                NotificationType: NotificationType || null,
-                CreatedAt: new Date()
-            })
-            .select()
-            .single();
+    if (!message || !usertype)
+      return sendResponse(res, false, 'Message and usertype are required', null, 400);
 
-        if (error) throw error;
-        sendResponse(res, true, 'Notification created successfully', data, 201);
-    } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
-    }
+    const { data, error } = await supabase
+      .from('notification')
+      .insert({
+        userid: userid || null,
+        title: title || null,
+        message,
+        usertype,
+        createdat: new Date(),
+        isread: false
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    sendResponse(res, true, 'Notification created successfully', data, 201);
+  } catch (err) {
+    console.error('Error POST /notification:', err);
+    sendResponse(res, false, err.message, null, 500);
+  }
 });
 
 // ==========================
-// تحديث إشعار
-router.put('/:id', async (req, res) => {
+// ✏️ PATCH لتحديث إشعار (مثل isread أو العنوان أو الرسالة)
+// ==========================
+router.patch('/:id', async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return sendResponse(res, false, 'Invalid notification ID', null, 400);
+
     const updates = { ...req.body };
-    if (!Object.keys(updates).length) return sendResponse(res, false, 'Nothing to update', null, 400);
+    if (!Object.keys(updates).length)
+      return sendResponse(res, false, 'Nothing to update', null, 400);
 
-    try {
-        const { data, error } = await supabase
-            .from('notifications')
-            .update(updates)
-            .eq('NotificationID', parseInt(req.params.id))
-            .select()
-            .single();
+    const { data, error } = await supabase
+      .from('notification')
+      .update(updates)
+      .eq('notificationid', id)
+      .select()
+      .single();
 
-        if (error) return sendResponse(res, false, 'Notification not found', null, 404);
-        sendResponse(res, true, 'Notification updated successfully', data);
-    } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
-    }
+    if (error || !data) return sendResponse(res, false, 'Notification not found', null, 404);
+    sendResponse(res, true, 'Notification updated successfully', data);
+  } catch (err) {
+    console.error('Error PATCH /notification/:id:', err);
+    sendResponse(res, false, err.message, null, 500);
+  }
 });
 
 // ==========================
-// حذف إشعار
+// 🗑️ DELETE حذف إشعار
+// ==========================
 router.delete('/:id', async (req, res) => {
-    try {
-        const { data, error } = await supabase
-            .from('notifications')
-            .delete()
-            .eq('NotificationID', parseInt(req.params.id))
-            .select()
-            .single();
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return sendResponse(res, false, 'Invalid notification ID', null, 400);
 
-        if (error) return sendResponse(res, false, 'Notification not found', null, 404);
-        sendResponse(res, true, 'Notification deleted successfully', data);
-    } catch (err) {
-        sendResponse(res, false, err.message, null, 500);
-    }
+    const { data, error } = await supabase
+      .from('notification')
+      .delete()
+      .eq('notificationid', id)
+      .select()
+      .single();
+
+    if (error || !data) return sendResponse(res, false, 'Notification not found', null, 404);
+    sendResponse(res, true, 'Notification deleted successfully', data);
+  } catch (err) {
+    console.error('Error DELETE /notification/:id:', err);
+    sendResponse(res, false, err.message, null, 500);
+  }
 });
 
 module.exports = router;
 
-// --- auto-added init shim (safe) ---
+// --- auto-init shim (safe) ---
 try {
   if (!module.exports) module.exports = router;
-} catch(e) {}
-
+} catch (e) {}
 if (!module.exports.init) {
   module.exports.init = function initRoute(opts = {}) {
     try {
-      if (opts.supabaseKey && !supabase && SUPABASE_URL) {
-        try {
-          
-          supabase = createClient(SUPABASE_URL, opts.supabaseKey);
-        } catch(err) { /* ignore */ }
+      if (opts.supabaseKey && !supabase && process.env.SUPABASE_URL) {
+        const { createClient } = require('@supabase/supabase-js');
+        supabase = createClient(process.env.SUPABASE_URL, opts.supabaseKey);
       }
-    } catch(err) { /* ignore */ }
+    } catch (err) {}
     return module.exports;
   };
 }

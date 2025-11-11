@@ -2,14 +2,15 @@
 require('dotenv').config();
 const { Pool } = require('pg');
 
-if (!process.env.DATABASE_URL) {
-  console.error('❌ DATABASE_URL not defined in .env');
+const dbUrl = process.env.DATABASE_URL || process.env.SUPABASE_DB_URL;
+if (!dbUrl) {
+  console.error('❌ DATABASE_URL or SUPABASE_DB_URL not defined in .env');
   process.exit(1);
 }
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false } // للـ Supabase
+  connectionString: dbUrl,
+  ssl: { rejectUnauthorized: false } // For Supabase
 });
 
 module.exports = {
