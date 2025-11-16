@@ -6,7 +6,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-package-lock.json
+#package-lock.json
 
 # ====================================
 # Environment & Secrets
@@ -43,3 +43,4 @@ coverage/
 # Supabase Local Dev
 # ====================================
 .supabase/
+"package-lock.json" 
