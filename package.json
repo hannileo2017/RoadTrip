@@ -20,6 +20,7 @@
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "fs-extra": "^11.3.2",
     "jsonwebtoken": "^9.0.2",
@@ -44,7 +45,6 @@
   "devDependencies": {
     "axios": "^1.13.2",
     "chai": "^6.2.0",
-    "dotenv": "^17.2.3",
     "mocha": "^11.7.5",
     "nodemon": "^3.1.10"
   }
